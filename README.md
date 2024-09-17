@@ -1,6 +1,9 @@
 # iplanning
 
-![SplashScreen](https://github.com/user-attachments/assets/fdbab0fb-0500-4d3a-a0fb-bd9f85c45ed5)
+
+<p align="center" width="100%">
+    <img width="33%" src="https://github.com/user-attachments/assets/fdbab0fb-0500-4d3a-a0fb-bd9f85c45ed5">
+</p>
 ## Getting Started
 
 This project is a starting point for a Flutter application.

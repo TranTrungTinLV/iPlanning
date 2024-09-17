@@ -6,7 +6,7 @@
 
 ## Getting Started
 
-Welcome to the iPlanning project, an event and task management app built with Flutter. This guide will help you set up the project locally and get it running.
+Welcome to the iPlanning project, an event and task management app built with Flutter.
 
 ### Prerequisites
 

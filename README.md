@@ -5,12 +5,18 @@
 </p>
 
 ## Getting Started
-
 Welcome to the iPlanning project, an event and task management app built with Flutter.
 - Link Figma: https://www.figma.com/design/qUFnrXfYmciys5E3Sr3fVC/iPanning-Project?node-id=1-2&t=0GrFcakvOAgW2yJF-1
 - LifeCyle Project: https://vanlangunivn-my.sharepoint.com/:x:/g/personal/tin_207ct55194_vanlanguni_vn1/EbyKj3hvU3pLuP1by41as_wBZ-shQ-lY5mthmnBMAqcqJQ?e=GRnRnj
 
-### Prerequisites
+
+## Technology Used
+### Front End
+- **Flutter FrameWork**
+### Back End
+- **Dart Core**
+### Database
+- FireBase
 
 Ensure you have Flutter installed on your system. You can check your Flutter version by running:
 

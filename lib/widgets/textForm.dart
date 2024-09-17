@@ -7,26 +7,30 @@ class TextForm extends StatelessWidget {
     required this.valueUser,
     required this.icon,
     required this.title,
+    required this.validator,
+    this.obscureText = false,
+    this.keyboardType,
+    required this.onSaved,
   }) : _isLogin = isLogin;
 
   final bool _isLogin;
   String valueUser;
   final IconData icon;
   final String title;
-  // final String title2;
+  final String? Function(String?) validator;
+  final bool obscureText;
+  final TextInputType? keyboardType;
+  final Function(String?) onSaved;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         TextFormField(
-          keyboardType: TextInputType.name,
+          keyboardType: keyboardType,
           autocorrect: false,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'name không hợp lệ';
-            }
-            return null;
-          },
+          validator: validator,
+          obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon: Icon(icon),
             border: OutlineInputBorder(
@@ -37,9 +41,7 @@ class TextForm extends StatelessWidget {
             labelText: title,
             fillColor: Colors.white,
           ),
-          onSaved: (value) {
-            valueUser = value!;
-          },
+          onSaved: onSaved,
         ),
         SizedBox(
           height: 20,

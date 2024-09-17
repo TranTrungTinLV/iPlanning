@@ -40,11 +40,14 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextForm(
-                          isLogin: false,
-                          valueUser: _enteremail,
-                          icon: Icons.email,
-                          title: 'Your email',
-                        ),
+                            isLogin: false,
+                            valueUser: _enteremail,
+                            icon: Icons.email,
+                            title: 'Your email',
+                            validator: (value) {},
+                            onSaved: (value) {
+                              _enteremail = value!;
+                            }),
                       ],
                     ),
                   ),

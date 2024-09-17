@@ -1,4 +1,4 @@
-package com.example.iplanning
+package com.levi.iplanning
 
 import io.flutter.embedding.android.FlutterActivity
 

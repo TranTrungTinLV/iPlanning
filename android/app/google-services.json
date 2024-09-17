@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "852940452574",
+    "project_id": "iplanning-4ed05",
+    "storage_bucket": "iplanning-4ed05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852940452574:android:bc405b867b30ad1f18484f",
+        "android_client_info": {
+          "package_name": "com.levi.iplanning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxgBPxLbQ_KQUpj7dU5MKCKJd5BdIju4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

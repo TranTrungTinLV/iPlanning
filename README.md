@@ -1,7 +1,6 @@
 # iplanning
 
-A new Flutter project.
-
+![SplashScreen](https://github.com/user-attachments/assets/fdbab0fb-0500-4d3a-a0fb-bd9f85c45ed5)
 ## Getting Started
 
 This project is a starting point for a Flutter application.

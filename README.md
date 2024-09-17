@@ -1,17 +1,22 @@
-# iplanning
-
+# iPlanning - Event and Task Management App
 
 <p align="center" width="100%">
     <img width="33%" src="https://github.com/user-attachments/assets/fdbab0fb-0500-4d3a-a0fb-bd9f85c45ed5">
 </p>
+
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Welcome to the iPlanning project, an event and task management app built with Flutter. This guide will help you set up the project locally and get it running.
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- Link Figma: https://www.figma.com/design/qUFnrXfYmciys5E3Sr3fVC/iPanning-Project?node-id=0-1&t=lDee9Xjpn5kPmyhX-1
+Ensure you have Flutter installed on your system. You can check your Flutter version by running:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter --version
+Flutter Version For Me:
+Flutter 3.24.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 2663184aa7 (5 days ago) • 2024-09-11 16:27:48 -0500
+Engine • revision 36335019a8
+Tools • Dart 3.5.3 • DevTools 2.37.3
+Ensure you are using Flutter 3.x or later for compatibility with this project.

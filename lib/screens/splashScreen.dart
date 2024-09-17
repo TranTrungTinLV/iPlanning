@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:iplanning/screens/authScreen.dart';
+import 'package:iplanning/screens/welcomeScreen.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,10 +22,10 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   Navigator.of(context)
-    //       .pushReplacement(MaterialPageRoute(builder: (_) => AuthUser()));
-    // });
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => Welcomescreen()));
+    });
   }
 
   @override
@@ -39,7 +39,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Stack(
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Align(
           alignment: Alignment.topCenter,

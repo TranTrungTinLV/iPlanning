@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iplanning/screens/HomePage.dart';
+import 'package:iplanning/screens/homeScreens.dart';
 import 'package:iplanning/screens/forgotpassword.dart';
+import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/button.dart';
+import 'package:iplanning/widgets/signup.dart';
 import 'package:iplanning/widgets/textForm.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -26,7 +28,7 @@ class _LoginscreenState extends State<Loginscreen> {
   var _isLogin = false;
   var agreePersonalData = false;
   var _repeatpasword = '';
-
+  final _authService = AuthenticationService();
   void _onsubmit() async {
     final isValid = _formKey.currentState!.validate();
     // if (!isValid || _isLogin == null) return;
@@ -40,30 +42,92 @@ class _LoginscreenState extends State<Loginscreen> {
       print(_enteremail);
       try {
         if (!_isLogin) {
-          final userCredentials = await _firebase.signInWithEmailAndPassword(
-              email: _enteremail, password: _enterpassword);
-          print(userCredentials);
+          AuthStatus signInStatus = await _authService.login(
+            email: _enteremail,
+            password: _enterpassword,
+          );
+          if (signInStatus != AuthStatus.successful) {
+            String errorMessage =
+                AuthExceptionHandler.generateErrorMessage(signInStatus);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.red,
+                  elevation: 3.0,
+                  content: Container(
+                      padding: EdgeInsets.all(8.0),
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Text(
+                        '${errorMessage}',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ))),
+            );
+            return;
+          }
         } else {
-          final userCredentials =
-              await _firebase.createUserWithEmailAndPassword(
-                  email: _enteremail, password: _enterpassword);
+          //TODO
+          AuthStatus signUpStatus = await _authService.creatAccount(
+            email: _enteremail,
+            password: _enterpassword,
+            name: _enterusername,
+          );
 
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userCredentials.user!.uid)
-              .set({
-            'username': _enterusername,
-            'email': _enteremail,
-          }); //createData
-          print(userCredentials);
+          if (signUpStatus != AuthStatus.successful) {
+            String errorMessage =
+                AuthExceptionHandler.generateErrorMessage(signUpStatus);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.red,
+                  elevation: 3.0,
+                  content: Container(
+                      padding: EdgeInsets.all(8.0),
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Text(
+                        '${errorMessage}',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ))),
+            );
+            return;
+          }
         }
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Homescreens()),
+          (route) => false, // Xóa tất cả các màn hình trước đó
+        );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
           //  ..
         }
+        String errorMessage = AuthExceptionHandler.generateErrorMessage(
+            AuthExceptionHandler.handleAuthException(e));
+
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? 'Authentication failed. ')));
+          SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              content: Container(
+                  padding: EdgeInsets.all(8.0),
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  child: Text(
+                    'loi ${errorMessage}',
+                    style: TextStyle(fontSize: 18.0, color: Colors.white),
+                  ))),
+        );
       }
     }
   }
@@ -75,7 +139,7 @@ class _LoginscreenState extends State<Loginscreen> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Homepage();
+              return Homescreens();
             }
             return Stack(
               children: [

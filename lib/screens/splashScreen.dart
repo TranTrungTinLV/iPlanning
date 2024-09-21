@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:iplanning/screens/HomePage.dart';
+import 'package:iplanning/screens/homeScreens.dart';
 import 'package:iplanning/screens/welcomeScreen.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           final user = FirebaseAuth.instance.currentUser;
-          return user != null ? Homepage() : Welcomescreen();
+          return user != null ? Homescreens() : Welcomescreen();
         },
       ));
     });

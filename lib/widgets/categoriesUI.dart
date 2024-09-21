@@ -16,16 +16,12 @@ class CategoriesUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 43, horizontal: 11),
+      margin: EdgeInsets.symmetric(horizontal: 11),
       height: 42,
       width: 100,
-      padding: EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 10.0,
-      ),
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.4),
+          color: Colors.black.withOpacity(0.3),
           blurRadius: 10.0,
           spreadRadius: 2.0,
         )

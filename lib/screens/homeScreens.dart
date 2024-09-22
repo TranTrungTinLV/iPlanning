@@ -36,18 +36,10 @@ class _HomescreensState extends State<Homescreens> {
           children: [
             DrawerHeader(
                 padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Theme.of(context).colorScheme.primaryContainer,
-                    Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .withOpacity(0.8)
-                  ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                ),
+                decoration: BoxDecoration(),
                 child: TextButton(
                   onPressed: () {
-                    print("Đăng nhập");
+                    // print("Đăng nhập");
                   },
                   child: ListTile(
                     onTap: () {
@@ -88,7 +80,7 @@ class _HomescreensState extends State<Homescreens> {
                 padding: EdgeInsets.only(left: 20),
                 child: Row(children: [
                   Icon(
-                    Icons.person,
+                    Icons.event_sharp,
                     size: 30,
                   ),
                   SizedBox(
@@ -278,6 +270,7 @@ class _HomescreensState extends State<Homescreens> {
                                     print('See all');
                                   },
                                   child: Container(
+                                    margin: EdgeInsets.only(bottom: 10.0),
                                     child: Text(
                                       'See alls.',
                                       style: TextStyle(fontSize: 14.0),
@@ -373,9 +366,6 @@ class _HomescreensState extends State<Homescreens> {
                                       ),
                                     ),
                                   ),
-                                  // SizedBox(
-                                  //   width: 500,
-                                  // )
                                 ],
                               ),
                             ),
@@ -383,7 +373,7 @@ class _HomescreensState extends State<Homescreens> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
-                          )
+                          ),
                         ],
                       ),
                     ),

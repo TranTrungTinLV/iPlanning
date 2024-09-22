@@ -13,13 +13,15 @@ class SearchAndFilterRow extends StatelessWidget {
             autocorrect: false,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
+              prefixIconColor: Colors.white,
+              border: InputBorder.none,
               hintText: 'Search...',
-              hintStyle: TextStyle(color: Colors.grey.shade400),
-              filled: true,
-              fillColor: Colors.white,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 15), // Căn giữa văn bản
+
+              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 23),
+              // filled: true,
+              fillColor: Colors.transparent,
             ),
           ),
         ),

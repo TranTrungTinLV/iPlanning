@@ -2,8 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class EditScreen extends StatefulWidget {
-  const EditScreen({super.key});
-
+  EditScreen(
+      {super.key,
+      required this.enteremail,
+      this.fisrtName,
+      this.lastName,
+      this.phoneNumber,
+      this.country,
+      required this.avatarEdit});
+  final String enteremail;
+  String? fisrtName;
+  String? lastName;
+  String avatarEdit;
+  String? phoneNumber;
+  String? country;
   @override
   State<EditScreen> createState() => _EditScreenState();
 }
@@ -49,8 +61,10 @@ class _EditScreenState extends State<EditScreen> {
                     color: Colors.black54,
                     image: DecorationImage(
                       opacity: 0.7,
-                      image: NetworkImage(
-                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+                      image: widget.avatarEdit != null
+                          ? NetworkImage(widget.avatarEdit)
+                          : NetworkImage(
+                              'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
                       fit: BoxFit.cover,
                     )),
               ),
@@ -64,7 +78,7 @@ class _EditScreenState extends State<EditScreen> {
                       Expanded(
                           child: Container(
                               child: TextFieldCustom(
-                        title: 'First Name',
+                        title: widget.fisrtName!,
                       ))), //first Name
                       SizedBox(
                         width: 15,
@@ -72,7 +86,7 @@ class _EditScreenState extends State<EditScreen> {
                       Expanded(
                           child: Container(
                               child: TextFieldCustom(
-                        title: 'Last Name',
+                        title: widget.lastName!,
                         keyboardType: TextInputType.name,
                       ))), // LastName
                     ],
@@ -80,21 +94,31 @@ class _EditScreenState extends State<EditScreen> {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 30.0),
                     child: TextFieldCustom(
-                      title: 'Email',
+                      title: widget.enteremail,
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ), //Email
                   Container(
-                    margin: EdgeInsets.only(bottom: 30.0),
-                    child: TextFieldCustom(
-                      title: 'Country',
-                      keyboardType: TextInputType.name,
-                    ),
-                  ), //country
-                  TextFieldCustom(
-                    title: 'Phone Number',
-                    keyboardType: TextInputType.number,
-                  ) //phone number
+                    margin: EdgeInsets.only(bottom: 30),
+                    child: widget.country != null
+                        ? TextFieldCustom(
+                            title: widget.country!,
+                            keyboardType: TextInputType.number,
+                          )
+                        : TextFieldCustom(
+                            title: 'Country',
+                            keyboardType: TextInputType.number,
+                          ), //country,
+                  ),
+                  widget.phoneNumber != null
+                      ? TextFieldCustom(
+                          title: widget.phoneNumber!,
+                          keyboardType: TextInputType.number,
+                        )
+                      : TextFieldCustom(
+                          title: 'Phone Number',
+                          keyboardType: TextInputType.number,
+                        ) //phone number
                 ],
               ),
             ),

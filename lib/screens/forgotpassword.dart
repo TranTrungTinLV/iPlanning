@@ -29,6 +29,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
 
         AuthStatus ForgotStatus =
             await _authService.forgotPassword(email: _enteremail);
+
         if (ForgotStatus != AuthStatus.successful) {
           String errorMessage =
               AuthExceptionHandler.generateErrorMessage(ForgotStatus);

@@ -2,13 +2,16 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
+import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/profileScreen.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/categoriesUI.dart';
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
+import 'package:iplanning/widgets/signup.dart';
 import 'package:iplanning/widgets/topSection.dart';
 
 class Homescreens extends StatefulWidget {
@@ -26,183 +29,251 @@ class _HomescreensState extends State<Homescreens> {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaOjCZSoaBhZyODYeQMDCOTICHfz_tia5ay8I_k3k&s'
   ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  UserModel? _userData;
+  final _authService = AuthenticationService();
+  bool _isLoading = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    UserModel? userData = await _authService.getUserData();
+    if (mounted) {
+      setState(() {
+        _userData = userData;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(),
-                child: TextButton(
-                  onPressed: () {
-                    // print("Đăng nhập");
-                  },
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (ctx) => ProfileScreen()));
-                    },
-                    title: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30.0,
-                          backgroundImage: NetworkImage(
-                              'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+      drawer: _userData == null
+          ? CircularProgressIndicator()
+          : Drawer(
+              child: Column(
+                children: [
+                  DrawerHeader(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => ProfileScreen(
+                                          enteredemail: _userData!.email,
+                                          username: _userData!.name,
+                                          avatarEdit:
+                                              _userData!.avatars as String,
+                                          country: _userData!.country,
+                                          phoneNumber: _userData!.phone,
+                                        )));
+                          },
+                          title: Row(
+                            children: [
+                              _userData?.avatars != null
+                                  ? CircleAvatar(
+                                      radius: 30.0,
+                                      backgroundImage: NetworkImage(
+                                          _userData!.avatars as String),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 30.0,
+                                      backgroundColor: Colors.grey,
+                                      child: Icon(Icons.person,
+                                          color: Colors.white), // Default icon
+                                    ),
+                              SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _userData!.name,
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    _userData!.email,
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )),
+                  ListTile(
+                    title: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Row(children: [
+                        Icon(
+                          Icons.event_sharp,
+                          size: 30,
                         ),
                         SizedBox(
-                          width: 20.0,
+                          width: 20,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Tín Trần",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              "trantintin1989@gmail.com",
-                              style: TextStyle(fontSize: 10),
-                            ),
-                          ],
-                        )
-                      ],
+                        Text(
+                          'Create Events',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ]),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => CreateEventScreens()));
+                    },
                   ),
-                )),
-            ListTile(
-              title: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(children: [
-                  Icon(
-                    Icons.event_sharp,
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    'Create Events',
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground,
-                          fontSize: 18,
+                  ListTile(
+                    title: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Row(children: [
+                        Icon(
+                          Icons.person,
+                          size: 30,
                         ),
-                  ),
-                ]),
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (ctx) => CreateEventScreens()));
-              },
-            ),
-            ListTile(
-              title: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(children: [
-                  Icon(
-                    Icons.person,
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    'Profile',
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground,
-                          fontSize: 18,
+                        SizedBox(
+                          width: 20,
                         ),
-                  ),
-                ]),
-              ),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (ctx) => ProfileScreen()));
-              },
-            ),
-            ListTile(
-              title: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(children: [
-                  Icon(
-                    Icons.chat_bubble,
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    'Gemini',
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground,
-                          fontSize: 18,
+                        Text(
+                          'Profile',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 18,
+                              ),
                         ),
-                  ),
-                ]),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.send,
-                      size: 30,
+                      ]),
                     ),
-                    SizedBox(
-                      width: 20,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => ProfileScreen(
+                                    enteredemail: _userData!.email,
+                                    username: _userData!.name,
+                                    avatarEdit: _userData!.avatars as String,
+                                    country: _userData!.country,
+                                    phoneNumber: _userData!.phone,
+                                  )));
+                    },
+                  ),
+                  ListTile(
+                    title: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Row(children: [
+                        Icon(
+                          Icons.chat_bubble,
+                          size: 30,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'Gemini',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ]),
                     ),
-                    Text(
-                      'Gửi Phản Hồi',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground,
-                            fontSize: 18,
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.send,
+                            size: 30,
                           ),
-                    ),
-                  ],
-                ),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      size: 30,
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      'Đăng xuất',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground,
-                            fontSize: 18,
+                          SizedBox(
+                            width: 20,
                           ),
+                          Text(
+                            'Gửi Phản Hồi',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  fontSize: 18,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            size: 30,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            'Đăng xuất',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  fontSize: 18,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => Loginscreen()),
+                      );
+                    },
+                  )
+                ],
               ),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const Loginscreen()),
-                );
-              },
-            )
-          ],
-        ),
-      ),
+            ),
       body: Stack(
         children: [
           Container(
@@ -210,7 +281,7 @@ class _HomescreensState extends State<Homescreens> {
                 color: Color(0xff4A43EC),
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(50))),
-            height: 240,
+            height: MediaQuery.of(context).size.height * 0.27,
           ),
           CustomScrollView(
             slivers: [
@@ -300,8 +371,8 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: 30, horizontal: 25),
-                            padding: EdgeInsets.all(16),
+                                vertical: 30, horizontal: 16),
+                            padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
                                 color: Color(0xffD6FEFF),
                                 borderRadius: BorderRadius.circular(10)),

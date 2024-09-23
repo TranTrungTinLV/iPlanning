@@ -14,7 +14,7 @@ class _TopSectionState extends State<TopSection> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 25),
-      padding: const EdgeInsets.only(top: 50),
+      padding: const EdgeInsets.only(top: 30),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/screens/editScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
+  const ProfileScreen(
+      {super.key,
+      required this.enteredemail,
+      required this.username,
+      required this.avatarEdit,
+      this.phoneNumber,
+      this.country});
+  final String enteredemail;
+  final String username;
+  final String? avatarEdit;
+  final String? phoneNumber;
+  final String? country;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,18 +28,28 @@ class ProfileScreen extends StatelessWidget {
               margin: EdgeInsets.only(top: 10),
               child: CircleAvatar(
                 radius: 60.0,
-                backgroundImage: NetworkImage(
-                    'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+                backgroundImage: avatarEdit != null
+                    ? NetworkImage(avatarEdit!)
+                    : NetworkImage(
+                        'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
               ),
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 20),
-              child: Text('Profile Name'),
+              child: Text(username),
             ),
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const EditScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => EditScreen(
+                            enteremail: enteredemail,
+                            fisrtName: username.substring(0, 2),
+                            lastName: username.substring(username.length - 1),
+                            avatarEdit: avatarEdit!,
+                            phoneNumber: phoneNumber,
+                            country: country,
+                          )),
                 );
               },
               child: Container(

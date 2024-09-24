@@ -54,7 +54,7 @@ class _HomescreensState extends State<Homescreens> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: _userData == null
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : Drawer(
               child: Column(
                 children: [
@@ -71,19 +71,19 @@ class _HomescreensState extends State<Homescreens> {
                                     builder: (ctx) => ProfileScreen(
                                           enteredemail: _userData!.email,
                                           username: _userData!.name,
-                                          avatarEdit:
-                                              _userData!.avatars as String,
+                                          avatarEdit: _userData!.displayAvatar,
                                           country: _userData!.country,
                                           phoneNumber: _userData!.phone,
+                                          userData: _userData!,
                                         )));
                           },
                           title: Row(
                             children: [
-                              _userData?.avatars != null
+                              _userData?.displayAvatar != null
                                   ? CircleAvatar(
                                       radius: 30.0,
                                       backgroundImage: NetworkImage(
-                                          _userData!.avatars as String),
+                                          _userData!.displayAvatar as String),
                                     )
                                   : CircleAvatar(
                                       radius: 30.0,
@@ -175,10 +175,12 @@ class _HomescreensState extends State<Homescreens> {
                           MaterialPageRoute(
                               builder: (ctx) => ProfileScreen(
                                     enteredemail: _userData!.email,
-                                    username: _userData!.name,
-                                    avatarEdit: _userData!.avatars as String,
+                                    username: FirebaseAuth
+                                        .instance.currentUser!.displayName!,
+                                    avatarEdit: _userData!.displayAvatar,
                                     country: _userData!.country,
                                     phoneNumber: _userData!.phone,
+                                    userData: _userData!,
                                   )));
                     },
                   ),

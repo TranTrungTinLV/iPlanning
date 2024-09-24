@@ -44,7 +44,7 @@ class _LoginscreenState extends State<Loginscreen> {
 
       setState(() {
         _isLoading =
-            true; // Hiển thị loading spinner khi bắt đầu quá trình đăng nhập
+            true; 
       });
       try {
         if (!_isLogin) {

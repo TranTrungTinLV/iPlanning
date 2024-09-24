@@ -25,21 +25,17 @@ class _ImageUserPickerState extends State<ImageUserPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: _pickImage,
-          child: CircleAvatar(
-              foregroundImage:
-                  pickImageFile != null ? FileImage(pickImageFile!) : null,
-              radius: 40,
-              backgroundColor: Colors.grey,
-              child: Icon(
-                Icons.camera_alt,
-                color: Colors.white,
-              )),
-        ),
-      ],
+    return GestureDetector(
+      onTap: _pickImage,
+      child: CircleAvatar(
+          foregroundImage:
+              pickImageFile != null ? FileImage(pickImageFile!) : null,
+          radius: 40,
+          backgroundColor: Colors.grey,
+          child: Icon(
+            Icons.camera_alt,
+            color: Colors.white,
+          )),
     );
   }
 }

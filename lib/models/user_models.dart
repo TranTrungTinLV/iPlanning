@@ -1,12 +1,14 @@
 import 'dart:io';
 
 class UserModel {
-  final String? country;
-  final String email;
-  final String name;
-  final String? phone;
-  final String? avatars;
+  String? country;
+  String email;
+  String name;
+  String? phone;
+  String? avatars;
+  String? newAvatars;
   UserModel({
+    this.newAvatars,
     required this.email,
     required this.name,
     this.country,
@@ -19,6 +21,7 @@ class UserModel {
     return UserModel(
       country: json['country'] as String?,
       avatars: json['avatars'] as String?,
+      newAvatars: json['newAvatars'] as String?,
       email: json['email'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String?,
@@ -33,6 +36,12 @@ class UserModel {
       'name': name,
       'phone': phone,
       'avatars': avatars,
+      'newAvatars': newAvatars,
     };
+  }
+
+  // if newAvatars
+  String? get displayAvatar {
+    return newAvatars ?? avatars;
   }
 }

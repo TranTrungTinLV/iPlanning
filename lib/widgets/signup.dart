@@ -20,6 +20,7 @@ class AuthenticationService {
     String? country,
     String? phoneNumber,
     File? avatars,
+    File? newAvatars,
   }) async {
     AuthStatus _status;
     try {
@@ -31,6 +32,7 @@ class AuthenticationService {
         'name': name,
         'country': country,
         'phone': phoneNumber,
+        'newAvatars': null,
         'avatars': null, // Default value
       };
       // String? imageUrl;
@@ -150,21 +152,21 @@ class AuthenticationService {
     }
   }
 
-  void editUser(
-      {String? phone, String? email, String? country, String? name}) async {
-    String _uid = await user!.uid;
-    Map<String, dynamic> userData = {
-      'email': email,
-      'name': name,
-      'country': country,
-      'phone': phone,
-      'avatars': null, // Default value
-    };
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_uid)
-          .update(userData);
-    } catch (e) {}
+  Future<void> updateUser(UserModel userModel, {File? newAvatars}) async {
+    String _uid = user!.uid;
+
+    if (newAvatars != null) {
+      final storageRef = await FirebaseStorage.instance
+          .ref()
+          .child('user-image')
+          .child('${user!.uid}.png');
+      await storageRef.putFile(newAvatars);
+      final imageUrl = await storageRef.getDownloadURL();
+      userModel.newAvatars = imageUrl;
+    }
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .update(userModel.toJson());
   }
 }

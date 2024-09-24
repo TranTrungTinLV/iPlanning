@@ -1,19 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/editScreen.dart';
+import 'package:iplanning/widgets/signup.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen(
+class ProfileScreen extends StatefulWidget {
+  UserModel userData;
+
+  ProfileScreen(
       {super.key,
       required this.enteredemail,
       required this.username,
       required this.avatarEdit,
       this.phoneNumber,
-      this.country});
+      this.country,
+      required this.userData});
   final String enteredemail;
   final String username;
   final String? avatarEdit;
   final String? phoneNumber;
   final String? country;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _authService = AuthenticationService();
+  UserModel? _userData;
+  bool? _isLoading;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    UserModel? userData = await _authService.getUserData();
+    if (mounted) {
+      setState(() {
+        _userData = userData;
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,29 +59,43 @@ class ProfileScreen extends StatelessWidget {
               margin: EdgeInsets.only(top: 10),
               child: CircleAvatar(
                 radius: 60.0,
-                backgroundImage: avatarEdit != null
-                    ? NetworkImage(avatarEdit!)
+                backgroundImage: widget.avatarEdit != null
+                    ? NetworkImage(widget.avatarEdit!)
                     : NetworkImage(
                         'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
               ),
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 20),
-              child: Text(username),
+              child: Text(widget.username),
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context)
+                    .pushReplacement(
                   MaterialPageRoute(
                       builder: (context) => EditScreen(
-                            enteremail: enteredemail,
-                            fisrtName: username.substring(0, 2),
-                            lastName: username.substring(username.length - 1),
-                            avatarEdit: avatarEdit!,
-                            phoneNumber: phoneNumber,
-                            country: country,
+                            enteremail: widget.enteredemail,
+                            fisrtName: widget.username.substring(0, 2),
+                            lastName: widget.username
+                                .substring(widget.username.length - 1),
+                            avatarEdit: widget.avatarEdit != null
+                                ? widget.avatarEdit
+                                : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                            phoneNumber: widget.phoneNumber,
+                            country: widget.country,
+                            userData: widget.userData,
+                            // userData: _userData!,
                           )),
-                );
+                )
+                    .then((updatedUser) {
+                  // Cập nhật lại dữ liệu sau khi quay về từ EditScreen
+                  if (updatedUser != null) {
+                    setState(() {
+                      widget.userData = updatedUser; // Cập nhật lại _userData
+                    });
+                  }
+                });
               },
               child: Container(
                 // margin: EdgeInsets.symmetric(vertical: 10),

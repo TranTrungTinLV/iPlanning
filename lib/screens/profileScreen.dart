@@ -76,9 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   MaterialPageRoute(
                       builder: (context) => EditScreen(
                             enteremail: widget.enteredemail,
-                            fisrtName: widget.username.substring(0, 2),
-                            lastName: widget.username
-                                .substring(widget.username.length - 1),
+                            fisrtName: widget.username,
                             avatarEdit: widget.avatarEdit != null
                                 ? widget.avatarEdit
                                 : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',

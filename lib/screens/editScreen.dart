@@ -13,7 +13,7 @@ class EditScreen extends StatefulWidget {
       {super.key,
       required this.enteremail,
       this.fisrtName,
-      this.lastName,
+      // this.lastName,
       this.phoneNumber,
       this.country,
       // required this.onSave,
@@ -21,7 +21,7 @@ class EditScreen extends StatefulWidget {
       required this.userData});
   final String enteremail;
   String? fisrtName;
-  String? lastName;
+  // String? lastName;
   String? avatarEdit;
   String? phoneNumber;
   String? country;

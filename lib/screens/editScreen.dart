@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
-import 'package:iplanning/widgets/signup.dart';
+import 'package:iplanning/services/auth.dart';
 
 class EditScreen extends StatefulWidget {
   UserModel userData;
@@ -167,12 +167,12 @@ class _EditScreenState extends State<EditScreen> {
                         ? TextFieldCustom(
                             controller: _countryController,
                             title: widget.country!,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                           )
                         : TextFieldCustom(
                             controller: _countryController,
                             title: 'Country',
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                           ), //country,
                   ),
                   widget.phoneNumber != null

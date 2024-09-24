@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/editScreen.dart';
-import 'package:iplanning/widgets/signup.dart';
+import 'package:iplanning/services/auth.dart';
 
 class ProfileScreen extends StatefulWidget {
   UserModel userData;

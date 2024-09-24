@@ -11,7 +11,7 @@ import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/categoriesUI.dart';
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
-import 'package:iplanning/widgets/signup.dart';
+import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/topSection.dart';
 
 class Homescreens extends StatefulWidget {

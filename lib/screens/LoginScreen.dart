@@ -11,7 +11,7 @@ import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/button.dart';
-import 'package:iplanning/widgets/signup.dart';
+import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/textForm.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 

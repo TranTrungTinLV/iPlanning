@@ -43,8 +43,8 @@ class _EditScreenState extends State<EditScreen> {
     // TODO: implement initState
     _nameController = TextEditingController(text: widget.fisrtName);
     _emailController = TextEditingController(text: widget.enteremail);
-    _phoneController = TextEditingController(text: widget.phoneNumber ?? '');
-    _countryController = TextEditingController(text: widget.country ?? '');
+    _phoneController = TextEditingController(text: widget.phoneNumber);
+    _countryController = TextEditingController(text: widget.country);
   }
 
   Future<void> _handleSave() async {
@@ -53,8 +53,10 @@ class _EditScreenState extends State<EditScreen> {
     });
     try {
       widget.userData.name = _nameController.text;
-      widget.userData.phone = _phoneController.text;
-      widget.userData.country = _countryController.text;
+      widget.userData.phone =
+          _phoneController.text.isEmpty ? null : _phoneController.text;
+      widget.userData.country =
+          _countryController.text.isEmpty ? null : _countryController.text;
 
       await _authService.updateUser(widget.userData,
           newAvatars: _selectedImage);

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/screens/notification.dart';
 
 class TopBar extends StatefulWidget {
-  TopBar({super.key, required this.drawer});
+  const TopBar({super.key, required this.drawer});
   final void Function() drawer;
   @override
   State<TopBar> createState() => _TopBarState();
@@ -21,8 +21,8 @@ class _TopBarState extends State<TopBar> {
           icon: const Icon(Icons.dashboard, size: 30, color: Colors.white),
           onPressed: widget.drawer,
         ),
-        Column(
-          children: const [
+        const Column(
+          children: [
             Text(
               'Current Location',
               style:
@@ -64,7 +64,7 @@ class _TopBarState extends State<TopBar> {
           ),
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (ctx) => NotificationScreen()));
+                MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
           },
         ),
       ],

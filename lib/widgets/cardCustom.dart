@@ -14,7 +14,7 @@ class CardCustom extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height * 0.4,
-      margin: EdgeInsets.only(right: 10.0),
+      margin: const EdgeInsets.only(right: 10.0),
       child: Card(
         color: Colors.white,
         clipBehavior: Clip.hardEdge,
@@ -32,7 +32,7 @@ class CardCustom extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
+                      image: const DecorationImage(
                           opacity: 0.8,
                           fit: BoxFit.cover,
                           repeat: ImageRepeat.noRepeat,
@@ -44,8 +44,8 @@ class CardCustom extends StatelessWidget {
                   child: Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Text(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: const Text(
                           'International Band Mu...',
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
@@ -53,14 +53,14 @@ class CardCustom extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 30,
                           ),
                           Row(
                             children: [
                               for (int i = 0; i < RandomImages.length; i++)
                                 Container(
-                                  margin: EdgeInsets.symmetric(vertical: 0),
+                                  margin: const EdgeInsets.symmetric(vertical: 0),
                                   child: Align(
                                       widthFactor: 0.5,
                                       child: CircleAvatar(
@@ -77,22 +77,22 @@ class CardCustom extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 20),
-                            child: Text(
+                            margin: const EdgeInsets.only(left: 20),
+                            child: const Text(
                               '+20 Going',
                               style: TextStyle(
                                   color: Color(0xff3F38DD), fontSize: 15),
                             ),
                           ),
-                          SizedBox()
+                          const SizedBox()
                         ],
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  child: Text('36 Guild Street London, UK'),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  child: const Text('36 Guild Street London, UK'),
                 )
               ],
             )
@@ -108,10 +108,10 @@ class CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: const [
+        children: [
           SizedBox(width: 10),
           CategoriesUI(
             icons: Icons.sports,

@@ -16,7 +16,7 @@ class CategoriesUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 11),
+      margin: const EdgeInsets.symmetric(horizontal: 11),
       height: 42,
       width: 100,
       decoration: BoxDecoration(boxShadow: [
@@ -25,7 +25,7 @@ class CategoriesUI extends StatelessWidget {
           blurRadius: 10.0,
           spreadRadius: 2.0,
         )
-      ], color: colour, borderRadius: BorderRadius.all(Radius.circular(15))),
+      ], color: colour, borderRadius: const BorderRadius.all(Radius.circular(15))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,7 +37,7 @@ class CategoriesUI extends StatelessWidget {
                 color: iconColour,
                 size: 25,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Text(

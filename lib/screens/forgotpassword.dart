@@ -17,7 +17,7 @@ class ForgotpasswordScreen extends StatefulWidget {
 
 class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
   var _enteremail = '';
-  var _authService = AuthenticationService();
+  final _authService = AuthenticationService();
   final _formKey = GlobalKey<FormState>();
 
   Future passwordReset() async {
@@ -39,14 +39,14 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                 backgroundColor: Colors.red,
                 elevation: 3.0,
                 content: Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     height: 80.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     child: Text(
-                      '${errorMessage}',
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      errorMessage,
+                      style: const TextStyle(fontSize: 18.0, color: Colors.white),
                     ))),
           );
           return;
@@ -54,7 +54,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
         showDialog(
           context: context,
           builder: (ctx) {
-            return AlertDialog(
+            return const AlertDialog(
               content: Text('Please reset link sent! Check your email'),
             );
           },
@@ -86,8 +86,8 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  padding: EdgeInsets.symmetric(horizontal: 28),
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -116,14 +116,14 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                 ),
                 Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Column(
                       children: [
                         ButtonAuth(
-                          colour: Color(0xffEDE5E5),
-                          backgroundColour: Color(0xff54BA64),
+                          colour: const Color(0xffEDE5E5),
+                          backgroundColour: const Color(0xff54BA64),
                           textColour: Colors.white,
                           onTap: passwordReset,
                           title: 'Reset Password',

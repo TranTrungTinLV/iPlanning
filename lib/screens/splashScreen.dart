@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           final user = FirebaseAuth.instance.currentUser;
-          return user != null ? Homescreens() : Welcomescreen();
+          return user != null ? const Homescreens() : const Welcomescreen();
         },
       ));
     });
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     stops: [0, 0, 0, 0.27],
                     colors: [
@@ -60,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Color(0xffECACAD)
                     ],
                   ),
-                  borderRadius: const BorderRadius.vertical(
+                  borderRadius: BorderRadius.vertical(
                       bottom: Radius.elliptical(300, 300))),
               height: 130,
               width: double.infinity,
@@ -75,8 +75,8 @@ class _SplashScreenState extends State<SplashScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
                             topRight: Radius.elliptical(400, 400)),
                         gradient: LinearGradient(
                           stops: [0, 0.27, 0.57, 0.81, 1],
@@ -93,8 +93,8 @@ class _SplashScreenState extends State<SplashScreen>
                       height: 140,
                     ),
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
                             topLeft: Radius.elliptical(400, 400)),
                         gradient: LinearGradient(
                           stops: [0, 0.27, 0.57, 0.81, 1],
@@ -122,8 +122,8 @@ class _SplashScreenState extends State<SplashScreen>
           Center(
             child: GradientText(
               'iPlanning',
-              colors: [Color(0xff5669FF), Color(0xff00F8FF)],
-              style: TextStyle(fontSize: 48.0, fontFamily: 'Italiana'),
+              colors: const [Color(0xff5669FF), Color(0xff00F8FF)],
+              style: const TextStyle(fontSize: 48.0, fontFamily: 'Italiana'),
             ),
           ),
         ],

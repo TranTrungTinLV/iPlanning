@@ -33,7 +33,7 @@ class TextForm extends StatelessWidget {
           obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon: Icon(icon),
-            border: OutlineInputBorder(
+            border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             hintText: title,
             hintStyle: TextStyle(color: Colors.grey.shade400),
@@ -43,7 +43,7 @@ class TextForm extends StatelessWidget {
           ),
           onSaved: onSaved,
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         )
       ],

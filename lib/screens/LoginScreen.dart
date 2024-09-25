@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/screens/homeScreens.dart';
 import 'package:iplanning/screens/forgotpassword.dart';
 import 'package:iplanning/screens/loading_manager.dart';
@@ -18,7 +19,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 final _firebase = FirebaseAuth.instance;
 
 class Loginscreen extends StatefulWidget {
-  Loginscreen({super.key});
+  const Loginscreen({super.key});
 
   @override
   State<Loginscreen> createState() => _LoginscreenState();
@@ -33,18 +34,17 @@ class _LoginscreenState extends State<Loginscreen> {
   var _isLoading = false;
   var agreePersonalData = false;
   var _repeatpasword = '';
-  File? _selectedImage;
+  // File? _selectedImage;
   final _authService = AuthenticationService();
   void _onsubmit() async {
     final isValid = _formKey.currentState!.validate();
 
     if (isValid) {
       _formKey.currentState!.save();
-      print("_selectedImage ${_selectedImage}");
+      // print("_selectedImage ${_selectedImage}");
 
       setState(() {
-        _isLoading =
-            true; 
+        _isLoading = true;
       });
       try {
         if (!_isLogin) {
@@ -55,7 +55,7 @@ class _LoginscreenState extends State<Loginscreen> {
           if (signInStatus == AuthStatus.successful) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => Homescreens()),
+              MaterialPageRoute(builder: (context) => const Homescreens()),
               (route) => false,
             );
           }
@@ -68,15 +68,15 @@ class _LoginscreenState extends State<Loginscreen> {
                   backgroundColor: Colors.red,
                   elevation: 3.0,
                   content: Container(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       height: 80.0,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.red,
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0))),
                       child: Text(
-                        '${errorMessage}',
-                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        errorMessage,
+                        style: const TextStyle(fontSize: 18.0, color: Colors.white),
                       ))),
             );
             return;
@@ -87,12 +87,13 @@ class _LoginscreenState extends State<Loginscreen> {
             email: _enteremail,
             password: _enterpassword,
             name: _enterusername,
-            avatars: _selectedImage,
+            // avatars: _selectedImage!,
+            // uid: authInstance.currentUser!.uid,
           );
           if (signUpStatus == AuthStatus.successful) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => Homescreens()),
+              MaterialPageRoute(builder: (context) => const Homescreens()),
               (route) => false,
             );
           }
@@ -105,15 +106,15 @@ class _LoginscreenState extends State<Loginscreen> {
                   backgroundColor: Colors.red,
                   elevation: 3.0,
                   content: Container(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       height: 80.0,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.red,
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0))),
                       child: Text(
-                        '${errorMessage}',
-                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        errorMessage,
+                        style: const TextStyle(fontSize: 18.0, color: Colors.white),
                       ))),
             );
 
@@ -133,14 +134,14 @@ class _LoginscreenState extends State<Loginscreen> {
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.transparent,
               content: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   height: 80.0,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   child: Text(
-                    'loi ${errorMessage}',
-                    style: TextStyle(fontSize: 18.0, color: Colors.white),
+                    'loi $errorMessage',
+                    style: const TextStyle(fontSize: 18.0, color: Colors.white),
                   ))),
         );
       } finally {
@@ -164,7 +165,7 @@ class _LoginscreenState extends State<Loginscreen> {
                     Align(
                       alignment: Alignment.topCenter,
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               stops: [0, 0, 0, 0.27],
                               colors: [
@@ -174,7 +175,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                 Color(0xffECACAD)
                               ],
                             ),
-                            borderRadius: const BorderRadius.vertical(
+                            borderRadius: BorderRadius.vertical(
                                 bottom: Radius.elliptical(300, 300))),
                         height: 130,
                         width: double.infinity,
@@ -189,8 +190,8 @@ class _LoginscreenState extends State<Loginscreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
                                       topRight: Radius.elliptical(400, 400)),
                                   gradient: LinearGradient(
                                     stops: [0, 0.27, 0.57, 0.81, 1],
@@ -207,8 +208,8 @@ class _LoginscreenState extends State<Loginscreen> {
                                 height: 140,
                               ),
                               Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
                                       topLeft: Radius.elliptical(400, 400)),
                                   gradient: LinearGradient(
                                     stops: [0, 0.27, 0.57, 0.81, 1],
@@ -238,10 +239,10 @@ class _LoginscreenState extends State<Loginscreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(),
+                          const SizedBox(),
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 24),
-                            padding: EdgeInsets.symmetric(horizontal: 28),
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            padding: const EdgeInsets.symmetric(horizontal: 28),
                             child: Form(
                               key: _formKey,
                               child: Column(
@@ -252,33 +253,33 @@ class _LoginscreenState extends State<Loginscreen> {
                                       : Center(
                                           child: GradientText(
                                             'iPlanning',
-                                            colors: [
+                                            colors: const [
                                               Color(0xff5669FF),
                                               Color(0xff00F8FF)
                                             ],
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 48.0,
                                                 fontFamily: 'Italiana'),
                                           ),
                                         ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 50,
                                   ),
                                   _isLogin
-                                      ? Center(
-                                          child: ImageUserPicker(
-                                            onPickImage: (File pickedImage) {
-                                              _selectedImage = pickedImage;
-                                            },
-                                          ),
-                                        ) //phần của đăng ký
-                                      : Text(
+                                      ? const Center(
+                                          // child: ImageUserPicker(
+                                          //   onPickImage: (File pickedImage) {
+                                          //     _selectedImage = pickedImage;
+                                          //   },
+                                          // ),
+                                          ) //phần của đăng ký
+                                      : const Text(
                                           'Login',
                                           style: TextStyle(
                                             fontSize: 24.0,
                                           ),
                                         ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 30,
                                   ),
                                   _isLogin
@@ -366,7 +367,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Container(
+                                                  SizedBox(
                                                     width: 30.0,
                                                     child: Checkbox(
                                                       value: agreePersonalData,
@@ -377,11 +378,11 @@ class _LoginscreenState extends State<Loginscreen> {
                                                         });
                                                       },
                                                       activeColor:
-                                                          Color(0xff5669FF),
+                                                          const Color(0xff5669FF),
                                                     ),
                                                   ),
                                                   GestureDetector(
-                                                    child: Text(
+                                                    child: const Text(
                                                       'Remember Me',
                                                       style: TextStyle(
                                                           color:
@@ -397,9 +398,9 @@ class _LoginscreenState extends State<Loginscreen> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (ctx) =>
-                                                              ForgotpasswordScreen()));
+                                                              const ForgotpasswordScreen()));
                                                 },
-                                                child: Text(
+                                                child: const Text(
                                                   'Remember Me',
                                                   style: TextStyle(
                                                       color: Color(0xff120D26),
@@ -417,32 +418,32 @@ class _LoginscreenState extends State<Loginscreen> {
                           ),
                           Column(
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 30,
                               ),
                               ButtonAuth(
                                 colour: Colors.transparent,
-                                backgroundColour: Color(0xff54BA64),
+                                backgroundColour: const Color(0xff54BA64),
                                 textColour: Colors.white,
                                 onTap: _onsubmit,
                                 title: 'Login',
                                 title2: 'Register',
                                 isCheck: _isLogin,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
-                              Text(
+                              const Text(
                                 'OR',
                                 style: TextStyle(color: Colors.black),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 42,
                               ),
                               Column(
                                 children: [
                                   ButtonAuth(
-                                    colour: Color(0xffEDE5E5),
+                                    colour: const Color(0xffEDE5E5),
                                     backgroundColour: Colors.white,
                                     textColour: Colors.black,
                                     onTap: () {},
@@ -451,11 +452,11 @@ class _LoginscreenState extends State<Loginscreen> {
                                     title2: 'Register with Google',
                                     isCheck: _isLogin,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   ButtonAuth(
-                                    colour: Color(0xffEDE5E5),
+                                    colour: const Color(0xffEDE5E5),
                                     backgroundColour: Colors.white,
                                     textColour: Colors.black,
                                     onTap: () {},
@@ -464,7 +465,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                     title2: 'Register with Facebook',
                                     isCheck: _isLogin,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 28,
                                   ),
                                   Row(
@@ -476,12 +477,12 @@ class _LoginscreenState extends State<Loginscreen> {
                                         _isLogin
                                             ? 'Nếu bạn có tài khoản thì hãy'
                                             : 'Nếu bạn chưa có tài khoản?',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             //if false => false else true
                                             color: Colors.black,
                                             fontSize: 16),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 5,
                                       ),
                                       GestureDetector(
@@ -494,7 +495,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                               _isLogin
                                                   ? 'Đăng nhập'
                                                   : 'Đăng ký',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Color(0xff1977F3),
                                                   fontSize: 16)))
                                     ],

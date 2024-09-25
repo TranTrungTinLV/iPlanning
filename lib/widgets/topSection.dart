@@ -12,18 +12,20 @@ class TopSection extends StatefulWidget {
 class _TopSectionState extends State<TopSection> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25),
-      padding: const EdgeInsets.only(top: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TopBar(
-            drawer: widget.drawer,
-          ),
-          SizedBox(height: 20),
-          SearchAndFilterRow(),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.only(top: 50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TopBar(
+              drawer: widget.drawer,
+            ),
+            const SizedBox(height: 20),
+            const SearchAndFilterRow(),
+          ],
+        ),
       ),
     );
   }

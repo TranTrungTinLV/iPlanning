@@ -34,7 +34,7 @@ class _EditScreenState extends State<EditScreen> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _countryController;
-  var _authService = AuthenticationService();
+  final _authService = AuthenticationService();
   File? _selectedImage;
 
   bool _isLoading = false;
@@ -79,19 +79,19 @@ class _EditScreenState extends State<EditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profile'),
         actions: [
           GestureDetector(
               onTap: _handleSave,
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 color: Colors.transparent,
-                child: Text(
+                child: const Text(
                   'Save',
                   style: TextStyle(color: Colors.green, fontSize: 18),
                 ),
               )),
-          SizedBox(
+          const SizedBox(
             width: 10,
           )
         ],
@@ -100,7 +100,7 @@ class _EditScreenState extends State<EditScreen> {
         child: Column(
           children: [
             Stack(alignment: Alignment.center, children: [
-              Container(
+              SizedBox(
                 width: 200, // Kích thước mới lớn hơn
                 height: 200,
                 child: ImageUserPicker(
@@ -111,15 +111,10 @@ class _EditScreenState extends State<EditScreen> {
               ),
               IgnorePointer(
                 child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 40.0),
+                  margin: const EdgeInsets.symmetric(vertical: 40.0),
 
                   width: 200, // Kích thước lớn hơn cho icon camera
                   height: 200,
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                    size: 50,
-                  ),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.black54,
@@ -127,15 +122,20 @@ class _EditScreenState extends State<EditScreen> {
                         opacity: 0.7,
                         image: widget.avatarEdit != null
                             ? NetworkImage(widget.avatarEdit!)
-                            : NetworkImage(
+                            : const NetworkImage(
                                 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
                         fit: BoxFit.cover,
                       )),
+                  child: Icon(
+                    Icons.camera_alt,
+                    color: Colors.white,
+                    size: 50,
+                  ),
                 ),
               ),
             ]),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.0),
+              margin: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
                   Row(
@@ -144,7 +144,7 @@ class _EditScreenState extends State<EditScreen> {
                           child: Container(
                               child: TextFieldCustom(
                         controller:
-                            _nameController != null ? _nameController : null,
+                            _nameController,
                         labelText: 'username',
                         title: 'username',
                         keyboardType: TextInputType.name,
@@ -152,17 +152,17 @@ class _EditScreenState extends State<EditScreen> {
                     ],
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 30.0),
+                    margin: const EdgeInsets.symmetric(vertical: 30.0),
                     child: TextFieldCustom(
                       controller:
-                          _emailController != null ? _emailController : null,
+                          _emailController,
                       title: 'email',
                       readonly: true,
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ), //Email
                   Container(
-                    margin: EdgeInsets.only(bottom: 30),
+                    margin: const EdgeInsets.only(bottom: 30),
                     child: widget.country != null
                         ? TextFieldCustom(
                             controller: _countryController,

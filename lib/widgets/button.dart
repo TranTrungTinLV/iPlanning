@@ -26,7 +26,7 @@ class ButtonAuth extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 60),
+        margin: const EdgeInsets.symmetric(horizontal: 60),
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
@@ -44,7 +44,7 @@ class ButtonAuth extends StatelessWidget {
           children: [
             if (icon != null)
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Icon(
                   icon,
                   size: 25,
@@ -59,7 +59,7 @@ class ButtonAuth extends StatelessWidget {
                 fontSize: 16.0,
               ),
             ),
-            if (icon != null) SizedBox(width: 20), // Space for symmetry
+            if (icon != null) const SizedBox(width: 20), // Space for symmetry
           ],
         ),
       ),

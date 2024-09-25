@@ -54,13 +54,13 @@ class _HomescreensState extends State<Homescreens> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: _userData == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Drawer(
               child: Column(
                 children: [
                   DrawerHeader(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(),
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(),
                       child: TextButton(
                         onPressed: () {},
                         child: ListTile(
@@ -85,13 +85,13 @@ class _HomescreensState extends State<Homescreens> {
                                       backgroundImage: NetworkImage(
                                           _userData!.displayAvatar as String),
                                     )
-                                  : CircleAvatar(
+                                  : const CircleAvatar(
                                       radius: 30.0,
                                       backgroundColor: Colors.grey,
                                       child: Icon(Icons.person,
                                           color: Colors.white), // Default icon
                                     ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20.0,
                               ),
                               Column(
@@ -100,13 +100,13 @@ class _HomescreensState extends State<Homescreens> {
                                 children: [
                                   Text(
                                     _userData!.name,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Text(
                                     _userData!.email,
-                                    style: TextStyle(fontSize: 10),
+                                    style: const TextStyle(fontSize: 10),
                                   ),
                                 ],
                               )
@@ -116,13 +116,13 @@ class _HomescreensState extends State<Homescreens> {
                       )),
                   ListTile(
                     title: Container(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(children: [
-                        Icon(
+                        const Icon(
                           Icons.event_sharp,
                           size: 30,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Text(
@@ -131,8 +131,7 @@ class _HomescreensState extends State<Homescreens> {
                               .textTheme
                               .titleSmall!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                               ),
                         ),
@@ -142,18 +141,18 @@ class _HomescreensState extends State<Homescreens> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (ctx) => CreateEventScreens()));
+                              builder: (ctx) => const CreateEventScreens()));
                     },
                   ),
                   ListTile(
                     title: Container(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(children: [
-                        Icon(
+                        const Icon(
                           Icons.person,
                           size: 30,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Text(
@@ -162,8 +161,7 @@ class _HomescreensState extends State<Homescreens> {
                               .textTheme
                               .titleSmall!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                               ),
                         ),
@@ -186,13 +184,13 @@ class _HomescreensState extends State<Homescreens> {
                   ),
                   ListTile(
                     title: Container(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(children: [
-                        Icon(
+                        const Icon(
                           Icons.chat_bubble,
                           size: 30,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Text(
@@ -201,8 +199,7 @@ class _HomescreensState extends State<Homescreens> {
                               .textTheme
                               .titleSmall!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontSize: 18,
                               ),
                         ),
@@ -212,14 +209,14 @@ class _HomescreensState extends State<Homescreens> {
                   ),
                   ListTile(
                     title: Container(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.send,
                             size: 30,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                           ),
                           Text(
@@ -228,9 +225,8 @@ class _HomescreensState extends State<Homescreens> {
                                 .textTheme
                                 .titleSmall!
                                 .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontSize: 18,
                                 ),
                           ),
@@ -241,14 +237,14 @@ class _HomescreensState extends State<Homescreens> {
                   ),
                   ListTile(
                     title: Container(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.logout,
                             size: 30,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                           ),
                           Text(
@@ -257,9 +253,8 @@ class _HomescreensState extends State<Homescreens> {
                                 .textTheme
                                 .titleSmall!
                                 .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontSize: 18,
                                 ),
                           ),
@@ -279,11 +274,13 @@ class _HomescreensState extends State<Homescreens> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Color(0xff4A43EC),
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(50))),
-            height: MediaQuery.of(context).size.height * 0.27,
+            height: MediaQuery.of(context).size.height < 600
+                ? MediaQuery.of(context).size.height * 0.24
+                : MediaQuery.of(context).size.height * 0.27,
           ),
           CustomScrollView(
             slivers: [
@@ -292,11 +289,11 @@ class _HomescreensState extends State<Homescreens> {
                 pinned: true,
                 expandedHeight: 150.0,
                 elevation: 0,
-                backgroundColor: const Color(0xff4A43EC),
+                backgroundColor: Color(0xff4A43EC),
                 flexibleSpace: LayoutBuilder(builder: (context, constraints) {
                   return FlexibleSpaceBar(
                       title: AnimatedOpacity(
-                        duration: Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 200),
                         opacity: constraints.biggest.height < 120 ? 1 : 0,
                       ),
                       background: TopSection(
@@ -317,7 +314,7 @@ class _HomescreensState extends State<Homescreens> {
                       decoration: BoxDecoration(
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
-                      child: CategoriesSection(),
+                      child: const CategoriesSection(),
                     ),
                     Container(
                       color: Colors.white,
@@ -325,15 +322,15 @@ class _HomescreensState extends State<Homescreens> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                                 vertical: 23, horizontal: 24),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(bottom: 10.0),
-                                  child: Text(
+                                  margin: const EdgeInsets.only(bottom: 10.0),
+                                  child: const Text(
                                     'Upcoming Events',
                                     style: TextStyle(fontSize: 24.0),
                                   ),
@@ -343,8 +340,8 @@ class _HomescreensState extends State<Homescreens> {
                                     print('See all');
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(bottom: 10.0),
-                                    child: Text(
+                                    margin: const EdgeInsets.only(bottom: 10.0),
+                                    child: const Text(
                                       'See alls.',
                                       style: TextStyle(fontSize: 14.0),
                                     ),
@@ -361,7 +358,7 @@ class _HomescreensState extends State<Homescreens> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 30,
                                   ),
                                   CardCustom(RandomImages: RandomImages),
@@ -372,11 +369,11 @@ class _HomescreensState extends State<Homescreens> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                                 vertical: 30, horizontal: 16),
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                                color: Color(0xffD6FEFF),
+                                color: const Color(0xffD6FEFF),
                                 borderRadius: BorderRadius.circular(10)),
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.2,
@@ -389,13 +386,13 @@ class _HomescreensState extends State<Homescreens> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Invite Your Friend',
                                         style: TextStyle(
                                             fontSize: 24,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      Text(
+                                      const Text(
                                         'Gửi đây 100k',
                                         style: TextStyle(
                                             fontSize: 18,
@@ -403,13 +400,14 @@ class _HomescreensState extends State<Homescreens> {
                                       ),
                                       GestureDetector(
                                         child: Container(
-                                          margin: EdgeInsets.only(top: 15),
+                                          margin:
+                                              const EdgeInsets.only(top: 15),
                                           decoration: BoxDecoration(
-                                              color: Color(0xff00F8FF),
+                                              color: const Color(0xff00F8FF),
                                               borderRadius:
                                                   BorderRadius.circular(5.0)),
-                                          padding: EdgeInsets.all(10),
-                                          child: Text(
+                                          padding: const EdgeInsets.all(10),
+                                          child: const Text(
                                             'Invite',
                                             style: TextStyle(
                                                 fontSize: 15.0,
@@ -430,7 +428,7 @@ class _HomescreensState extends State<Homescreens> {
                                             MediaQuery.of(context).size.width *
                                                 0.45,
                                         // height: 200,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                             image: DecorationImage(
                                           image: AssetImage(
                                               'assets/logo_invite.png'),
@@ -474,7 +472,7 @@ class CardCustom extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height * 0.4,
-      margin: EdgeInsets.only(right: 10.0),
+      margin: const EdgeInsets.only(right: 10.0),
       child: Card(
         color: Colors.white,
         clipBehavior: Clip.hardEdge,
@@ -492,7 +490,7 @@ class CardCustom extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
+                      image: const DecorationImage(
                           opacity: 0.8,
                           fit: BoxFit.cover,
                           repeat: ImageRepeat.noRepeat,
@@ -504,8 +502,8 @@ class CardCustom extends StatelessWidget {
                   child: Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Text(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: const Text(
                           'International Band Mu...',
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
@@ -516,14 +514,15 @@ class CardCustom extends StatelessWidget {
                         //     MainAxisAlignment
                         //         .spaceBetween,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 30,
                           ),
                           Row(
                             children: [
                               for (int i = 0; i < RandomImages.length; i++)
                                 Container(
-                                  margin: EdgeInsets.symmetric(vertical: 0),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 0),
                                   child: Align(
                                       widthFactor: 0.5,
                                       child: CircleAvatar(
@@ -540,22 +539,22 @@ class CardCustom extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 20),
-                            child: Text(
+                            margin: const EdgeInsets.only(left: 20),
+                            child: const Text(
                               '+20 Going',
                               style: TextStyle(
                                   color: Color(0xff3F38DD), fontSize: 15),
                             ),
                           ),
-                          SizedBox()
+                          const SizedBox()
                         ],
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  child: Text('36 Guild Street London, UK'),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  child: const Text('36 Guild Street London, UK'),
                 )
               ],
             )
@@ -571,10 +570,10 @@ class CategoriesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: const [
+        children: [
           SizedBox(width: 10),
           CategoriesUI(
             icons: Icons.sports,

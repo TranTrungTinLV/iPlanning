@@ -21,7 +21,7 @@ class _WelcomescreenState extends State<Welcomescreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     stops: [0, 0, 0, 0.27],
                     colors: [
@@ -31,7 +31,7 @@ class _WelcomescreenState extends State<Welcomescreen> {
                       Color(0xffECACAD)
                     ],
                   ),
-                  borderRadius: const BorderRadius.vertical(
+                  borderRadius: BorderRadius.vertical(
                       bottom: Radius.elliptical(300, 300))),
               height: 130,
               width: double.infinity,
@@ -46,8 +46,8 @@ class _WelcomescreenState extends State<Welcomescreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
                             topRight: Radius.elliptical(400, 400)),
                         gradient: LinearGradient(
                           stops: [0, 0.27, 0.57, 0.81, 1],
@@ -64,8 +64,8 @@ class _WelcomescreenState extends State<Welcomescreen> {
                       height: 140,
                     ),
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
                             topLeft: Radius.elliptical(400, 400)),
                         gradient: LinearGradient(
                           stops: [0, 0.27, 0.57, 0.81, 1],
@@ -94,11 +94,11 @@ class _WelcomescreenState extends State<Welcomescreen> {
               child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(),
+              const SizedBox(),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 24),
-                padding: EdgeInsets.symmetric(horizontal: 28),
-                child: Column(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: const Column(
                   children: [
                     Text(
                       'Welcome to iPlanning',
@@ -119,7 +119,7 @@ class _WelcomescreenState extends State<Welcomescreen> {
               ),
               Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GestureDetector(
@@ -128,18 +128,18 @@ class _WelcomescreenState extends State<Welcomescreen> {
                           MaterialPageRoute(builder: (ctx) => Loginscreen()));
                     },
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 60),
+                      margin: const EdgeInsets.symmetric(horizontal: 60),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
                         color: Colors.white,
                         border: Border.all(
                           strokeAlign: 1.0,
-                          color: Color(0xff54BA64),
+                          color: const Color(0xff54BA64),
                         ),
                       ),
                       height: 50,
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Get Started',
                           style: TextStyle(

@@ -12,7 +12,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customizing'),
+        title: const Text('Customizing'),
       ),
       body: Container(
         // margin: EdgeInsets.symmetric(horizontal: 15.0),
@@ -21,12 +21,12 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsets.all(25.0),
-                  child: Text(
+                  margin: const EdgeInsets.all(25.0),
+                  child: const Text(
                     'Filter',
                     style: TextStyle(fontSize: 25),
                   )),
-              SingleChildScrollView(
+              const SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
@@ -39,7 +39,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Column(
@@ -47,8 +47,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                      margin: EdgeInsets.all(25.0),
-                      child: Text(
+                      margin: const EdgeInsets.all(25.0),
+                      child: const Text(
                         'Time & Date',
                         style: TextStyle(fontSize: 25),
                       )),
@@ -60,18 +60,18 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: Color(0xffE6E6E6), strokeAlign: 1.0)),
-                        margin: EdgeInsets.only(left: 20.0),
-                        padding: EdgeInsets.all(15.0),
-                        child: Text(
+                                color: const Color(0xffE6E6E6), strokeAlign: 1.0)),
+                        margin: const EdgeInsets.only(left: 20.0),
+                        padding: const EdgeInsets.all(15.0),
+                        child: const Text(
                           'Choose from calendar',
                           style:
                               TextStyle(fontSize: 20, color: Color(0xff5669FF)),
                         )),
                   ),
                   Container(
-                      margin: EdgeInsets.all(25.0),
-                      child: Text(
+                      margin: const EdgeInsets.all(25.0),
+                      child: const Text(
                         'Location',
                         style: TextStyle(fontSize: 25),
                       )),
@@ -83,24 +83,24 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: Color(0xffE6E6E6), strokeAlign: 1.0)),
-                        margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                        padding: EdgeInsets.all(15.0),
+                                color: const Color(0xffE6E6E6), strokeAlign: 1.0)),
+                        margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        padding: const EdgeInsets.all(15.0),
                         width: MediaQuery.of(context).size.width,
-                        child: Text(
+                        child: const Text(
                           'Choose location',
                           style:
                               TextStyle(fontSize: 20, color: Color(0xff5669FF)),
                         )),
                   ),
                   Container(
-                    margin: EdgeInsets.all(25.0),
+                    margin: const EdgeInsets.all(25.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                            child: Text(
+                            child: const Text(
                           'Khoảng tiền',
                           style: TextStyle(fontSize: 25),
                         )),
@@ -108,19 +108,19 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(
+                            SizedBox(
                               width: 50,
-                              child: TextField(),
+                              child: const TextField(),
                             ),
                             Container(
                               width: 20,
                               height: 1,
-                              decoration: BoxDecoration(color: Colors.black),
-                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: const BoxDecoration(color: Colors.black),
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
                             ),
-                            Container(
+                            SizedBox(
                               width: 50,
-                              child: TextField(),
+                              child: const TextField(),
                             )
                           ],
                         )
@@ -132,28 +132,28 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                     children: [
                       GestureDetector(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 40),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.blue),
                           width: 130,
-                          child: Text('APPLY'),
+                          child: const Text('APPLY'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       GestureDetector(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 40),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: Color(0xffE5E5E5), strokeAlign: 1.0)),
+                                  color: const Color(0xffE5E5E5), strokeAlign: 1.0)),
                           width: 130,
-                          child: Text(
+                          child: const Text(
                             'RESET',
                             style: TextStyle(color: Colors.black),
                           ),
@@ -183,22 +183,22 @@ class Filter_New_Event extends StatelessWidget {
         print('filter_icon');
       },
       child: Container(
-        margin: EdgeInsets.only(left: 15.0),
+        margin: const EdgeInsets.only(left: 15.0),
         child: Column(
           children: [
             Container(
               width: 63,
               height: 63,
               decoration: BoxDecoration(
-                border: Border.all(color: Color(0xffE5E5E5), strokeAlign: 0.87),
+                border: Border.all(color: const Color(0xffE5E5E5), strokeAlign: 0.87),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.piano,
                 size: 30,
               ),
             ),
-            Text('icons')
+            const Text('icons')
           ],
         ),
       ),

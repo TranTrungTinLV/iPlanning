@@ -17,7 +17,7 @@ class SearchAndFilterRow extends StatelessWidget {
               border: InputBorder.none,
               hintText: 'Search...',
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 15), // Căn giữa văn bản
+                  const EdgeInsets.symmetric(vertical: 15), // Căn giữa văn bản
 
               hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 23),
               // filled: true,
@@ -26,7 +26,7 @@ class SearchAndFilterRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 20),
-        FilterButton(),
+        const FilterButton(),
       ],
     );
   }

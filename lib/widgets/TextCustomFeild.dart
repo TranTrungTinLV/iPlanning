@@ -26,7 +26,7 @@ class TextFieldCustom extends StatelessWidget {
       controller: controller,
       readOnly: readonly,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         hintText: title,
         labelText: title,
       ),

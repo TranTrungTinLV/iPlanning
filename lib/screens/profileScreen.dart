@@ -49,24 +49,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         centerTitle: true,
       ),
       body: Center(
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(top: 10),
+              margin: const EdgeInsets.only(top: 10),
               child: CircleAvatar(
                 radius: 60.0,
                 backgroundImage: widget.avatarEdit != null
                     ? NetworkImage(widget.avatarEdit!)
-                    : NetworkImage(
+                    : const NetworkImage(
                         'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 20),
+              margin: const EdgeInsets.symmetric(vertical: 20),
               child: Text(widget.username),
             ),
             GestureDetector(
@@ -77,9 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context) => EditScreen(
                             enteremail: widget.enteredemail,
                             fisrtName: widget.username,
-                            avatarEdit: widget.avatarEdit != null
-                                ? widget.avatarEdit
-                                : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                            avatarEdit: widget.avatarEdit ?? 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
                             phoneNumber: widget.phoneNumber,
                             country: widget.country,
                             userData: widget.userData,
@@ -97,12 +95,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: Container(
                 // margin: EdgeInsets.symmetric(vertical: 10),
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     border:
-                        Border.all(color: Color(0xff5669FF), strokeAlign: 2.0)),
-                child: Text(
+                        Border.all(color: const Color(0xff5669FF), strokeAlign: 2.0)),
+                child: const Text(
                   'Edit Profile',
                   style: TextStyle(fontSize: 18.0),
                 ),

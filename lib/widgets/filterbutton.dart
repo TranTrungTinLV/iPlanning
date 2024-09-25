@@ -14,7 +14,7 @@ class FilterButton extends StatelessWidget {
           height: 32,
           width: 75,
           // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               // color: Colors.red,
               ),
           child: ClipRect(
@@ -25,7 +25,7 @@ class FilterButton extends StatelessWidget {
                 width: 75,
                 decoration: const BoxDecoration(
                   color: Colors.white10,
-                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
               ),
             ),
@@ -36,11 +36,11 @@ class FilterButton extends StatelessWidget {
             print('filter');
           },
           child: Container(
-            padding: EdgeInsets.all(10),
-            child: Row(
+            padding: const EdgeInsets.all(10),
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(
                   Icons.filter_list,
                   size: 24,

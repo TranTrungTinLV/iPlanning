@@ -17,18 +17,22 @@ class AuthenticationService {
     required String email,
     required String password,
     required String name,
+    // required String uid,
     String? country,
     String? phoneNumber,
     File? avatars,
     File? newAvatars,
   }) async {
-    AuthStatus _status;
+    AuthStatus status;
     try {
       UserCredential userCredentials = await _firebase
           .createUserWithEmailAndPassword(email: email, password: password);
+      String uid = userCredentials.user!.uid;
+
       // Tạo một map để lưu trữ dữ liệu người dùng
       Map<String, dynamic> userData = {
         'email': email,
+        'uid': uid,
         'name': name,
         'country': country,
         'phone': phoneNumber,
@@ -39,7 +43,7 @@ class AuthenticationService {
       if (avatars != null) {
         print(avatars);
 
-        final storageRef = await FirebaseStorage.instance
+        final storageRef = FirebaseStorage.instance
             .ref()
             .child('user-image')
             .child('${userCredentials.user!.uid}.png');
@@ -55,32 +59,32 @@ class AuthenticationService {
           .doc(userCredentials.user!.uid)
           .set(userData); // Lưu dữ liệu bao gồm avatar
 
-      _status = AuthStatus.successful;
+      status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
-      _status = AuthExceptionHandler.handleAuthException(e);
+      status = AuthExceptionHandler.handleAuthException(e);
     }
-    return _status;
+    return status;
   }
 
   Future<AuthStatus> login({
     required String email,
     required String password,
   }) async {
-    AuthStatus _status;
+    AuthStatus status;
     try {
       UserCredential userCredentials = await _firebase
           .signInWithEmailAndPassword(email: email, password: password);
-      _status = AuthStatus.successful;
+      status = AuthStatus.successful;
     } on FirebaseAuthException catch (e) {
-      _status = AuthExceptionHandler.handleAuthException(e);
+      status = AuthExceptionHandler.handleAuthException(e);
     }
-    return _status;
+    return status;
   }
 
   Future<AuthStatus> forgotPassword({
     required String email,
   }) async {
-    AuthStatus _status;
+    AuthStatus status;
     try {
       // Query Firestore to check if the email exists
       QuerySnapshot query = await FirebaseFirestore.instance
@@ -98,7 +102,7 @@ class AuthenticationService {
             backgroundColor: Colors.grey.shade600,
             textColor: Colors.white,
             fontSize: 16.0);
-        _status = AuthStatus.successful;
+        status = AuthStatus.successful;
       } else {
         // If the email does not exist, show an error message
         Fluttertoast.showToast(
@@ -108,12 +112,12 @@ class AuthenticationService {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-        _status = AuthStatus.userNotFound;
+        status = AuthStatus.userNotFound;
       }
     } on FirebaseAuthException catch (e) {
-      _status = AuthExceptionHandler.handleAuthException(e);
+      status = AuthExceptionHandler.handleAuthException(e);
     }
-    return _status;
+    return status;
   }
 
   Future<UserModel?> getUserData() async {
@@ -122,9 +126,9 @@ class AuthenticationService {
         // Handle trường hợp user chưa đăng nhập
         return null;
       }
-      String _uid = await user!.uid;
+      String uid = user!.uid;
       final DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (userDoc.exists) {
         // Sử dụng factory constructor fromJson
@@ -150,13 +154,14 @@ class AuthenticationService {
           fontSize: 16.0);
       return null;
     }
+    return null;
   }
 
   Future<void> updateUser(UserModel userModel, {File? newAvatars}) async {
-    String _uid = user!.uid;
+    String uid = user!.uid;
 
     if (newAvatars != null) {
-      final storageRef = await FirebaseStorage.instance
+      final storageRef = FirebaseStorage.instance
           .ref()
           .child('user-image')
           .child('${user!.uid}.png');
@@ -166,7 +171,7 @@ class AuthenticationService {
     }
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(_uid)
+        .doc(uid)
         .update(userModel.toJson());
   }
 }

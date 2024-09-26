@@ -60,7 +60,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: const Color(0xffE6E6E6), strokeAlign: 1.0)),
+                                color: const Color(0xffE6E6E6),
+                                strokeAlign: 1.0)),
                         margin: const EdgeInsets.only(left: 20.0),
                         padding: const EdgeInsets.all(15.0),
                         child: const Text(
@@ -83,7 +84,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: const Color(0xffE6E6E6), strokeAlign: 1.0)),
+                                color: const Color(0xffE6E6E6),
+                                strokeAlign: 1.0)),
                         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                         padding: const EdgeInsets.all(15.0),
                         width: MediaQuery.of(context).size.width,
@@ -112,16 +114,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               width: 50,
                               child: const TextField(),
                             ),
-                            Container(
-                              width: 20,
-                              height: 1,
-                              decoration: const BoxDecoration(color: Colors.black),
-                              margin: const EdgeInsets.symmetric(horizontal: 10),
-                            ),
-                            SizedBox(
-                              width: 50,
-                              child: const TextField(),
-                            )
                           ],
                         )
                       ],
@@ -151,7 +143,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: const Color(0xffE5E5E5), strokeAlign: 1.0)),
+                                  color: const Color(0xffE5E5E5),
+                                  strokeAlign: 1.0)),
                           width: 130,
                           child: const Text(
                             'RESET',
@@ -190,7 +183,8 @@ class Filter_New_Event extends StatelessWidget {
               width: 63,
               height: 63,
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xffE5E5E5), strokeAlign: 0.87),
+                border: Border.all(
+                    color: const Color(0xffE5E5E5), strokeAlign: 0.87),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

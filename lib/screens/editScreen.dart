@@ -60,7 +60,7 @@ class _EditScreenState extends State<EditScreen> {
 
       await _authService.updateUser(widget.userData,
           newAvatars: _selectedImage);
-      Navigator.pop(context);
+      Navigator.pop(context, widget.userData);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -143,8 +143,7 @@ class _EditScreenState extends State<EditScreen> {
                       Expanded(
                           child: Container(
                               child: TextFieldCustom(
-                        controller:
-                            _nameController,
+                        controller: _nameController,
                         labelText: 'username',
                         title: 'username',
                         keyboardType: TextInputType.name,
@@ -154,8 +153,7 @@ class _EditScreenState extends State<EditScreen> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 30.0),
                     child: TextFieldCustom(
-                      controller:
-                          _emailController,
+                      controller: _emailController,
                       title: 'email',
                       readonly: true,
                       keyboardType: TextInputType.emailAddress,

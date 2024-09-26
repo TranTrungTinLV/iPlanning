@@ -173,8 +173,7 @@ class _HomescreensState extends State<Homescreens> {
                           MaterialPageRoute(
                               builder: (ctx) => ProfileScreen(
                                     enteredemail: _userData!.email,
-                                    username: FirebaseAuth
-                                        .instance.currentUser!.displayName!,
+                                    username: _userData!.name,
                                     avatarEdit: _userData!.displayAvatar,
                                     country: _userData!.country,
                                     phoneNumber: _userData!.phone,

@@ -31,7 +31,7 @@ class ClouMethods {
           createAt: Timestamp.now(),
           eventDateEnd: eventDateEnd,
           eventDateStart: eventDateStart,
-          eventImage: eventImage,
+          eventImage: eventImage, 
           budget: budget,
           users: []);
       await postEvents.doc(eventId).set(eventsPostModel.toJson());

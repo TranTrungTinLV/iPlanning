@@ -53,4 +53,8 @@ class UserModel {
   String? get displayAvatar {
     return newAvatars ?? avatars;
   }
+
+  set addEvent(EventsPostModel event) {
+    eventPostModel!.add(event);
+  }
 }

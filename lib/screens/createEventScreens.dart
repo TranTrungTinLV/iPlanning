@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/Budget.dart';
+import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/mutipleImage.dart';
 
@@ -11,7 +16,13 @@ class CreateEventScreens extends StatefulWidget {
 
 class _CreateEventScreensState extends State<CreateEventScreens> {
   DateTime? _selectedDate;
-  void _presentDatePicker() async {
+  DateTime? _startDate;
+  DateTime? _endDate;
+  List<Uint8List>? fileImage = [];
+  TextEditingController description = TextEditingController();
+  TextEditingController eventName = TextEditingController();
+
+  void _presentDatePicker({required bool isStartDate}) async {
     final now = DateTime.now();
     final firstDate = DateTime(now.day, now.month, now.year - 1);
     final pickedDate = await showDatePicker(
@@ -20,8 +31,29 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
         firstDate: firstDate,
         lastDate: DateTime(2030));
     setState(() {
-      _selectedDate = pickedDate;
+      if (pickedDate != null) {
+        if (isStartDate) {
+          _startDate = pickedDate;
+        } else {
+          _endDate = pickedDate;
+        }
+      }
     });
+  }
+
+  uploadEvent() async {
+    try {
+      String res = await ClouMethods().uploadPost(
+        event_name: eventName.text,
+        eventDateEnd: Timestamp.fromDate(_startDate!),
+        eventDateStart: Timestamp.fromDate(_endDate!),
+        uid: "z3Kq0m6K2NW4sOaeMuEcH2K5kvb2",
+        location: "1333/16 Lê Thị Chợ",
+        description: description.text,
+        eventImages: fileImage!,
+        budget: Budget(1.0, "Note for event", 0.0),
+      );
+    } catch (e) {}
   }
 
   @override
@@ -32,7 +64,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
-        // margin: EdgeInsets.symmetric(horizontal: 10),
         padding: EdgeInsets.only(bottom: 10),
         margin: EdgeInsets.only(
           left: 10,
@@ -49,11 +80,15 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: MutipleImage(),
+                      child: MutipleImage(
+                        images: fileImage!,
+                      ),
                     ),
                     TextFieldCustom(
+                      controller: eventName,
                       title: 'Event Name',
                       radius: 10.0,
                     ),
@@ -63,10 +98,77 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                           title: 'Event Type',
                           radius: 10.0,
                         )),
-                    TextFieldCustom(
-                      keyboardType: TextInputType.datetime,
-                      title: 'Select Date Time',
-                      radius: 10.0,
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        'Date&time',
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: GestureDetector(
+                          onTap: () {
+                            print('start date');
+                            _presentDatePicker(isStartDate: true);
+                          },
+                          child: Container(
+                            width: 150,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            height: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  child: Icon(Icons.calendar_month_outlined),
+                                ),
+                                Container(
+                                    child: Text(_startDate == null
+                                        ? 'Select Start Date'
+                                        : '${_startDate!.toLocal()}'
+                                            .split(' ')[0]))
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(color: Colors.grey)),
+                          ),
+                        )),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                            child: GestureDetector(
+                          onTap: () {
+                            print('end date');
+                            _presentDatePicker(isStartDate: false);
+                          },
+                          child: Container(
+                            width: 150,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            height: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  child: Icon(Icons.calendar_month_outlined),
+                                ),
+                                Container(
+                                    child: Text(_endDate == null
+                                        ? 'Select End Date'
+                                        : '${_endDate!.toLocal()}'
+                                            .split(' ')[0])),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(color: Colors.grey)),
+                          ),
+                        )),
+                      ],
                     ),
                     SizedBox(
                       height: 20,
@@ -77,6 +179,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                       radius: 10.0,
                       maxLine: 10,
                     ),
+                    SizedBox(
+                      height: 20,
+                    )
                   ],
                 ),
               ),
@@ -85,6 +190,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             GestureDetector(
               onTap: () {
                 print('create Events');
+                uploadEvent();
               },
               child: Align(
                 alignment: Alignment.bottomCenter,

@@ -43,7 +43,7 @@ class AuthenticationService {
       if (avatars != null) {
         print(avatars);
 
-        final storageRef = FirebaseStorage.instance
+        final storageRef = storageInstance
             .ref()
             .child('user-image')
             .child('${userCredentials.user!.uid}.png');
@@ -161,10 +161,8 @@ class AuthenticationService {
     String uid = user!.uid;
 
     if (newAvatars != null) {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user-image')
-          .child('${user!.uid}.png');
+      final storageRef =
+          storageInstance.ref().child('user-image').child('${user!.uid}.png');
       await storageRef.putFile(newAvatars);
       final imageUrl = await storageRef.getDownloadURL();
       userModel.newAvatars = imageUrl;

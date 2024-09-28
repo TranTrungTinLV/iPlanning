@@ -56,4 +56,17 @@ class ClouMethods {
     }
     return res;
   }
+
+  Future<List<EventsPostModel>> getAllEventPosts() async {
+    try {
+      QuerySnapshot snapshot = await postEvents.get();
+      List<EventsPostModel> events = snapshot.docs.map((doc) {
+        return EventsPostModel.fromMap(doc.data() as Map<String, dynamic>);
+      }).toList();
+      return events;
+    } catch (e) {
+      print('Failed to get all event posts: $e');
+      return [];
+    }
+  }
 }

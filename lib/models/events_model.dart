@@ -42,11 +42,12 @@ class EventsPostModel {
 
   factory EventsPostModel.fromMap(Map<String, dynamic> json) {
     return EventsPostModel(
-      eventType: json['eventType'] as String?,
+      eventType: json['eventType'] as String,
       profilePic: json['profilePic'] as String,
       username: json['username'] as String,
       event_name: json['event_name'] as String,
-      budget: json['budget'] as Budget,
+      budget: Budget.fromMap(
+          json['budget'] as Map<String, dynamic>), // Convert budget properly
       event_id: json['event_id'] as String,
       description: json['description'] as String?,
       eventImage: json['eventImage'] != null

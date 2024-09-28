@@ -2,12 +2,15 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/profileScreen.dart';
+import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
+import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categoriesUI.dart';
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
@@ -30,13 +33,18 @@ class _HomescreensState extends State<Homescreens> {
   ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
+  EventsPostModel? _eventData;
+  List<EventsPostModel>? _eventPosts;
+
   final _authService = AuthenticationService();
+  final _eventService = ClouMethods();
   bool _isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadUserData();
+    _loadPostEvent();
   }
 
   void _loadUserData() async {
@@ -44,6 +52,16 @@ class _HomescreensState extends State<Homescreens> {
     if (mounted) {
       setState(() {
         _userData = userData;
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _loadPostEvent() async {
+    List<EventsPostModel> events = await _eventService.getAllEventPosts();
+    if (mounted) {
+      setState(() {
+        _eventPosts = events;
         _isLoading = false;
       });
     }
@@ -146,6 +164,36 @@ class _HomescreensState extends State<Homescreens> {
                                     avatar: _userData!.displayAvatar,
                                     username: _userData!.name,
                                   )));
+                    },
+                  ),
+                  ListTile(
+                    title: Container(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Row(children: [
+                        const Icon(
+                          Icons.event_sharp,
+                          size: 30,
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'My Events',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ]),
+                    ),
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(),
+                      // );
                     },
                   ),
                   ListTile(
@@ -360,14 +408,15 @@ class _HomescreensState extends State<Homescreens> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 30,
-                                  ),
-                                  CardCustom(RandomImages: RandomImages),
-                                  CardCustom(RandomImages: RandomImages),
-                                  CardCustom(RandomImages: RandomImages),
-                                ],
+                                children: _eventPosts != null
+                                    ? _eventPosts!.map((event) {
+                                        return CardCustom(
+                                          event: event,
+                                          RandomImages: [],
+                                          uid: _userData!.uid,
+                                        );
+                                      }).toList()
+                                    : [const Text('No Events Available')],
                               ),
                             ),
                           ),
@@ -457,112 +506,6 @@ class _HomescreensState extends State<Homescreens> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CardCustom extends StatelessWidget {
-  const CardCustom({
-    super.key,
-    required this.RandomImages,
-  });
-
-  final List RandomImages;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      height: MediaQuery.of(context).size.height * 0.4,
-      margin: const EdgeInsets.only(right: 10.0),
-      child: Card(
-        color: Colors.white,
-        clipBehavior: Clip.hardEdge,
-        elevation: 2,
-        child: Stack(
-          children: [
-            Column(
-              // mainAxisAlignment:
-              //     MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(10),
-                      image: const DecorationImage(
-                          opacity: 0.8,
-                          fit: BoxFit.cover,
-                          repeat: ImageRepeat.noRepeat,
-                          image: NetworkImage(
-                              'http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcRvC27D9KlxeEham1w-Wpd_pu3hd4A-OywxRbdnx9JFLpcTD7dfL0bD_WI6Ro8QkzrPLkBMzA9osrMpi4JSP5Y'))),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: const Text(
-                          'International Band Mu...',
-                          style: TextStyle(color: Colors.black, fontSize: 20),
-                        ),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        // mainAxisAlignment:
-                        //     MainAxisAlignment
-                        //         .spaceBetween,
-                        children: [
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          Row(
-                            children: [
-                              for (int i = 0; i < RandomImages.length; i++)
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 0),
-                                  child: Align(
-                                      widthFactor: 0.5,
-                                      child: CircleAvatar(
-                                        // radius: 50,
-                                        backgroundColor: Colors.white,
-                                        child: CircleAvatar(
-                                          radius: 60,
-                                          backgroundImage: NetworkImage(
-                                            RandomImages[i],
-                                          ),
-                                        ),
-                                      )),
-                                ),
-                            ],
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 20),
-                            child: const Text(
-                              '+20 Going',
-                              style: TextStyle(
-                                  color: Color(0xff3F38DD), fontSize: 15),
-                            ),
-                          ),
-                          const SizedBox()
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  child: const Text('36 Guild Street London, UK'),
-                )
-              ],
-            )
-          ],
-        ),
       ),
     );
   }

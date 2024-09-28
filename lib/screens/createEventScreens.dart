@@ -8,8 +8,14 @@ import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/mutipleImage.dart';
 
 class CreateEventScreens extends StatefulWidget {
-  const CreateEventScreens({super.key});
-
+  CreateEventScreens(
+      {super.key,
+      required this.uid,
+      required this.username,
+      required this.avatar});
+  final String uid;
+  final String username;
+  final String? avatar;
   @override
   State<CreateEventScreens> createState() => _CreateEventScreensState();
 }
@@ -21,7 +27,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   List<Uint8List>? fileImage = [];
   TextEditingController description = TextEditingController();
   TextEditingController eventName = TextEditingController();
-
+  TextEditingController location = TextEditingController();
+  TextEditingController eventType = TextEditingController();
   void _presentDatePicker({required bool isStartDate}) async {
     final now = DateTime.now();
     final firstDate = DateTime(now.day, now.month, now.year - 1);
@@ -44,11 +51,14 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   uploadEvent() async {
     try {
       String res = await ClouMethods().uploadPost(
+        username: widget.username,
+        profilePic: widget.avatar,
         event_name: eventName.text,
         eventDateEnd: Timestamp.fromDate(_startDate!),
         eventDateStart: Timestamp.fromDate(_endDate!),
-        uid: "z3Kq0m6K2NW4sOaeMuEcH2K5kvb2",
-        location: "1333/16 Lê Thị Chợ",
+        uid: widget.uid,
+        location: location.text,
+        eventType: eventType.text,
         description: description.text,
         eventImages: fileImage!,
         budget: Budget(1.0, "Note for event", 0.0),
@@ -95,6 +105,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                     Container(
                         margin: EdgeInsets.symmetric(vertical: 20),
                         child: TextFieldCustom(
+                          controller: eventType,
                           title: 'Event Type',
                           radius: 10.0,
                         )),
@@ -174,6 +185,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                       height: 20,
                     ),
                     TextFieldCustom(
+                      controller: description,
                       title: 'Events description',
                       minLine: 3,
                       radius: 10.0,

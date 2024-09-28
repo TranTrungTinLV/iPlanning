@@ -141,7 +141,11 @@ class _HomescreensState extends State<Homescreens> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (ctx) => const CreateEventScreens()));
+                              builder: (ctx) => CreateEventScreens(
+                                    uid: _userData!.uid,
+                                    avatar: _userData!.displayAvatar,
+                                    username: _userData!.name,
+                                  )));
                     },
                   ),
                   ListTile(

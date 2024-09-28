@@ -14,7 +14,10 @@ class ClouMethods {
     required String event_name,
     required Timestamp eventDateEnd,
     required Timestamp eventDateStart,
+    String? profilePic,
     String? category_id,
+    String? eventType,
+    required String username,
     required String uid, //user_id
     required String location,
     required List<Uint8List> eventImages,
@@ -31,6 +34,9 @@ class ClouMethods {
         true,
       );
       EventsPostModel eventsPostModel = EventsPostModel(
+          eventType: eventType ?? null,
+          username: username,
+          profilePic: profilePic ?? "",
           event_name: event_name,
           event_id: eventId,
           category_id: category_id,

@@ -14,18 +14,24 @@ class EventsPostModel {
   Timestamp eventDateEnd;
   String uid; //user_id
   String location;
+  String profilePic;
   Timestamp createAt;
   // List inviteEvents;
   String? description;
+  String username;
+  String? eventType;
   // relationship users
   List<UserModel> users;
   Budget budget;
   EventsPostModel(
       {required this.event_name,
+      this.eventType,
       required this.eventImage,
+      required this.profilePic,
       required this.event_id,
       required this.budget,
       this.category_id,
+      required this.username,
       required this.users,
       required this.eventDateEnd,
       required this.eventDateStart,
@@ -36,6 +42,9 @@ class EventsPostModel {
 
   factory EventsPostModel.fromMap(Map<String, dynamic> json) {
     return EventsPostModel(
+      eventType: json['eventType'] as String?,
+      profilePic: json['profilePic'] as String,
+      username: json['username'] as String,
       event_name: json['event_name'] as String,
       budget: json['budget'] as Budget,
       event_id: json['event_id'] as String,
@@ -63,6 +72,9 @@ class EventsPostModel {
   Map<String, dynamic> toJson() {
     return {
       'event_name': event_name,
+      'eventType': eventType,
+      'username': username,
+      'profilePic': profilePic,
       'budget': budget.toJson(),
       'event_id': event_id,
       'eventImage': eventImage,

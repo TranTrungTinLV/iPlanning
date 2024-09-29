@@ -48,6 +48,7 @@ class Details extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Icon(Icons.location_on),
                           Container(
                             child: Text((location != "" && location != null)
                                 ? location
@@ -56,27 +57,36 @@ class Details extends StatelessWidget {
                           SizedBox(
                             width: 20,
                           ),
-                          Container(
-                            child: Text(
-                                "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
-                                    'Start Date'),
+                          Row(
+                            children: [
+                              Icon(Icons.date_range),
+                              Container(
+                                child: Text(
+                                    "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
+                                        'Start Date'),
+                              ),
+                            ],
                           )
                         ],
                       ),
                     ),
                   ],
                 ),
-                GestureDetector(
-                  child: Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        "200.000 VND",
-                        style: TextStyle(fontSize: 18),
-                      )),
-                )
+                isMe
+                    ? Container()
+                    : GestureDetector(
+                        child: Container(
+                            width: 80,
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Text(
+                              "200.000 VND",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 10),
+                            )),
+                      )
               ],
             ),
             Container(

@@ -415,6 +415,7 @@ class _HomescreensState extends State<Homescreens> {
                                           'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
                                       discription: event!.description ??
                                           'không có nội dung ở đây',
+                                      backgroundIMG: event!.eventImage![0],
                                     ),
                                   ),
                                 );

@@ -13,7 +13,8 @@ class Eventdetailscreen extends StatelessWidget {
       required this.location,
       required this.startDate,
       required this.avartar,
-      required this.discription});
+      required this.discription,
+      required this.backgroundIMG});
   final String uid;
   final String titleEvent;
   final String userName;
@@ -21,6 +22,7 @@ class Eventdetailscreen extends StatelessWidget {
   final Timestamp startDate;
   final String avartar;
   final String discription;
+  final String backgroundIMG;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,11 +34,11 @@ class Eventdetailscreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.5,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/event.png'),
+                      image: NetworkImage(backgroundIMG) ??
+                          AssetImage('assets/event.png'),
                       repeat: ImageRepeat.repeatX,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
-                      // opacity: 0.9,
                     ),
                     gradient: LinearGradient(
                         colors: [Colors.black45, Colors.black45]))),

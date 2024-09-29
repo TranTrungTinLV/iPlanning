@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/EventDetailScreen.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
 import 'package:iplanning/screens/loading_manager.dart';
@@ -189,12 +190,7 @@ class _HomescreensState extends State<Homescreens> {
                         ),
                       ]),
                     ),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(),
-                      // );
-                    },
+                    onTap: () {},
                   ),
                   ListTile(
                     title: Container(
@@ -360,8 +356,6 @@ class _HomescreensState extends State<Homescreens> {
                   children: [
                     Container(
                       height: 80,
-                      // width: MediaQuery.of(context).size.width * 0.9,
-                      // margin: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
@@ -403,7 +397,10 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              print('Card event upcoming');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctx) => Eventdetailscreen()));
                             },
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,

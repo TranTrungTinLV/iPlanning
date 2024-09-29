@@ -1,12 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 
 class Details extends StatelessWidget {
-  const Details({
-    super.key,
-  });
-
+  Details(
+      {super.key,
+      required this.uid,
+      required this.titleEvent,
+      required this.userName,
+      required this.location,
+      required this.startDate,
+      required this.avartar,
+      required this.discription});
+  final String uid;
+  final String titleEvent;
+  final String userName;
+  final String location;
+  final String avartar;
+  final Timestamp startDate;
+  final String discription;
   @override
   Widget build(BuildContext context) {
+    var isMe = authInstance.currentUser!.uid == uid;
     return Container(
       height: MediaQuery.of(context).size.height * 0.55,
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 80),
@@ -24,7 +39,7 @@ class Details extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        'Event Name',
+                        titleEvent ?? 'Event Name',
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
@@ -34,13 +49,17 @@ class Details extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            child: Text('Location'),
+                            child: Text((location != "" && location != null)
+                                ? location
+                                : 'Đang cập nhật'),
                           ),
                           SizedBox(
                             width: 20,
                           ),
                           Container(
-                            child: Text('Start Date'),
+                            child: Text(
+                                "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
+                                    'Start Date'),
                           )
                         ],
                       ),
@@ -75,8 +94,7 @@ class Details extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiwAVIeCE8LhwSsGpkhGzjkfVfMfeioGTznw&s'),
+                      backgroundImage: NetworkImage(avartar),
                     ),
                     SizedBox(
                       width: 20,
@@ -86,19 +104,21 @@ class Details extends StatelessWidget {
                       children: [
                         Container(
                           child: Text(
-                            'User name',
+                            userName ?? 'User name',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 20),
                           ),
                         ),
                         Container(
-                          child: Text('hosting'),
+                          child: Text(isMe ? 'Me' : 'hosting'),
                         ),
                       ],
                     ),
                   ],
                 ),
-                Icon(Icons.messenger_outline_outlined)
+                isMe
+                    ? Icon(Icons.more_horiz)
+                    : Icon(Icons.messenger_outline_outlined)
               ],
             ),
             Container(
@@ -111,7 +131,8 @@ class Details extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                   ),
                   Text(
-                    'Ultricies arcu venenatis in lorem faucibus lobortis at. East odio varius nisl congue aliquam nunc est sit pull convallis magna. Est scelerisque dignissim non nibh....',
+                    discription ??
+                        'Ultricies arcu venenatis in lorem faucibus lobortis at. East odio varius nisl congue aliquam nunc est sit pull convallis magna. Est scelerisque dignissim non nibh....',
                     style: TextStyle(fontSize: 14),
                   )
                 ],

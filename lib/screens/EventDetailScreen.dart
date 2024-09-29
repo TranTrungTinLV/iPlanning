@@ -1,11 +1,26 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends StatelessWidget {
-  const Eventdetailscreen({super.key});
-
+  Eventdetailscreen(
+      {super.key,
+      required this.uid,
+      required this.titleEvent,
+      required this.userName,
+      required this.location,
+      required this.startDate,
+      required this.avartar,
+      required this.discription});
+  final String uid;
+  final String titleEvent;
+  final String userName;
+  final String location;
+  final Timestamp startDate;
+  final String avartar;
+  final String discription;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +41,18 @@ class Eventdetailscreen extends StatelessWidget {
                     gradient: LinearGradient(
                         colors: [Colors.black45, Colors.black45]))),
           ),
-          Align(alignment: Alignment.bottomCenter, child: Details()),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Details(
+                userName: userName,
+                uid: uid,
+                titleEvent: titleEvent,
+                location: location,
+                startDate: startDate,
+                avartar: avartar ??
+                    'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                discription: discription,
+              )),
           Align(
             alignment: Alignment.center,
             child: Column(

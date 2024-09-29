@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
@@ -36,7 +37,7 @@ class _HomescreensState extends State<Homescreens> {
   UserModel? _userData;
   EventsPostModel? _eventData;
   List<EventsPostModel>? _eventPosts;
-
+  EventsPostModel? event;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
   bool _isLoading = true;
@@ -64,6 +65,9 @@ class _HomescreensState extends State<Homescreens> {
       setState(() {
         _eventPosts = events;
         _isLoading = false;
+        if (events.isNotEmpty) {
+          event = events.first; // Assign the first event as an example.
+        }
       });
     }
   }
@@ -397,10 +401,27 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
+                              if (event != null && event?.uid != null) {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (ctx) => Eventdetailscreen()));
+                                    builder: (ctx) => Eventdetailscreen(
+                                      uid: event!.uid,
+                                      titleEvent: event!.event_name,
+                                      userName: event!.username,
+                                      location: event!.location,
+                                      startDate: event!.createAt,
+                                      avartar: event!.profilePic ??
+                                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                      discription: event!.description ??
+                                          'không có nội dung ở đây',
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // Handle the case when `event` or `event.uid` is null.
+                                print("Event or event UID is null");
+                              }
                             },
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,

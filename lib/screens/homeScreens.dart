@@ -1,13 +1,16 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
+import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/profileScreen.dart';
 import 'package:iplanning/services/cloud.dart';
@@ -194,7 +197,14 @@ class _HomescreensState extends State<Homescreens> {
                         ),
                       ]),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => ListEvent(
+                                    userId: _userData!.uid,
+                                  )));
+                    },
                   ),
                   ListTile(
                     title: Container(
@@ -399,44 +409,49 @@ class _HomescreensState extends State<Homescreens> {
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              if (event != null && event?.uid != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (ctx) => Eventdetailscreen(
-                                      uid: event!.uid,
-                                      titleEvent: event!.event_name,
-                                      userName: event!.username,
-                                      location: event!.location,
-                                      startDate: event!.createAt,
-                                      avartar: event!.profilePic ??
-                                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                                      discription: event!.description ??
-                                          'không có nội dung ở đây',
-                                      backgroundIMG: event!.eventImage![0],
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                // Handle the case when `event` or `event.uid` is null.
-                                print("Event or event UID is null");
-                              }
-                            },
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: _eventPosts != null
-                                    ? _eventPosts!.map((event) {
-                                        return CardCustom(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: _eventPosts != null
+                                  ? _eventPosts!.map((event) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (event != null &&
+                                              event?.uid != null) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    Eventdetailscreen(
+                                                  uid: event.uid,
+                                                  titleEvent: event.event_name,
+                                                  userName: event.username,
+                                                  location: event.location,
+                                                  startDate: event.createAt,
+                                                  avartar: event.profilePic ??
+                                                      'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                                  discription: event
+                                                          .description ??
+                                                      'không có nội dung ở đây',
+                                                  backgroundIMG:
+                                                      event.eventImage![0],
+                                                  event_id: event.uid,
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            // Handle the case when `event` or `event.uid` is null.
+                                            print("Event or event UID is null");
+                                          }
+                                        },
+                                        child: CardCustom(
                                           event: event,
                                           RandomImages: [],
                                           uid: _userData!.uid,
-                                        );
-                                      }).toList()
-                                    : [const Text('No Events Available')],
-                              ),
+                                        ),
+                                      );
+                                    }).toList()
+                                  : [const Text('No Events Available')],
                             ),
                           ),
                           Container(

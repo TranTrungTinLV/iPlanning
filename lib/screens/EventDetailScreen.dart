@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends StatelessWidget {
@@ -14,7 +15,8 @@ class Eventdetailscreen extends StatelessWidget {
       required this.startDate,
       required this.avartar,
       required this.discription,
-      required this.backgroundIMG});
+      required this.backgroundIMG,
+      required this.event_id});
   final String uid;
   final String titleEvent;
   final String userName;
@@ -23,6 +25,7 @@ class Eventdetailscreen extends StatelessWidget {
   final String avartar;
   final String discription;
   final String backgroundIMG;
+  final String event_id;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +54,9 @@ class Eventdetailscreen extends StatelessWidget {
                 titleEvent: titleEvent,
                 location: location,
                 startDate: startDate,
-                avartar: avartar ??
-                    'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                avartar: (avartar != "" && avartar != null)
+                    ? avartar
+                    : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
                 discription: discription,
               )),
           Align(
@@ -173,8 +177,12 @@ class Eventdetailscreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Icon(Icons.bookmark,
-                            color: Colors.white, size: 24),
+                        Icon(
+                            authInstance.currentUser!.uid == event_id
+                                ? Icons.more_horiz
+                                : Icons.bookmark,
+                            color: Colors.white,
+                            size: 24),
                       ],
                     ),
                     onPressed: () {},

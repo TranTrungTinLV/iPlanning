@@ -69,4 +69,22 @@ class ClouMethods {
       return [];
     }
   }
+
+  Future<List<EventsPostModel>> getUserEventsByUserId(String userId) async {
+    try {
+      QuerySnapshot snapshot =
+          await postEvents.where('uid', isEqualTo: userId).get();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((doc) =>
+                EventsPostModel.fromMap(doc.data() as Map<String, dynamic>))
+            .toList();
+      } else {
+        return []; // No events found
+      }
+    } catch (e) {
+      print('Failed to get user events: $e');
+      return [];
+    }
+  }
 }

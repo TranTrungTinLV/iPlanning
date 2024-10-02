@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 
 import 'package:iplanning/firebase_options.dart';
 import 'package:iplanning/screens/splashScreen.dart';
+import 'package:iplanning/services/categories.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const iPlanApp());
+  await CategoriesMethod().uploadDefaultCategories();
+  runApp(iPlanApp());
 }
 
 class iPlanApp extends StatelessWidget {

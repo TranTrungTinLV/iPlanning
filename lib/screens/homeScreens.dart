@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
@@ -13,6 +14,7 @@ import 'package:iplanning/screens/createEventScreens.dart';
 import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/profileScreen.dart';
+import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
@@ -36,6 +38,7 @@ class _HomescreensState extends State<Homescreens> {
     'https://i0.wp.com/thatrandomagency.com/wp-content/uploads/2021/06/headshot.png?resize=618%2C617&ssl=1',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaOjCZSoaBhZyODYeQMDCOTICHfz_tia5ay8I_k3k&s'
   ];
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
   EventsPostModel? _eventData;
@@ -50,6 +53,7 @@ class _HomescreensState extends State<Homescreens> {
     super.initState();
     _loadUserData();
     _loadPostEvent();
+    _loadCategories();
   }
 
   void _loadUserData() async {
@@ -68,11 +72,23 @@ class _HomescreensState extends State<Homescreens> {
       setState(() {
         _eventPosts = events;
         _isLoading = false;
-        if (events.isNotEmpty) {
-          event = events.first; // Assign the first event as an example.
+        if (_eventPosts != null && _eventPosts!.isNotEmpty) {
+          // Gán sự kiện đầu tiên trong danh sách vào biến `event`
+          event = _eventPosts!.first;
         }
       });
     }
+  }
+
+  void _loadCategories() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('categoriesEvent').get();
+
+    querySnapshot.docs.forEach((doc) {
+      CategoryModel categoryModel =
+          CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
+      print("category ${categoryModel.name}");
+    });
   }
 
   @override
@@ -198,12 +214,38 @@ class _HomescreensState extends State<Homescreens> {
                       ]),
                     ),
                     onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (ctx) => ListEvent()));
+                    },
+                  ),
+                  ListTile(
+                    title: Container(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Row(children: [
+                        const Icon(
+                          Icons.bookmark,
+                          size: 30,
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'My Wishlist',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ]),
+                    ),
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (ctx) => ListEvent(
-                                    userId: _userData!.uid,
-                                  )));
+                              builder: (ctx) => WishListScreen()));
                     },
                   ),
                   ListTile(

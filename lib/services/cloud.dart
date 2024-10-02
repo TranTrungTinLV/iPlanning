@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/events_model.dart';
@@ -9,6 +12,7 @@ import 'package:uuid/uuid.dart';
 
 class ClouMethods {
   CollectionReference postEvents = firestoreInstance.collection('eventPosts');
+  final User? user = authInstance.currentUser;
 
   uploadPost({
     required String event_name,
@@ -61,7 +65,7 @@ class ClouMethods {
     try {
       QuerySnapshot snapshot = await postEvents.get();
       List<EventsPostModel> events = snapshot.docs.map((doc) {
-        return EventsPostModel.fromMap(doc.data() as Map<String, dynamic>);
+        return EventsPostModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
       return events;
     } catch (e) {
@@ -70,21 +74,26 @@ class ClouMethods {
     }
   }
 
-  Future<List<EventsPostModel>> getUserEventsByUserId(String userId) async {
-    try {
-      QuerySnapshot snapshot =
-          await postEvents.where('uid', isEqualTo: userId).get();
-      if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs
-            .map((doc) =>
-                EventsPostModel.fromMap(doc.data() as Map<String, dynamic>))
-            .toList();
-      } else {
-        return []; // No events found
-      }
-    } catch (e) {
-      print('Failed to get user events: $e');
-      return [];
-    }
-  }
+  // Future<EventsPostModel?> getUserEventsByUserId(String userId) async {
+  //   try {
+  //     QuerySnapshot eventDocs =
+  //         await postEvents.where('uid', isEqualTo: userId).get();
+  //     if (eventDocs.docs.isNotEmpty) {
+  //       return EventsPostModel.fromJson(
+  //           eventDocs.docs.first.data() as Map<String, dynamic>);
+  //     } else {
+  //       Fluttertoast.showToast(
+  //           msg: "Events not found",
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           backgroundColor: Colors.red,
+  //           textColor: Colors.white,
+  //           fontSize: 16.0);
+
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     print('Failed to get user events: $e');
+  //   }
+  // }
 }

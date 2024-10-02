@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iplanning/models/Budget.dart';
+import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/user_models.dart';
 
 class EventsPostModel {
@@ -23,6 +24,7 @@ class EventsPostModel {
   // relationship users
   List<UserModel> users;
   Budget budget;
+  CategoryModel? category;
   EventsPostModel(
       {required this.event_name,
       this.eventType,
@@ -40,7 +42,7 @@ class EventsPostModel {
       required this.createAt,
       this.description});
 
-  factory EventsPostModel.fromMap(Map<String, dynamic> json) {
+  factory EventsPostModel.fromJson(Map<String, dynamic> json) {
     return EventsPostModel(
       eventType: json['eventType'] as String,
       profilePic: json['profilePic'] as String,

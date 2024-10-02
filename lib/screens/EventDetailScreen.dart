@@ -121,7 +121,6 @@ class Eventdetailscreen extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 40, horizontal: 25),
               width: MediaQuery.of(context).size.width,
-              // color: Colors.red,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

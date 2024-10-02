@@ -11,6 +11,7 @@ class TextFieldCustom extends StatelessWidget {
       this.maxLine,
       this.minLine,
       this.radius,
+      this.bottom,
       this.readonly = false});
 
   final String title;
@@ -22,21 +23,25 @@ class TextFieldCustom extends StatelessWidget {
   String? labelText;
   FocusNode? focusNode;
   double? radius;
+  double? bottom;
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      maxLines: maxLine,
-      minLines: minLine,
-      focusNode: focusNode,
-      keyboardType: keyboardType,
-      controller: controller,
-      readOnly: readonly,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius ?? 4.0),
+    return Container(
+      margin: EdgeInsets.only(bottom: bottom ?? 0.0),
+      child: TextField(
+        maxLines: maxLine,
+        minLines: minLine,
+        focusNode: focusNode,
+        keyboardType: keyboardType,
+        controller: controller,
+        readOnly: readonly,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radius ?? 4.0),
+          ),
+          hintText: title,
+          labelText: title,
         ),
-        hintText: title,
-        labelText: title,
       ),
     );
   }

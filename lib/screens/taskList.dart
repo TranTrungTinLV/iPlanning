@@ -17,32 +17,17 @@ class TaskList extends StatelessWidget {
           children: [
             SingleChildScrollView(
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Text(
-                      'Budget details',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.w600),
-                    ),
-                    margin: EdgeInsets.only(bottom: 20),
-                  ),
                   TextFieldCustom(
-                    title: 'Grocery',
-                    labelText: 'Grocery',
+                    title: 'Task Name',
+                    labelText: 'Task Name',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
-                    title: 'Note',
-                    labelText: 'Note',
-                    bottom: 26,
-                    radius: 10.0,
-                  ),
-                  TextFieldCustom(
-                    title: 'Estimate Amount',
-                    labelText: 'Estimate Amount',
+                    title: 'Enter Note',
+                    labelText: 'Enter Note',
                     radius: 10.0,
                   ),
                 ],
@@ -56,7 +41,7 @@ class TaskList extends StatelessWidget {
                   height: 60,
                   child: Center(
                       child: Text(
-                    'Add To Budget',
+                    'Add To Task List',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   )),
                   decoration: BoxDecoration(

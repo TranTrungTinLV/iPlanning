@@ -61,10 +61,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
         eventType: eventType.text,
         description: description.text,
         eventImages: fileImage!,
-        budget: Budget(1.0, "Note for event", 0.0),
       );
     } catch (e) {}
   }
+
 
   @override
   Widget build(BuildContext context) {

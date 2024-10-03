@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 class ClouMethods {
   CollectionReference postEvents = firestoreInstance.collection('eventPosts');
   final User? user = authInstance.currentUser;
-
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   uploadPost({
     required String event_name,
     required Timestamp eventDateEnd,
@@ -25,7 +25,7 @@ class ClouMethods {
     required String uid, //user_id
     required String location,
     required List<Uint8List> eventImages,
-    required Budget budget,
+    // required Budget budget,
     required String description,
   }) async {
     String res = 'Some Error';
@@ -51,7 +51,7 @@ class ClouMethods {
           eventDateEnd: eventDateEnd,
           eventDateStart: eventDateStart,
           eventImage: postImageUrls,
-          budget: budget,
+          // budget: budget,
           users: []);
       await postEvents.doc(eventId).set(eventsPostModel.toJson());
       res = "success";
@@ -74,26 +74,28 @@ class ClouMethods {
     }
   }
 
-  // Future<EventsPostModel?> getUserEventsByUserId(String userId) async {
-  //   try {
-  //     QuerySnapshot eventDocs =
-  //         await postEvents.where('uid', isEqualTo: userId).get();
-  //     if (eventDocs.docs.isNotEmpty) {
-  //       return EventsPostModel.fromJson(
-  //           eventDocs.docs.first.data() as Map<String, dynamic>);
-  //     } else {
-  //       Fluttertoast.showToast(
-  //           msg: "Events not found",
-  //           toastLength: Toast.LENGTH_SHORT,
-  //           gravity: ToastGravity.BOTTOM,
-  //           backgroundColor: Colors.red,
-  //           textColor: Colors.white,
-  //           fontSize: 16.0);
+  invitedEvents(String uid, String eventId) async {
+    try {
+      DocumentSnapshot eventSnapshot = await postEvents.doc(eventId).get();
 
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print('Failed to get user events: $e');
-  //   }
-  // }
+      if (eventSnapshot.exists && eventSnapshot.data() != null) {
+        List inviting = (eventSnapshot.data()! as dynamic)['isPending'] ?? [];
+
+        if (inviting.contains(uid)) {
+          await postEvents.doc(eventId).update({
+            'isPending': FieldValue.arrayRemove([uid]), // Huỷ mời tham gia
+          });
+        } else {
+          await postEvents.doc(eventId).update({
+            'isPending': FieldValue.arrayUnion([uid]) //  tham gia
+          });
+        }
+      } else {
+        print("Event document does not exist or data is null.");
+      }
+    } catch (e) {
+      print("Error in invitedEvents: $e");
+    }
+    // return res;
+  }
 }

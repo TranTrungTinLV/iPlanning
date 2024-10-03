@@ -9,7 +9,6 @@ class UserModel {
   String? avatars;
   String? newAvatars;
   List<EventsPostModel>? eventPostModel;
-
   UserModel({
     required this.uid,
     this.newAvatars,

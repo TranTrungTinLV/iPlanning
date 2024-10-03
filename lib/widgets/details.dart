@@ -22,8 +22,6 @@ class Details extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMe = authInstance.currentUser!.uid == uid;
-    print(isMe);
-    print('Is ME ${isMe}');
     return Container(
       height: MediaQuery.of(context).size.height * 0.55,
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 80),

@@ -1,22 +1,26 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/details.dart';
 
-class Eventdetailscreen extends StatelessWidget {
-  Eventdetailscreen(
-      {super.key,
-      required this.uid,
-      required this.titleEvent,
-      required this.userName,
-      required this.location,
-      required this.startDate,
-      required this.avartar,
-      required this.discription,
-      required this.backgroundIMG,
-      required this.event_id});
+class Eventdetailscreen extends StatefulWidget {
+  Eventdetailscreen({
+    super.key,
+    required this.uid,
+    // required this.onTap,
+    required this.titleEvent,
+    required this.userName,
+    required this.location,
+    required this.startDate,
+    required this.avartar,
+    required this.discription,
+    required this.backgroundIMG,
+    required this.event_id,
+  });
   final String uid;
   final String titleEvent;
   final String userName;
@@ -26,6 +30,42 @@ class Eventdetailscreen extends StatelessWidget {
   final String discription;
   final String backgroundIMG;
   final String event_id;
+  bool isLoadingInvite = true;
+
+  @override
+  State<Eventdetailscreen> createState() => _EventdetailscreenState();
+}
+
+class _EventdetailscreenState extends State<Eventdetailscreen> {
+  bool isInvited = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _checkInviteStatus();
+  }
+
+  void _checkInviteStatus() async {
+    setState(() {
+      widget.isLoadingInvite = true;
+    });
+    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+        .collection('eventPosts')
+        .doc(widget.event_id)
+        .get();
+    if (eventSnapshot.exists && eventSnapshot.data() != null) {
+      setState(() {
+        isInvited = (eventSnapshot.data() as dynamic)['isPending']
+                ?.contains(FirebaseAuth.instance.currentUser!.uid) ??
+            false;
+        widget.isLoadingInvite = false;
+      });
+    } else {
+      print("Event document does not exist or data is null.");
+      widget.isLoadingInvite = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +77,7 @@ class Eventdetailscreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.5,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(backgroundIMG) ??
+                      image: NetworkImage(widget.backgroundIMG) ??
                           AssetImage('assets/event.png'),
                       repeat: ImageRepeat.repeatX,
                       fit: BoxFit.cover,
@@ -49,15 +89,15 @@ class Eventdetailscreen extends StatelessWidget {
           Align(
               alignment: Alignment.bottomCenter,
               child: Details(
-                userName: userName,
-                uid: uid,
-                titleEvent: titleEvent,
-                location: location,
-                startDate: startDate,
-                avartar: (avartar != "" && avartar != null)
-                    ? avartar
+                userName: widget.userName,
+                uid: widget.uid,
+                titleEvent: widget.titleEvent,
+                location: widget.location,
+                startDate: widget.startDate,
+                avartar: (widget.avartar != "" && widget.avartar != null)
+                    ? widget.avartar
                     : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                discription: discription,
+                discription: widget.discription,
               )),
           Align(
             alignment: Alignment.center,
@@ -103,17 +143,40 @@ class Eventdetailscreen extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 60,
-              child: Center(
-                  child: Text(
-                'Invite',
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              )),
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-              decoration: BoxDecoration(
-                  color: Colors.black, borderRadius: BorderRadius.circular(20)),
+            child: GestureDetector(
+              onTap: () async {
+                await ClouMethods().invitedEvents(
+                  FirebaseAuth.instance.currentUser!.uid,
+                  widget.event_id,
+                );
+                setState(() {
+                  isInvited = !isInvited;
+                });
+              },
+              child: Container(
+                height: 60,
+                child: Center(
+                  child: widget.isLoadingInvite
+                      ? Container(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 1,
+                            strokeAlign: 1,
+                          ),
+                        )
+                      : Text(
+                          isInvited ? 'UnInvite' : 'Invite',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                ),
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
             ),
           ),
           Align(
@@ -177,7 +240,7 @@ class Eventdetailscreen extends StatelessWidget {
                           ),
                         ),
                         Icon(
-                            authInstance.currentUser!.uid == event_id
+                            authInstance.currentUser!.uid == widget.event_id
                                 ? Icons.more_horiz
                                 : Icons.bookmark,
                             color: Colors.white,

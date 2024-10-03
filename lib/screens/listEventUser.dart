@@ -34,24 +34,63 @@ class _ListEventState extends State<ListEvent>
       appBar: AppBar(
         title: Text('My Event'),
         bottom: TabBar(
+          // isScrollable: true,
+          labelStyle: TextStyle(fontSize: 18),
           controller: tabController,
           tabs: [
             Tab(
-              text: 'All event',
+              child: Container(
+                child: Column(
+                  children: [
+                    Text(
+                      'All event',
+                      textAlign: TextAlign.center,
+                    ),
+                    Text('(100)')
+                  ],
+                ),
+              ),
             ),
             Tab(
-              text: 'Yes',
+              child: Container(
+                  child: Column(
+                children: [
+                  Text(
+                    'Yes',
+                    textAlign: TextAlign.center,
+                  ),
+                  Text('(102)')
+                ],
+              )),
             ),
             Tab(
-              text: 'Not Yet',
+              child: Container(
+                  child: Column(
+                children: [
+                  Text(
+                    'No',
+                    textAlign: TextAlign.center,
+                  ),
+                  Text('(102)')
+                ],
+              )),
             ),
             Tab(
-              text: 'No',
+              child: Container(
+                  child: Column(
+                children: [
+                  Text(
+                    'Not Yet',
+                    textAlign: TextAlign.center,
+                  ),
+                  Text('(102)')
+                ],
+              )),
             ),
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.filter_list_alt))
+          IconButton(onPressed: () {}, icon: Icon(Icons.filter_list_alt)),
         ],
         centerTitle: true,
       ),

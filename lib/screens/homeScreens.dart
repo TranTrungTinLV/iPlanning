@@ -47,6 +47,7 @@ class _HomescreensState extends State<Homescreens> {
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
   bool _isLoading = true;
+  bool inviting = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -68,6 +69,7 @@ class _HomescreensState extends State<Homescreens> {
 
   void _loadPostEvent() async {
     List<EventsPostModel> events = await _eventService.getAllEventPosts();
+
     if (mounted) {
       setState(() {
         _eventPosts = events;
@@ -78,6 +80,18 @@ class _HomescreensState extends State<Homescreens> {
         }
       });
     }
+  }
+
+  void _checkInviteStatus() async {
+    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+        .collection('eventPosts')
+        .doc(event!.event_id)
+        .get();
+
+    setState(() {
+      inviting = (eventSnapshot.data() as dynamic)['isPending']
+          .contains(FirebaseAuth.instance.currentUser!.uid);
+    });
   }
 
   void _loadCategories() async {
@@ -465,6 +479,7 @@ class _HomescreensState extends State<Homescreens> {
                                               MaterialPageRoute(
                                                 builder: (ctx) =>
                                                     Eventdetailscreen(
+                                                  // isLoadingInvite: _isLoading,
                                                   uid: event.uid,
                                                   titleEvent: event.event_name,
                                                   userName: event.username,
@@ -477,10 +492,14 @@ class _HomescreensState extends State<Homescreens> {
                                                       'không có nội dung ở đây',
                                                   backgroundIMG:
                                                       event.eventImage![0],
-                                                  event_id: event.uid,
+                                                  event_id: event.event_id,
                                                 ),
                                               ),
-                                            );
+                                            ).then((value) {
+                                              if (value == true) {
+                                                _loadPostEvent(); // Cập nhật lại sự kiện nếu có thay đổi
+                                              }
+                                            });
                                           } else {
                                             // Handle the case when `event` or `event.uid` is null.
                                             print("Event or event UID is null");

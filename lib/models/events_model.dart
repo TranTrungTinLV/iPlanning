@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/categoryClass.dart';
+import 'package:iplanning/models/todoList.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/utils/InvitationStatus.dart';
 
 class EventsPostModel {
   String event_name;
@@ -17,21 +19,32 @@ class EventsPostModel {
   String location;
   String profilePic;
   Timestamp createAt;
+  List<ToDoList>? todoList;
+
   // List inviteEvents;
   String? description;
   String username;
   String? eventType;
-  // relationship users
+  List<String>? isPending;
+  List<String>? isRejected;
+  List<String>? isAccepted;
+  Map<String, InvitationStatus>? invitationStatuses;
+
   List<UserModel> users;
-  Budget budget;
+  Budget? budget;
   CategoryModel? category;
   EventsPostModel(
       {required this.event_name,
+      this.todoList,
       this.eventType,
+      this.isPending,
+      this.isRejected,
+      this.isAccepted,
+      this.invitationStatuses,
       required this.eventImage,
       required this.profilePic,
       required this.event_id,
-      required this.budget,
+      this.budget,
       this.category_id,
       required this.username,
       required this.users,
@@ -48,9 +61,31 @@ class EventsPostModel {
       profilePic: json['profilePic'] as String,
       username: json['username'] as String,
       event_name: json['event_name'] as String,
-      budget: Budget.fromMap(
-          json['budget'] as Map<String, dynamic>), // Convert budget properly
+      todoList: json['todoList'] != null
+          ? (json['todoList'] as List)
+              .map((item) => ToDoList.fromMap(item))
+              .toList()
+          : null,
+
+      budget: json['budget'] != null
+          ? Budget.fromMap(json['budget'] as Map<String, dynamic>)
+          : null, // Convert budget properly
       event_id: json['event_id'] as String,
+      isPending:
+          json['isPending'] != null ? List<String>.from(json['isPending']) : [],
+      isRejected: json['isRejected'] != null
+          ? List<String>.from(json['isRejected'])
+          : null,
+      isAccepted: json['isAccepted'] != null
+          ? List<String>.from(json['isAccepted'])
+          : null,
+      invitationStatuses: json['invitationStatuses'] != null
+          ? Map<String, InvitationStatus>.from(json['invitationStatuses'].map(
+              (key, value) => MapEntry(
+                  key,
+                  InvitationStatus.values.firstWhere(
+                      (e) => e.toString() == 'InvitationStatus.' + value))))
+          : null,
       description: json['description'] as String?,
       eventImage: json['eventImage'] != null
           ? List<String>.from(json['eventImage'])
@@ -76,9 +111,14 @@ class EventsPostModel {
     return {
       'event_name': event_name,
       'eventType': eventType,
+      'isPending': isPending,
+      'isRejected': isRejected,
+      'isAccepted': isAccepted,
+      'invitationStatuses': invitationStatuses?.map(
+          (key, value) => MapEntry(key, value.toString().split('.').last)),
       'username': username,
       'profilePic': profilePic,
-      'budget': budget.toJson(),
+      'budget': budget?.toJson(),
       'event_id': event_id,
       'eventImage': eventImage,
       'category_id': category_id,

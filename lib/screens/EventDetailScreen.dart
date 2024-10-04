@@ -37,11 +37,14 @@ class Eventdetailscreen extends StatefulWidget {
 
 class _EventdetailscreenState extends State<Eventdetailscreen> {
   bool isInvited = false;
+  bool isLoadingWishList = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _checkInviteStatus();
+    _checkWishList();
   }
 
   void _checkInviteStatus() async {
@@ -62,6 +65,25 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
     } else {
       print("Event document does not exist or data is null.");
       widget.isLoadingInvite = false;
+    }
+  }
+
+  void _checkWishList() async {
+    // setState(() {
+    //   isLoadingWishList = true;
+    // });
+    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (userSnapshot.exists && userSnapshot.data() != null) {
+      setState(() {
+        isLoadingWishList = (userSnapshot.data() as dynamic)['wishlist']
+                ?.contains(widget.event_id) ??
+            false;
+      });
+    } else {
+      print("Event document does not exist or data is null.");
     }
   }
 
@@ -237,12 +259,27 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                             ),
                           ),
                         ),
-                        Icon(
-                            authInstance.currentUser!.uid == widget.event_id
-                                ? Icons.more_horiz
-                                : Icons.bookmark,
-                            color: Colors.white,
-                            size: 24),
+                        authInstance.currentUser!.uid == widget.uid
+                            ? IconButton(
+                                onPressed: () async {},
+                                icon: Icon(Icons.more_horiz,
+                                    color: Colors.white, size: 24),
+                              )
+                            : IconButton(
+                                onPressed: () async {
+                                  await ClouMethods().wishlistUser(
+                                      authInstance.currentUser!.uid,
+                                      widget.event_id);
+                                  setState(() {
+                                    isLoadingWishList = !isLoadingWishList;
+                                  });
+                                },
+                                icon: Icon(Icons.bookmark,
+                                    color: isLoadingWishList
+                                        ? Colors.red
+                                        : Colors.white,
+                                    size: 24),
+                              )
                       ],
                     ),
                     onPressed: () {},

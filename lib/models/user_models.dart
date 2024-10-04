@@ -9,7 +9,10 @@ class UserModel {
   String? avatars;
   String? newAvatars;
   List<EventsPostModel>? eventPostModel;
+  List<String>? wishList;
+
   UserModel({
+    // this.wishList,
     required this.uid,
     this.newAvatars,
     required this.email,
@@ -28,6 +31,8 @@ class UserModel {
       country: json['country'] as String?,
       avatars: json['avatars'] as String?,
       newAvatars: json['newAvatars'] as String?,
+      // wishList:
+      //     json['isPending'] != null ? List<String>.from(json['isPending']) : [],
       email: json['email'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String?,
@@ -41,6 +46,7 @@ class UserModel {
       'country': country,
       'email': email,
       'name': name,
+      // 'wishList': wishList,
       'phone': phone,
       'avatars': avatars,
       'newAvatars': newAvatars,

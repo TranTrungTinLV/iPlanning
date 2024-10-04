@@ -123,4 +123,38 @@ class ClouMethods {
     }
     // return res;
   }
+
+  wishlistUser(String uid, String eventId) async {
+    try {
+      // Truy vấn tài liệu người dùng từ collection 'users' dựa vào uid
+      DocumentSnapshot userSnapshot = await users.doc(uid).get();
+
+      if (userSnapshot.exists && userSnapshot.data() != null) {
+        // Lấy danh sách wishlist hiện tại (nếu có)
+        List wishlist = (userSnapshot.data()! as dynamic)['wishlist'] ?? [];
+
+        if (wishlist.contains(eventId)) {
+          // Nếu sự kiện đã có trong wishlist, xóa khỏi danh sách (unwishlist)
+          await users.doc(uid).update({
+            'wishlist': FieldValue.arrayRemove([eventId]),
+          });
+          Fluttertoast.showToast(msg: "Removed from wishlist");
+        } else {
+          // Nếu sự kiện chưa có trong wishlist, thêm vào danh sách
+          await users.doc(uid).update({
+            'wishlist': FieldValue.arrayUnion([eventId]),
+          });
+          Fluttertoast.showToast(msg: "Added to wishlist");
+        }
+      } else {
+        // Nếu tài liệu người dùng chưa tồn tại, tạo tài liệu với trường wishlist
+        await users.doc(uid).set({
+          'wishlist': [eventId],
+        }, SetOptions(merge: true));
+        Fluttertoast.showToast(msg: "Added to wishlist");
+      }
+    } catch (e) {
+      print("Error in wishlistUser: $e");
+    }
+  }
 }

@@ -144,9 +144,9 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
             child: GestureDetector(
               onTap: () async {
                 await ClouMethods().invitedEvents(
-                  FirebaseAuth.instance.currentUser!.uid,
-                  widget.event_id,
-                );
+                    FirebaseAuth.instance.currentUser!.uid,
+                    widget.event_id,
+                    'isPending');
                 setState(() {
                   isInvited = !isInvited;
                 });

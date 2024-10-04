@@ -74,20 +74,45 @@ class ClouMethods {
     }
   }
 
-  invitedEvents(String uid, String eventId) async {
+  invitedEvents(String uid, String eventId, String isStatus) async {
     try {
       DocumentSnapshot eventSnapshot = await postEvents.doc(eventId).get();
 
       if (eventSnapshot.exists && eventSnapshot.data() != null) {
         List inviting = (eventSnapshot.data()! as dynamic)['isPending'] ?? [];
+        List acceptList =
+            (eventSnapshot.data()! as dynamic)['isAccepted'] ?? [];
+        List rejectList =
+            (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
 
         if (inviting.contains(uid)) {
+          if (isStatus == 'isAccepted') {
+            // Chấp nhận: xóa khỏi isPending và thêm vào isAccept
+            await postEvents.doc(eventId).update({
+              'isPending': FieldValue.arrayRemove([uid]),
+              'isAccepted': FieldValue.arrayUnion([uid]),
+            });
+          } else if (isStatus == 'isRejected') {
+            // Từ chối: xóa khỏi isPending và thêm vào isRejected
+            await postEvents.doc(eventId).update({
+              'isPending': FieldValue.arrayRemove([uid]),
+              'isRejected': FieldValue.arrayUnion([uid]),
+            });
+          }
+        } else if (isStatus == 'isAccepted' && acceptList.contains(uid)) {
+          // Xóa khỏi isAccept nếu cần hủy bỏ (tùy vào logic của bạn)
           await postEvents.doc(eventId).update({
-            'isPending': FieldValue.arrayRemove([uid]), // Huỷ mời tham gia
+            'isAccepted': FieldValue.arrayRemove([uid]),
+          });
+        } else if (isStatus == 'isRejected' && rejectList.contains(uid)) {
+          // Xóa khỏi isRejected nếu cần (tùy vào logic của bạn)
+          await postEvents.doc(eventId).update({
+            'isRejected': FieldValue.arrayRemove([uid]),
           });
         } else {
+          // Nếu `isStatus` là `isAccept` hoặc `isReject`, thêm vào trạng thái tương ứng
           await postEvents.doc(eventId).update({
-            'isPending': FieldValue.arrayUnion([uid]) //  tham gia
+            isStatus: FieldValue.arrayUnion([uid]),
           });
         }
       } else {

@@ -86,39 +86,154 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     );
                   }
                   if (isPending != null && isPending is List) {
-                    // List<String> pendingUids = List<String>.from(isPending);
-                    return ListTile(
-                      // title: Text(eventDoc['name'] ?? 'No Title'),
-
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...isPending.map((uid) {
-                            return FutureBuilder(
-                                future: users.doc(uid).get(),
-                                builder: (context, userSnapshot) {
-                                  if (userSnapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                        child:
-                                            const CircularProgressIndicator());
-                                  } else if (userSnapshot.hasError ||
-                                      !userSnapshot.hasData) {
-                                    return Text(
-                                        'Failed to load user: ${userSnapshot.error}');
-                                  } else if (!userSnapshot.hasData) {
-                                    return const Text('User not found');
-                                  }
-                                  final userDoc = userSnapshot.data!;
-                                  // final String? userName = userDoc['name'];
-
-                                  return ListTile(
-                                    title: Text(userDoc['name']),
-                                  );
-                                });
-                          }).toList(),
-                        ],
-                      ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...isPending.map((uid) {
+                          return FutureBuilder(
+                              future: users.doc(uid).get(),
+                              builder: (context, userSnapshot) {
+                                if (userSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                      child: const CircularProgressIndicator());
+                                } else if (userSnapshot.hasError ||
+                                    !userSnapshot.hasData) {
+                                  return Text(
+                                      'Failed to load user: ${userSnapshot.error}');
+                                } else if (!userSnapshot.hasData) {
+                                  return const Text('User not found');
+                                }
+                                final userDoc = userSnapshot.data!;
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 20),
+                                  child: Card(
+                                    color: Colors.white.withOpacity(0.8),
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 10),
+                                      padding: EdgeInsetsDirectional.symmetric(
+                                          horizontal: 10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 20,
+                                                backgroundColor: Colors.red,
+                                              ),
+                                              SizedBox(
+                                                width: 15,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      "${userDoc['name']} invite to",
+                                                      style: TextStyle(
+                                                          fontSize: 20),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      GestureDetector(
+                                                        child: Container(
+                                                          width: 100,
+                                                          height: 40,
+                                                          child: Center(
+                                                              child: Text(
+                                                                  'Reject')),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.1),
+                                                                      blurRadius:
+                                                                          10.0,
+                                                                      spreadRadius:
+                                                                          2.0,
+                                                                    )
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 13,
+                                                      ),
+                                                      GestureDetector(
+                                                        child: Container(
+                                                          width: 100,
+                                                          height: 40,
+                                                          child: Center(
+                                                              child: Text(
+                                                            'Accept',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          )),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  color: Color(
+                                                                      0xff5669FF),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.1),
+                                                                      blurRadius:
+                                                                          10.0,
+                                                                      spreadRadius:
+                                                                          2.0,
+                                                                    )
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  'Just Now',
+                                                  style:
+                                                      TextStyle(fontSize: 13),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        }).toList(),
+                      ],
                     );
                   } else {
                     Container(

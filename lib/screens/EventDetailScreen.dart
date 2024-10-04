@@ -11,7 +11,6 @@ class Eventdetailscreen extends StatefulWidget {
   Eventdetailscreen({
     super.key,
     required this.uid,
-    // required this.onTap,
     required this.titleEvent,
     required this.userName,
     required this.location,
@@ -109,7 +108,6 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   height: 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.phone,

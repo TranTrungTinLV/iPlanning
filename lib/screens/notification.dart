@@ -47,7 +47,44 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 itemBuilder: (context, index) {
                   final eventDoc = eventDocs[index];
                   final List<dynamic> isPending = eventDoc['isPending'];
-
+                  if (isPending == null || isPending.isEmpty) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 250,
+                            width: 250,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.white.withOpacity(0.2),
+                                    blurRadius: 10.0,
+                                    spreadRadius: 2.0,
+                                  )
+                                ],
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                      'assets/notification.png',
+                                    ))),
+                          ),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Center(
+                            child: Text(
+                              'No Notifications',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                   if (isPending != null && isPending is List) {
                     // List<String> pendingUids = List<String>.from(isPending);
                     return ListTile(
@@ -56,15 +93,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Pending UIDs:'),
                           ...isPending.map((uid) {
                             return FutureBuilder(
                                 future: users.doc(uid).get(),
                                 builder: (context, userSnapshot) {
                                   if (userSnapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else if (userSnapshot.hasError) {
+                                    return Center(
+                                        child:
+                                            const CircularProgressIndicator());
+                                  } else if (userSnapshot.hasError ||
+                                      !userSnapshot.hasData) {
                                     return Text(
                                         'Failed to load user: ${userSnapshot.error}');
                                   } else if (!userSnapshot.hasData) {
@@ -74,8 +113,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   // final String? userName = userDoc['name'];
 
                                   return ListTile(
-                                    title:
-                                        Text(userDoc['name'] ?? 'No User Name'),
+                                    title: Text(userDoc['name']),
                                   );
                                 });
                           }).toList(),

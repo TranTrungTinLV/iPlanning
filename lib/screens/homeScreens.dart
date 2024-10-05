@@ -259,7 +259,9 @@ class _HomescreensState extends State<Homescreens> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (ctx) => WishListScreen()));
+                              builder: (ctx) => WishListScreen(
+                                    event_id: event!.event_id,
+                                  )));
                     },
                   ),
                   ListTile(

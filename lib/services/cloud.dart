@@ -86,6 +86,19 @@ class ClouMethods {
             (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
 
         if (inviting.contains(uid)) {
+          if (isStatus == 'isPending') {
+            if (inviting.contains(uid)) {
+              // Nếu `uid` đã có trong `isPending`, thực hiện xóa (Uninvite)
+              await postEvents.doc(eventId).update({
+                'isPending': FieldValue.arrayRemove([uid]),
+              });
+            } else {
+              // Nếu `uid` chưa có trong `isPending`, thực hiện thêm (Invite)
+              await postEvents.doc(eventId).update({
+                'isPending': FieldValue.arrayUnion([uid]),
+              });
+            }
+          }
           if (isStatus == 'isAccepted') {
             // Chấp nhận: xóa khỏi isPending và thêm vào isAccept
             await postEvents.doc(eventId).update({

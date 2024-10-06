@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/services/cloud.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -31,8 +32,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ],
       ),
       body: StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection("eventPosts").snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection("eventPosts")
+              .where('uid', isEqualTo: authInstance.currentUser!.uid)
+              .snapshots(),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());

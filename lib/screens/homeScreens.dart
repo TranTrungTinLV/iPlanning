@@ -32,12 +32,7 @@ class Homescreens extends StatefulWidget {
 }
 
 class _HomescreensState extends State<Homescreens> {
-  List RandomImages = [
-    'https://pbs.twimg.com/media/D8dDZukXUAAXLdY.jpg',
-    'https://pbs.twimg.com/profile_images/1249432648684109824/J0k1DN1T_400x400.jpg',
-    'https://i0.wp.com/thatrandomagency.com/wp-content/uploads/2021/06/headshot.png?resize=618%2C617&ssl=1',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaOjCZSoaBhZyODYeQMDCOTICHfz_tia5ay8I_k3k&s'
-  ];
+  List RandomImages = [];
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
@@ -48,6 +43,7 @@ class _HomescreensState extends State<Homescreens> {
   final _eventService = ClouMethods();
   bool _isLoading = true;
   bool inviting = false;
+  int inviters = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -77,6 +73,7 @@ class _HomescreensState extends State<Homescreens> {
         if (_eventPosts != null && _eventPosts!.isNotEmpty) {
           // Gán sự kiện đầu tiên trong danh sách vào biến `event`
           event = _eventPosts!.first;
+          _getDataPicture();
         }
       });
     }
@@ -103,6 +100,51 @@ class _HomescreensState extends State<Homescreens> {
           CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
       print("category ${categoryModel.name}");
     });
+  }
+
+  void _getDataPicture() async {
+    setState(() {
+      _isLoading = true; // Thêm trạng thái để biết đang tải
+    });
+
+    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+        .collection('eventPosts')
+        .doc(event!.event_id)
+        .get();
+    if (eventSnapshot.exists && eventSnapshot.data() != null) {
+      List<dynamic> acceptedUser =
+          (eventSnapshot.data() as dynamic)['isAccepted'] ?? [];
+
+      print("acceptedUser: $acceptedUser");
+      List<String> avatars = [];
+
+      for (String userIds in acceptedUser) {
+        // Lấy thông tin người dùng từ Firestore
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userIds)
+            .get();
+
+        if (userSnapshot.exists && userSnapshot.data() != null) {
+          String? avatarUrl = (userSnapshot.data() as dynamic)['newAvatars'] ??
+              (userSnapshot.data() as dynamic)['avatars'];
+          if (avatarUrl != null) {
+            avatars.add(avatarUrl);
+          }
+          print(
+              "newAvatars: ${(userSnapshot.data() as dynamic)['newAvatars']}");
+        }
+      }
+
+      setState(() {
+        RandomImages = avatars;
+        inviters = acceptedUser.length;
+        _isLoading = false;
+      });
+
+      print("RandomImages: $RandomImages");
+      print("Number of inviters: $inviters");
+    }
   }
 
   @override
@@ -510,8 +552,9 @@ class _HomescreensState extends State<Homescreens> {
                                         },
                                         child: CardCustom(
                                           event: event,
-                                          RandomImages: [],
+                                          RandomImages: RandomImages,
                                           uid: _userData!.uid,
+                                          count: inviters.toString(),
                                         ),
                                       );
                                     }).toList()

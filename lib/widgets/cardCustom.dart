@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/services/cloud.dart';
 
 class CardCustom extends StatelessWidget {
   const CardCustom({
@@ -8,11 +10,14 @@ class CardCustom extends StatelessWidget {
     required this.RandomImages,
     required this.event,
     required this.uid,
+    required this.count,
   });
 
   final List RandomImages;
+
   final EventsPostModel event;
   final String uid;
+  final String count;
   @override
   Widget build(BuildContext context) {
     var isMe = authInstance.currentUser!.uid == uid;
@@ -89,8 +94,8 @@ class CardCustom extends StatelessWidget {
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 20),
-                            child: const Text(
-                              '+20 Going',
+                            child: Text(
+                              '${count.toString()} Going',
                               style: TextStyle(
                                   color: Color(0xff3F38DD), fontSize: 15),
                             ),

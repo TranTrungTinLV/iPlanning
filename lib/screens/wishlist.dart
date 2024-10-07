@@ -59,7 +59,7 @@ class _WishListScreenState extends State<WishListScreen> {
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .snapshots(),
             builder: (ctx, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.done) {
                 return Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
@@ -95,13 +95,23 @@ class _WishListScreenState extends State<WishListScreen> {
                   return FutureBuilder<DocumentSnapshot>(
                     future: eventPosts.doc(eventId).get(),
                     builder: (context, eventSnapShot) {
-                      if (eventSnapShot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                      if (snapshot.hasError) {
+                        return CircularProgressIndicator();
+                      } else if (!snapshot.hasData || !snapshot.data!.exists) {
+                        return Center(child: Text('No Data Available'));
                       } else if (eventSnapShot.hasError ||
                           !eventSnapShot.hasData ||
                           !eventSnapShot.data!.exists) {
-                        return const Text('Event not found in Wishlist');
+                        return Container(
+                            // height: MediaQuery.of(context).size.height,
+                            // width: MediaQuery.of(context).size.width,
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                          ],
+                        ));
                       }
 
                       final eventDoc = eventSnapShot.data!;

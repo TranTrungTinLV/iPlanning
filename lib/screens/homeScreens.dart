@@ -302,7 +302,7 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => WishListScreen(
-                                    event_id: event!.event_id,
+                                    event_id: event?.event_id ?? '',
                                   )));
                     },
                   ),
@@ -461,7 +461,7 @@ class _HomescreensState extends State<Homescreens> {
                         drawer: () {
                           _scaffoldKey.currentState?.openDrawer();
                         },
-                        eventId: event!.event_id,
+                        // eventId: event != null ? event!.event_id : '',
                       ));
                 }),
               ),

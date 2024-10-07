@@ -3,9 +3,9 @@ import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
 
 class TopSection extends StatefulWidget {
-  const TopSection({super.key, required this.drawer, required this.eventId});
+  const TopSection({super.key, required this.drawer});
   final void Function() drawer;
-  final String eventId;
+  // final String eventId;
   @override
   State<TopSection> createState() => _TopSectionState();
 }
@@ -22,7 +22,7 @@ class _TopSectionState extends State<TopSection> {
           children: [
             TopBar(
               drawer: widget.drawer,
-              eventId: widget.eventId,
+              // eventId: widget.eventId,
             ),
             const SizedBox(height: 20),
             const SearchAndFilterRow(),

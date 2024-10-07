@@ -21,6 +21,7 @@ class AuthenticationService {
     String? country,
     String? phoneNumber,
     File? avatars,
+    List<String>? wishlist,
     File? newAvatars,
   }) async {
     AuthStatus status;
@@ -32,6 +33,7 @@ class AuthenticationService {
       // Tạo một map để lưu trữ dữ liệu người dùng
       Map<String, dynamic> userData = {
         'email': email,
+        'wishlist': wishlist,
         'uid': uid,
         'name': name,
         'country': country,

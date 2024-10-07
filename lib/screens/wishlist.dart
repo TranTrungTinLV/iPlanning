@@ -6,9 +6,9 @@ import 'package:iplanning/services/cloud.dart';
 class WishListScreen extends StatefulWidget {
   WishListScreen({
     super.key,
-    required this.event_id,
+    this.event_id,
   });
-  final String event_id;
+  final String? event_id;
   @override
   State<WishListScreen> createState() => _WishListScreenState();
 }
@@ -27,9 +27,10 @@ class _WishListScreenState extends State<WishListScreen> {
     setState(() {
       // widget.isLoadingInvite = true;
     });
+
     DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
         .collection('eventPosts')
-        .doc(widget.event_id)
+        .doc(widget.event_id!)
         .get();
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
       setState(() {
@@ -95,6 +96,10 @@ class _WishListScreenState extends State<WishListScreen> {
                   return FutureBuilder<DocumentSnapshot>(
                     future: eventPosts.doc(eventId).get(),
                     builder: (context, eventSnapShot) {
+                      if (widget.event_id == null || widget.event_id!.isEmpty) {
+                        return const Center(
+                            child: Text('No event ID available'));
+                      }
                       if (snapshot.hasError) {
                         return CircularProgressIndicator();
                       } else if (!snapshot.hasData || !snapshot.data!.exists) {
@@ -145,7 +150,7 @@ class _WishListScreenState extends State<WishListScreen> {
                                             ClouMethods().wishlistUser(
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid,
-                                                widget.event_id);
+                                                widget.event_id!);
                                           },
                                           icon: Icon(
                                             Icons.highlight_remove_rounded,
@@ -236,7 +241,7 @@ class _WishListScreenState extends State<WishListScreen> {
                                         await ClouMethods().invitedEvents(
                                             FirebaseAuth
                                                 .instance.currentUser!.uid,
-                                            widget.event_id,
+                                            widget.event_id!,
                                             'isPending');
                                         setState(() {
                                           isInvited = !isInvited;

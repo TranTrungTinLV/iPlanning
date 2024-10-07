@@ -141,7 +141,10 @@ class ClouMethods {
     try {
       // Truy vấn tài liệu người dùng từ collection 'users' dựa vào uid
       DocumentSnapshot userSnapshot = await users.doc(uid).get();
-
+      if (!userSnapshot.exists) {
+        print("Tài liệu không tồn tại.");
+        return;
+      }
       if (userSnapshot.exists && userSnapshot.data() != null) {
         // Lấy danh sách wishlist hiện tại (nếu có)
         List wishlist = (userSnapshot.data()! as dynamic)['wishlist'] ?? [];

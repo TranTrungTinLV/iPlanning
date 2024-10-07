@@ -17,7 +17,6 @@ class AuthenticationService {
     required String email,
     required String password,
     required String name,
-    // required String uid,
     String? country,
     String? phoneNumber,
     File? avatars,

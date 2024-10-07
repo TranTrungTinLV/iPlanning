@@ -235,8 +235,9 @@ class _HomescreensState extends State<Homescreens> {
                         ),
                       ]),
                     ),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      _scaffoldKey.currentState?.closeDrawer();
+                      final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => CreateEventScreens(
@@ -244,6 +245,9 @@ class _HomescreensState extends State<Homescreens> {
                                     avatar: _userData!.displayAvatar,
                                     username: _userData!.name,
                                   )));
+                      if (result == true) {
+                        _loadPostEvent();
+                      }
                     },
                   ),
                   ListTile(

@@ -465,7 +465,7 @@ class _HomescreensState extends State<Homescreens> {
                         drawer: () {
                           _scaffoldKey.currentState?.openDrawer();
                         },
-                        // eventId: event != null ? event!.event_id : '',
+                        eventId: event != null ? event!.event_id : '',
                       ));
                 }),
               ),

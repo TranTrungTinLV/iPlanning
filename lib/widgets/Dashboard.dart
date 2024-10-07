@@ -6,7 +6,7 @@ import 'package:iplanning/screens/notification.dart';
 class TopBar extends StatefulWidget {
   TopBar({super.key, required this.drawer, this.eventId});
   final void Function() drawer;
-  final eventId;
+  String? eventId;
   @override
   State<TopBar> createState() => _TopBarState();
 }
@@ -68,7 +68,7 @@ class _TopBarState extends State<TopBar> {
                 context,
                 MaterialPageRoute(
                     builder: (ctx) => NotificationScreen(
-                          event_id: widget.eventId ?? '',
+                          event_id: widget.eventId!,
                         )));
           },
         ),

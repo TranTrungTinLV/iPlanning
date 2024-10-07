@@ -53,7 +53,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 itemCount: eventDocs.length,
                 itemBuilder: (context, index) {
                   final eventDoc = eventDocs[index];
-                  final List<dynamic> isPending = eventDoc['isPending'];
+                  final List<dynamic>? isPending = eventDoc['isPending'] ?? [];
+
                   if (isPending == null || isPending.isEmpty) {
                     return Container(
                       width: MediaQuery.of(context).size.width,
@@ -198,13 +199,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                       ),
                                                       GestureDetector(
                                                         onTap: () async {
-                                                          await ClouMethods()
-                                                              .invitedEvents(
-                                                                  userDoc[
-                                                                      'uid'],
-                                                                  widget
-                                                                      .event_id,
-                                                                  'isAccepted');
+                                                          final uid =
+                                                              userDoc['uid'];
+                                                          final eventId =
+                                                              widget.event_id;
+                                                          if (uid != null &&
+                                                              eventId
+                                                                  .isNotEmpty) {
+                                                            await ClouMethods()
+                                                                .invitedEvents(
+                                                              uid,
+                                                              eventId,
+                                                              'isAccepted',
+                                                            );
+                                                          } else {
+                                                            print(
+                                                                'Invalid ${uid} or ${eventId}');
+                                                          }
                                                         },
                                                         child: Container(
                                                           width: 100,

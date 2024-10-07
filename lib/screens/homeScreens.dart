@@ -18,6 +18,7 @@ import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
+import 'package:iplanning/widgets/categories.dart';
 import 'package:iplanning/widgets/categoriesUI.dart';
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
@@ -39,6 +40,7 @@ class _HomescreensState extends State<Homescreens> {
   EventsPostModel? _eventData;
   List<EventsPostModel>? _eventPosts;
   EventsPostModel? event;
+  List<CategoryModel>? _categoriesModel;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
   bool _isLoading = true;
@@ -91,15 +93,21 @@ class _HomescreensState extends State<Homescreens> {
     });
   }
 
-  void _loadCategories() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('categoriesEvent').get();
+  Future<List<CategoryModel>> _loadCategories() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('categoriesEvent').get();
 
-    querySnapshot.docs.forEach((doc) {
-      CategoryModel categoryModel =
-          CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
-      print("category ${categoryModel.name}");
-    });
+      List<CategoryModel> categoryModel = querySnapshot.docs.map((doc) {
+        return CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+      _categoriesModel = categoryModel;
+      return _categoriesModel!;
+      // _categoriesModel = _categoriesModel!.add(categoryModel);
+      // print("category ${categoryModel.name}");
+    } catch (e) {
+      return [];
+    }
   }
 
   void _getDataPicture() async {
@@ -163,6 +171,8 @@ class _HomescreensState extends State<Homescreens> {
                         onPressed: () {},
                         child: ListTile(
                           onTap: () {
+                            _scaffoldKey.currentState?.closeDrawer();
+
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -334,6 +344,8 @@ class _HomescreensState extends State<Homescreens> {
                       ]),
                     ),
                     onTap: () {
+                      _scaffoldKey.currentState?.closeDrawer();
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -478,7 +490,9 @@ class _HomescreensState extends State<Homescreens> {
                       decoration: BoxDecoration(
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
-                      child: const CategoriesSection(),
+                      child: CategoriesSection(
+                        categories: _categoriesModel ?? [],
+                      ),
                     ),
                     Container(
                       color: Colors.white,
@@ -516,9 +530,11 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: _eventPosts != null
-                                  ? _eventPosts!.map((event) {
+                            child: (_eventPosts != null &&
+                                    _eventPosts!.isNotEmpty)
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: _eventPosts!.map((event) {
                                       return GestureDetector(
                                         onTap: () {
                                           if (event != null &&
@@ -558,12 +574,23 @@ class _HomescreensState extends State<Homescreens> {
                                           event: event,
                                           RandomImages: RandomImages,
                                           uid: _userData!.uid,
-                                          count: inviters.toString(),
+                                          count: inviters,
                                         ),
                                       );
-                                    }).toList()
-                                  : [const Text('No Events Available')],
-                            ),
+                                    }).toList())
+                                : Center(
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: Text(
+                                          'No Events Available',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 20.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(
@@ -650,51 +677,6 @@ class _HomescreensState extends State<Homescreens> {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class CategoriesSection extends StatelessWidget {
-  const CategoriesSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          SizedBox(width: 10),
-          CategoriesUI(
-            icons: Icons.sports,
-            titleCate: 'Sports',
-            colour: Colors.red,
-            textColour: Colors.white,
-            iconColour: Colors.white,
-          ),
-          CategoriesUI(
-            icons: Icons.sports,
-            titleCate: 'Sports',
-            colour: Colors.orange,
-            textColour: Colors.white,
-            iconColour: Colors.white,
-          ),
-          CategoriesUI(
-            icons: Icons.sports,
-            titleCate: 'Sports',
-            colour: Colors.green,
-            textColour: Colors.white,
-            iconColour: Colors.white,
-          ),
-          CategoriesUI(
-            icons: Icons.sports,
-            titleCate: 'Sports',
-            colour: Colors.blueAccent,
-            textColour: Colors.white,
-            iconColour: Colors.white,
-          ),
-          SizedBox(width: 10),
         ],
       ),
     );

@@ -173,30 +173,34 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   isInvited = !isInvited;
                 });
               },
-              child: Container(
-                height: 60,
-                child: Center(
-                  child: widget.isLoadingInvite
-                      ? Container(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 1,
-                            strokeAlign: 1,
-                          ),
-                        )
-                      : Text(
-                          isInvited ? 'UnInvite' : 'Invite',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                ),
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(20)),
-              ),
+              child: authInstance.currentUser!.uid == widget.uid
+                  ? Container()
+                  : Container(
+                      height: 60,
+                      child: Center(
+                        child: widget.isLoadingInvite
+                            ? Container(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 1,
+                                  strokeAlign: 1,
+                                ),
+                              )
+                            : Text(
+                                isInvited ? 'UnInvite' : 'Invite',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
             ),
           ),
           Align(

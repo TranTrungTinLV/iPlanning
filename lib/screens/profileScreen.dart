@@ -71,8 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context)
-                    .pushReplacement(
+                final result = Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                       builder: (context) => EditScreen(
                             enteremail: widget.enteredemail,
@@ -84,15 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             userData: widget.userData,
                             // userData: _userData!,
                           )),
-                )
-                    .then((updatedUser) {
-                  // Cập nhật lại dữ liệu sau khi quay về từ EditScreen
-                  if (updatedUser != null) {
-                    setState(() {
-                      widget.userData = updatedUser; // Cập nhật lại _userData
-                    });
-                  }
-                });
+                );
               },
               child: Container(
                 // margin: EdgeInsets.symmetric(vertical: 10),

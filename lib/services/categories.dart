@@ -76,4 +76,8 @@ class CategoriesMethod {
     }
     return res;
   }
+
+  getAllCategories() async {
+    
+  }
 }

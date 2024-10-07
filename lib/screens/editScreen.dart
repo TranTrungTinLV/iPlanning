@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/services/auth.dart';
@@ -60,7 +61,7 @@ class _EditScreenState extends State<EditScreen> {
 
       await _authService.updateUser(widget.userData,
           newAvatars: _selectedImage);
-      Navigator.pop(context, widget.userData);
+      Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -77,117 +78,120 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        actions: [
-          GestureDetector(
-              onTap: _handleSave,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                color: Colors.transparent,
-                child: const Text(
-                  'Save',
-                  style: TextStyle(color: Colors.green, fontSize: 18),
-                ),
-              )),
-          const SizedBox(
-            width: 10,
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(alignment: Alignment.center, children: [
-              SizedBox(
-                width: 200, // Kích thước mới lớn hơn
-                height: 200,
-                child: ImageUserPicker(
-                  onPickImage: (File pickedImage) {
-                    _selectedImage = pickedImage;
-                  },
-                ),
-              ),
-              IgnorePointer(
+    return LoadingManager(
+      isLoading: _isLoading,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Edit Profile'),
+          actions: [
+            GestureDetector(
+                onTap: _handleSave,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 40.0),
-
-                  width: 200, // Kích thước lớn hơn cho icon camera
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.transparent,
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.green, fontSize: 18),
+                  ),
+                )),
+            const SizedBox(
+              width: 10,
+            )
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(alignment: Alignment.center, children: [
+                SizedBox(
+                  width: 200, // Kích thước mới lớn hơn
                   height: 200,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black54,
-                      image: DecorationImage(
-                        opacity: 0.7,
-                        image: widget.avatarEdit != null
-                            ? NetworkImage(widget.avatarEdit!)
-                            : const NetworkImage(
-                                'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
-                        fit: BoxFit.cover,
-                      )),
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                    size: 50,
+                  child: ImageUserPicker(
+                    onPickImage: (File pickedImage) {
+                      _selectedImage = pickedImage;
+                    },
                   ),
                 ),
-              ),
-            ]),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Container(
-                              child: TextFieldCustom(
-                        controller: _nameController,
-                        labelText: 'username',
-                        title: 'username',
-                        keyboardType: TextInputType.name,
-                      ))), // LastName
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 30.0),
-                    child: TextFieldCustom(
-                      controller: _emailController,
-                      title: 'email',
-                      readonly: true,
-                      keyboardType: TextInputType.emailAddress,
+                IgnorePointer(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 40.0),
+
+                    width: 200, // Kích thước lớn hơn cho icon camera
+                    height: 200,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black54,
+                        image: DecorationImage(
+                          opacity: 0.7,
+                          image: widget.avatarEdit != null
+                              ? NetworkImage(widget.avatarEdit!)
+                              : const NetworkImage(
+                                  'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+                          fit: BoxFit.cover,
+                        )),
+                    child: Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 50,
                     ),
-                  ), //Email
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 30),
-                    child: widget.country != null
+                  ),
+                ),
+              ]),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Container(
+                                child: TextFieldCustom(
+                          controller: _nameController,
+                          labelText: 'username',
+                          title: 'username',
+                          keyboardType: TextInputType.name,
+                        ))), // LastName
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 30.0),
+                      child: TextFieldCustom(
+                        controller: _emailController,
+                        title: 'email',
+                        readonly: true,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                    ), //Email
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 30),
+                      child: widget.country != null
+                          ? TextFieldCustom(
+                              controller: _countryController,
+                              title: widget.country!,
+                              keyboardType: TextInputType.text,
+                            )
+                          : TextFieldCustom(
+                              controller: _countryController,
+                              title: 'Country',
+                              keyboardType: TextInputType.text,
+                            ), //country,
+                    ),
+                    widget.phoneNumber != null
                         ? TextFieldCustom(
-                            controller: _countryController,
-                            title: widget.country!,
-                            keyboardType: TextInputType.text,
+                            controller: _phoneController,
+                            title: widget.phoneNumber!,
+                            keyboardType: TextInputType.number,
                           )
                         : TextFieldCustom(
-                            controller: _countryController,
-                            title: 'Country',
-                            keyboardType: TextInputType.text,
-                          ), //country,
-                  ),
-                  widget.phoneNumber != null
-                      ? TextFieldCustom(
-                          controller: _phoneController,
-                          title: widget.phoneNumber!,
-                          keyboardType: TextInputType.number,
-                        )
-                      : TextFieldCustom(
-                          controller: _phoneController,
-                          title: 'Phone Number',
-                          keyboardType: TextInputType.number,
-                        ) //phone number
-                ],
+                            controller: _phoneController,
+                            title: 'Phone Number',
+                            keyboardType: TextInputType.number,
+                          ) //phone number
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

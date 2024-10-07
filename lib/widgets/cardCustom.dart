@@ -17,7 +17,7 @@ class CardCustom extends StatelessWidget {
 
   final EventsPostModel event;
   final String uid;
-  final String count;
+  final int count;
   @override
   Widget build(BuildContext context) {
     var isMe = authInstance.currentUser!.uid == uid;
@@ -94,11 +94,13 @@ class CardCustom extends StatelessWidget {
                           ),
                           Container(
                             margin: const EdgeInsets.only(left: 20),
-                            child: Text(
-                              '${count.toString()} Going',
-                              style: TextStyle(
-                                  color: Color(0xff3F38DD), fontSize: 15),
-                            ),
+                            child: count <= 0
+                                ? Container()
+                                : Text(
+                                    '${count.toString()} Going',
+                                    style: TextStyle(
+                                        color: Color(0xff3F38DD), fontSize: 15),
+                                  ),
                           ),
                           const SizedBox()
                         ],

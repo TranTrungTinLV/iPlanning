@@ -19,7 +19,7 @@ class ClouMethods {
     required Timestamp eventDateEnd,
     required Timestamp eventDateStart,
     String? profilePic,
-    String? category_id,
+    // String? category_id,
     String? eventType,
     required String username,
     required String uid, //user_id
@@ -43,7 +43,7 @@ class ClouMethods {
           profilePic: profilePic ?? "",
           event_name: event_name,
           event_id: eventId,
-          category_id: category_id,
+          // category_id: category_id,
           description: description,
           uid: uid,
           location: location,

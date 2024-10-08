@@ -11,7 +11,6 @@ import 'package:iplanning/utils/InvitationStatus.dart';
 class EventsPostModel {
   String event_name;
   String event_id;
-  String? category_id;
   Timestamp eventDateStart;
   List<String>? eventImage;
   Timestamp eventDateEnd;
@@ -20,7 +19,7 @@ class EventsPostModel {
   String profilePic;
   Timestamp createAt;
   List<ToDoList>? todoList;
-
+  CategoryModel? categoryModel;
   // List inviteEvents;
   String? description;
   String username;
@@ -35,6 +34,7 @@ class EventsPostModel {
   CategoryModel? category;
   EventsPostModel(
       {required this.event_name,
+      this.category,
       this.todoList,
       this.eventType,
       this.isPending,
@@ -45,7 +45,6 @@ class EventsPostModel {
       required this.profilePic,
       required this.event_id,
       this.budget,
-      this.category_id,
       required this.username,
       required this.users,
       required this.eventDateEnd,
@@ -61,6 +60,10 @@ class EventsPostModel {
       profilePic: json['profilePic'] as String,
       username: json['username'] as String,
       event_name: json['event_name'] as String,
+      category: json['category'] != null
+          ? CategoryModel.fromJson(
+              json['category']) // Kiểm tra nếu category tồn tại
+          : null,
       todoList: json['todoList'] != null
           ? (json['todoList'] as List)
               .map((item) => ToDoList.fromMap(item))
@@ -90,8 +93,7 @@ class EventsPostModel {
       eventImage: json['eventImage'] != null
           ? List<String>.from(json['eventImage'])
           : null, // Ensure proper handling of eventImage
-      category_id:
-          json['category_id'] != null ? json['category_id'] as String : null,
+
       eventDateStart: json['eventDateStart'] as Timestamp,
       eventDateEnd: json['eventDateEnd'] as Timestamp,
       uid: json['uid'] as String,
@@ -121,7 +123,7 @@ class EventsPostModel {
       'budget': budget?.toJson(),
       'event_id': event_id,
       'eventImage': eventImage,
-      'category_id': category_id,
+      'category_id': categoryModel,
       'eventDateEnd': eventDateEnd,
       'eventDateStart': eventDateStart,
       'uid': uid,

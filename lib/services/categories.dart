@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
+import 'package:iplanning/models/events_model.dart';
 import 'package:uuid/uuid.dart';
 
 class CategoriesMethod {
@@ -34,7 +35,7 @@ class CategoriesMethod {
 
 // ! user custom by Event_ID
   Future<String> uploadCategories({
-    required String event_id,
+    required EventsPostModel event_id,
     required String name,
   }) async {
     String res = 'Some Error';
@@ -77,7 +78,5 @@ class CategoriesMethod {
     return res;
   }
 
-  getAllCategories() async {
-    
-  }
+  getAllCategories() async {}
 }

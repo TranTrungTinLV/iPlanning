@@ -4,7 +4,7 @@ class CategoryModel {
   String category_id;
   String name;
   // String description;
-  List<EventsPostModel>? event_ids;
+  List<String>? event_ids;
   CategoryModel({
     required this.category_id,
     required this.event_ids,
@@ -14,12 +14,11 @@ class CategoryModel {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-        category_id: json['category_id'] as String,
-        name: json['name'] as String,
-        // description: json['description'] as String,
-        event_ids: (json['event_ids'] as List)
-            .map((eventJson) => EventsPostModel.fromJson(eventJson))
-            .toList());
+      category_id: json['category_id'] as String,
+      name: json['name'] as String,
+      // description: json['description'] as String,
+      event_ids: List<String>.from(json['event_ids'] ?? []),
+    );
   }
 
   Map<String, dynamic> toJson() {

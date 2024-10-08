@@ -49,7 +49,7 @@ class CategoriesMethod {
 
 // ! user custom by Event_ID
   Future<String> uploadCategories({
-    required EventsPostModel event_id,
+    required String event_id,
     required String name,
   }) async {
     String res = 'Some Error';

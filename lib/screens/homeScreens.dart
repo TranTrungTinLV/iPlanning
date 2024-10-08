@@ -19,7 +19,7 @@ import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
- 
+
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
 import 'package:iplanning/services/auth.dart';
@@ -101,7 +101,9 @@ class _HomescreensState extends State<Homescreens> {
       List<CategoryModel> categoryModel = querySnapshot.docs.map((doc) {
         return CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
-      _categoriesModel = categoryModel;
+      setState(() {
+        _categoriesModel = categoryModel;
+      });
       return _categoriesModel!;
     } catch (e) {
       return [];

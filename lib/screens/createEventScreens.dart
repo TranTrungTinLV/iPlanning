@@ -3,20 +3,24 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/models/Budget.dart';
+import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
+import 'package:iplanning/widgets/dropdownCategories.dart';
 import 'package:iplanning/widgets/mutipleImage.dart';
 
 class CreateEventScreens extends StatefulWidget {
   CreateEventScreens(
       {super.key,
+      required this.list,
       required this.uid,
       required this.username,
       required this.avatar});
   final String uid;
   final String username;
   final String? avatar;
+  final List<CategoryModel> list;
   @override
   State<CreateEventScreens> createState() => _CreateEventScreensState();
 }
@@ -30,6 +34,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   TextEditingController eventName = TextEditingController();
   TextEditingController location = TextEditingController();
   TextEditingController eventType = TextEditingController();
+
   bool isLoading = false;
   void _presentDatePicker({required bool isStartDate}) async {
     final now = DateTime.now();
@@ -117,6 +122,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         controller: eventName,
                         title: 'Event Name',
                         radius: 10.0,
+                      ),
+                      Dropdowncategories(
+                        list: widget.list,
                       ),
                       Container(
                           margin: EdgeInsets.symmetric(vertical: 20),

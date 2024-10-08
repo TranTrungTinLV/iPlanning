@@ -19,7 +19,7 @@ import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
-import 'package:iplanning/widgets/categoriesUI.dart';
+
 import 'package:iplanning/widgets/filterbutton.dart';
 import 'package:iplanning/widgets/searchandfilter.dart';
 import 'package:iplanning/services/auth.dart';
@@ -103,8 +103,6 @@ class _HomescreensState extends State<Homescreens> {
       }).toList();
       _categoriesModel = categoryModel;
       return _categoriesModel!;
-      // _categoriesModel = _categoriesModel!.add(categoryModel);
-      // print("category ${categoryModel.name}");
     } catch (e) {
       return [];
     }
@@ -254,6 +252,7 @@ class _HomescreensState extends State<Homescreens> {
                                     uid: _userData!.uid,
                                     avatar: _userData!.displayAvatar,
                                     username: _userData!.name,
+                                    list: _categoriesModel ?? [],
                                   )));
                       if (result == true) {
                         _loadPostEvent();

@@ -31,10 +31,10 @@ class EventsPostModel {
 
   List<UserModel> users;
   Budget? budget;
-  CategoryModel? category;
+  // CategoryModel? category;
   EventsPostModel(
       {required this.event_name,
-      this.category,
+      this.categoryModel,
       this.todoList,
       this.eventType,
       this.isPending,
@@ -60,7 +60,7 @@ class EventsPostModel {
       profilePic: json['profilePic'] as String,
       username: json['username'] as String,
       event_name: json['event_name'] as String,
-      category: json['category'] != null
+      categoryModel: json['category'] != null
           ? CategoryModel.fromJson(
               json['category']) // Kiểm tra nếu category tồn tại
           : null,
@@ -123,7 +123,7 @@ class EventsPostModel {
       'budget': budget?.toJson(),
       'event_id': event_id,
       'eventImage': eventImage,
-      'category_id': categoryModel,
+      'category_id': categoryModel?.category_id,
       'eventDateEnd': eventDateEnd,
       'eventDateStart': eventDateStart,
       'uid': uid,

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/categoryClass.dart';
 
 class Dropdowncategories extends StatefulWidget {
-  Dropdowncategories({super.key, required this.list});
+  Dropdowncategories(
+      {super.key, required this.list, required this.onCategoryChanged});
   List<CategoryModel> list;
-
+  final Function(CategoryModel) onCategoryChanged;
   @override
   State<Dropdowncategories> createState() => _DropdowncategoriesState();
 }
@@ -38,8 +39,9 @@ class _DropdowncategoriesState extends State<Dropdowncategories> {
         value: dropValue,
         onChanged: (CategoryModel? value) {
           setState(() {
-            dropValue = value!;
+            dropValue = value;
           });
+          widget.onCategoryChanged(value!); // Gọi callback khi giá trị thay đổi
         },
         items: widget.list
             .map<DropdownMenuItem<CategoryModel>>((CategoryModel value) {

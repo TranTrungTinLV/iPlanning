@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/Budget.dart';
+import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/services/categories.dart';
 import 'package:iplanning/services/storage.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,7 +21,7 @@ class ClouMethods {
     required Timestamp eventDateEnd,
     required Timestamp eventDateStart,
     String? profilePic,
-    // String? category_id,
+    required CategoryModel category_id,
     String? eventType,
     required String username,
     required String uid, //user_id
@@ -43,7 +45,7 @@ class ClouMethods {
           profilePic: profilePic ?? "",
           event_name: event_name,
           event_id: eventId,
-          // category_id: category_id,
+          categoryModel: category_id,
           description: description,
           uid: uid,
           location: location,
@@ -53,7 +55,10 @@ class ClouMethods {
           eventImage: postImageUrls,
           // budget: budget,
           users: []);
+      await CategoriesMethod()
+          .updateCategoryEventIds(category_id.category_id, eventId);
       await postEvents.doc(eventId).set(eventsPostModel.toJson());
+
       res = "success";
     } catch (e) {
       res = e.toString();

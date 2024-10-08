@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/screens/loading_manager.dart';
+import 'package:iplanning/services/categories.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/dropdownCategories.dart';
@@ -21,6 +22,7 @@ class CreateEventScreens extends StatefulWidget {
   final String username;
   final String? avatar;
   final List<CategoryModel> list;
+
   @override
   State<CreateEventScreens> createState() => _CreateEventScreensState();
 }
@@ -34,7 +36,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   TextEditingController eventName = TextEditingController();
   TextEditingController location = TextEditingController();
   TextEditingController eventType = TextEditingController();
-
+  CategoryModel? _selectedCategories;
   bool isLoading = false;
   void _presentDatePicker({required bool isStartDate}) async {
     final now = DateTime.now();
@@ -71,7 +73,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
         eventType: eventType.text,
         description: description.text,
         eventImages: fileImage!,
+        category_id: _selectedCategories!,
       );
+
       if (res == 'success') {
         // Sử dụng popUntil để quay về HomeScreen
         Navigator.pop(context, true);
@@ -125,6 +129,11 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                       ),
                       Dropdowncategories(
                         list: widget.list,
+                        onCategoryChanged: (CategoryModel selected) {
+                          setState(() {
+                            _selectedCategories = selected;
+                          });
+                        },
                       ),
                       Container(
                           margin: EdgeInsets.symmetric(vertical: 20),

@@ -33,6 +33,20 @@ class CategoriesMethod {
     }
   }
 
+  Future<void> updateCategoryEventIds(String categoryId, String eventId) async {
+    try {
+      DocumentReference categoryRef = FirebaseFirestore.instance
+          .collection('categoriesEvent')
+          .doc(categoryId);
+      print(categoryId);
+      await categoryRef.update({
+        'event_ids': FieldValue.arrayUnion([eventId])
+      });
+    } catch (e) {
+      print('Error updating event_ids: $e');
+    }
+  }
+
 // ! user custom by Event_ID
   Future<String> uploadCategories({
     required EventsPostModel event_id,

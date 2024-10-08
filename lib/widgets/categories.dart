@@ -12,9 +12,14 @@ class CategoriesSection extends StatelessWidget {
       child: (categories != null || categories.isEmpty)
           ? Row(
               children: categories.map((category) {
-                return CategoriesUI(
-                  titleCate: category.name,
-                  colour: Colors.red,
+                return GestureDetector(
+                  onTap: () {
+                    print(category.name);
+                  },
+                  child: CategoriesUI(
+                    titleCate: category.name,
+                    colour: Colors.red,
+                  ),
                 );
               }).toList(),
             )

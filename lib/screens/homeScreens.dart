@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
@@ -12,16 +10,11 @@ import 'package:iplanning/screens/EventDetailScreen.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
 import 'package:iplanning/screens/listEventUser.dart';
-import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
-import 'package:iplanning/widgets/Dashboard.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
-
-import 'package:iplanning/widgets/filterbutton.dart';
-import 'package:iplanning/widgets/searchandfilter.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/topSection.dart';
 
@@ -41,21 +34,27 @@ class _HomescreensState extends State<Homescreens> {
   List<EventsPostModel>? _eventPosts;
   EventsPostModel? event;
   List<CategoryModel>? _categoriesModel;
+  String? _selectedCategoryId;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
   bool _isLoading = true;
   bool inviting = false;
   int inviters = 0;
+  bool _isLoadingEvents = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadUserData();
-    _loadPostEvent();
-    _loadCategories();
+    _loadData();
   }
 
-  void _loadUserData() async {
+  Future<void> _loadData() async {
+    await _loadUserData();
+    await _loadPostEvent();
+    await _loadCategories();
+  }
+
+  Future<void> _loadUserData() async {
     UserModel? userData = await _authService.getUserData();
     if (mounted) {
       setState(() {
@@ -65,7 +64,7 @@ class _HomescreensState extends State<Homescreens> {
     }
   }
 
-  void _loadPostEvent() async {
+  Future<void> _loadPostEvent() async {
     List<EventsPostModel> events = await _eventService.getAllEventPosts();
 
     if (mounted) {
@@ -73,12 +72,44 @@ class _HomescreensState extends State<Homescreens> {
         _eventPosts = events;
         _isLoading = false;
         if (_eventPosts != null && _eventPosts!.isNotEmpty) {
-          // Gán sự kiện đầu tiên trong danh sách vào biến `event`
           event = _eventPosts!.first;
           _getDataPicture();
         }
       });
     }
+  }
+
+  void _filterEventsByCategory(String categoryId) {
+    setState(() {
+      _selectedCategoryId = categoryId;
+      _isLoadingEvents = true;
+    });
+    _loadEventsForCategory(categoryId).then((events) {
+      setState(() {
+        _eventPosts = events;
+        _isLoadingEvents = false;
+      });
+    });
+  }
+
+// !filter category
+  Future<List<EventsPostModel>> _loadEventsForCategory(
+      String categoryId) async {
+    CategoryModel? selectedCategory = _categoriesModel
+        ?.firstWhere((category) => category.category_id == categoryId);
+    if (selectedCategory != null && selectedCategory.event_ids!.isEmpty) {
+      print(selectedCategory.event_ids);
+      return [];
+    }
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('eventPosts')
+        .where('event_id', whereIn: selectedCategory?.event_ids)
+        .get();
+    List<EventsPostModel> events = querySnapshot.docs.map((doc) {
+      return EventsPostModel.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+    return events;
   }
 
   void _checkInviteStatus() async {
@@ -108,6 +139,13 @@ class _HomescreensState extends State<Homescreens> {
     } catch (e) {
       return [];
     }
+  }
+
+  void resetEvents() {
+    setState(() {
+      _selectedCategoryId = null;
+      _loadPostEvent();
+    });
   }
 
   void _getDataPicture() async {
@@ -157,6 +195,16 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   Widget build(BuildContext context) {
+    List<EventsPostModel> filteredEvents = _selectedCategoryId != null
+        ? (_eventPosts ?? []).where((event) {
+            return _categoriesModel!
+                .firstWhere(
+                    (category) => category.category_id == _selectedCategoryId)
+                .event_ids!
+                .contains(event.event_id);
+          }).toList()
+        : _eventPosts ?? [];
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: _userData == null
@@ -491,8 +539,20 @@ class _HomescreensState extends State<Homescreens> {
                       decoration: BoxDecoration(
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
+                      // !CategoriesSection
                       child: CategoriesSection(
                         categories: _categoriesModel ?? [],
+                        onCategorySelected: (categoryId) {
+                          _filterEventsByCategory(categoryId);
+                          _loadEventsForCategory(categoryId).then((events) {
+                            setState(() {
+                              _eventPosts = events;
+                            });
+                          });
+                        },
+                        onAllEvents: () {
+                          resetEvents();
+                        },
                       ),
                     ),
                     Container(
@@ -530,69 +590,94 @@ class _HomescreensState extends State<Homescreens> {
                             ),
                           ),
                           SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: (_eventPosts != null &&
-                                    _eventPosts!.isNotEmpty)
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: _eventPosts!.map((event) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          if (event != null &&
-                                              event?.uid != null) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (ctx) =>
-                                                    Eventdetailscreen(
-                                                  // isLoadingInvite: _isLoading,
-                                                  uid: event.uid,
-                                                  titleEvent: event.event_name,
-                                                  userName: event.username,
-                                                  location: event.location,
-                                                  startDate: event.createAt,
-                                                  avartar: event.profilePic ??
-                                                      'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                                                  discription: event
-                                                          .description ??
-                                                      'không có nội dung ở đây',
-                                                  backgroundIMG:
-                                                      event.eventImage![0],
-                                                  event_id: event.event_id,
-                                                ),
+                              scrollDirection: Axis.horizontal,
+                              child: _isLoadingEvents
+                                  ? Container()
+                                  : filteredEvents.isEmpty
+                                      ? Center(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Center(
+                                              child: Text(
+                                                'No Events Available',
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 20.0),
                                               ),
-                                            ).then((value) {
-                                              if (value == true) {
-                                                _loadPostEvent(); // Cập nhật lại sự kiện nếu có thay đổi
-                                              }
-                                            });
-                                          } else {
-                                            // Handle the case when `event` or `event.uid` is null.
-                                            print("Event or event UID is null");
-                                          }
-                                        },
-                                        child: CardCustom(
-                                          event: event,
-                                          RandomImages: RandomImages,
-                                          uid: _userData!.uid,
-                                          count: inviters,
-                                        ),
-                                      );
-                                    }).toList())
-                                : Center(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Center(
-                                        child: Text(
-                                          'No Events Available',
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 20.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                          ),
+                                            ),
+                                          ),
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: _eventPosts!.map((event) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                if (event != null &&
+                                                    event?.uid != null) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          Eventdetailscreen(
+                                                        // isLoadingInvite: _isLoading,
+                                                        uid: event.uid,
+                                                        titleEvent:
+                                                            event.event_name,
+                                                        userName:
+                                                            event.username,
+                                                        location:
+                                                            event.location,
+                                                        startDate:
+                                                            event.createAt,
+                                                        avartar: event
+                                                                .profilePic ??
+                                                            'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                                        discription: event
+                                                                .description ??
+                                                            'không có nội dung ở đây',
+                                                        backgroundIMG: event
+                                                            .eventImage![0],
+                                                        event_id:
+                                                            event.event_id,
+                                                      ),
+                                                    ),
+                                                  ).then((value) {
+                                                    if (value == true) {
+                                                      _loadPostEvent();
+                                                    }
+                                                  });
+                                                } else {
+                                                  // Handle the case when `event` or `event.uid` is null.
+                                                  print(
+                                                      "Event or event UID is null");
+                                                }
+                                              },
+                                              child: CardCustom(
+                                                event: event,
+                                                RandomImages: RandomImages,
+                                                uid: _userData!.uid,
+                                                count: inviters,
+                                              ),
+                                            );
+                                          }).toList())
+                              // : Center(
+                              //     child: Container(
+                              //       width:
+                              //           MediaQuery.of(context).size.width,
+                              //       child: Center(
+                              //         child: Text(
+                              //           'No Events Available',
+                              //           style: TextStyle(
+                              //               color: Colors.red,
+                              //               fontSize: 20.0),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 30, horizontal: 16),

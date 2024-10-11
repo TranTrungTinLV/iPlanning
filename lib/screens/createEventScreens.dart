@@ -144,9 +144,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   if (_index > 0)
                     Expanded(
                       child: ElevatedButton(
-                        // onPressed: details.onStepCancel,
-                        onPressed: () {},
-                        child: const Text('Done'),
+                        onPressed: details.onStepCancel,
+                        child: const Text('Back'),
                       ),
                     ),
                   const SizedBox(
@@ -155,8 +154,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   if (_index > 0)
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: details.onStepCancel,
-                        child: const Text('Back'),
+                        // onPressed: details.onStepCancel,
+                        onPressed: () {},
+                        child: const Text('Done'),
                       ),
                     ),
                 ],
@@ -195,6 +195,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               ),
                             ),
                             TextFieldCustom(
+                              
                               controller: eventName,
                               title: 'Event Name',
                               radius: 10.0,

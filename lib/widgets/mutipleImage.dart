@@ -64,6 +64,11 @@ class _MutipleImageState extends State<MutipleImage> {
                       borderRadius: BorderRadius.circular(20)),
                 ),
           Container(
+            alignment: Alignment.bottomRight,
+            padding: EdgeInsets.only(right: 10, top: 10),
+            child: Text("${widget.images.length.toString()}/5"),
+          ),
+          Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(vertical: 10),
             padding: EdgeInsets.symmetric(vertical: 10),

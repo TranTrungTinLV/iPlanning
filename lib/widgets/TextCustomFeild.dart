@@ -12,7 +12,8 @@ class TextFieldCustom extends StatelessWidget {
       this.minLine,
       this.radius,
       this.bottom,
-      this.readonly = false});
+      this.readonly = false,
+      this.onTap});
 
   final String title;
   int? maxLine;
@@ -24,11 +25,13 @@ class TextFieldCustom extends StatelessWidget {
   FocusNode? focusNode;
   double? radius;
   double? bottom;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: bottom ?? 0.0),
       child: TextField(
+        onTap: onTap,
         maxLines: maxLine,
         minLines: minLine,
         focusNode: focusNode,

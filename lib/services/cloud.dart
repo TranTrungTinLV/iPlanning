@@ -21,6 +21,7 @@ class ClouMethods {
     required Timestamp eventDateEnd,
     required Timestamp eventDateStart,
     String? profilePic,
+    bool? isPost,
     required CategoryModel category_id,
     String? eventType,
     required String username,
@@ -55,6 +56,7 @@ class ClouMethods {
           eventDateStart: eventDateStart,
           eventImage: postImageUrls,
           // budget: budget,
+          isPost: isPost ?? false,
           users: []);
       await CategoriesMethod()
           .updateCategoryEventIds(category_id.category_id, eventId);

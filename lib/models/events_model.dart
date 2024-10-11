@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,7 @@ class EventsPostModel {
   List<String>? eventImage;
   Timestamp eventDateEnd;
   String uid; //user_id
+  bool isPost;
   String location;
   String profilePic;
   Timestamp createAt;
@@ -35,6 +37,7 @@ class EventsPostModel {
   EventsPostModel(
       {required this.event_name,
       this.categoryModel,
+      this.isPost = false,
       this.todoList,
       this.eventType,
       this.isPending,
@@ -102,6 +105,7 @@ class EventsPostModel {
       users: (json['users'] as List)
           .map((userJson) => UserModel.fromJson(userJson))
           .toList(),
+      isPost: json['isPost'] ?? false,
     );
   }
 
@@ -132,6 +136,7 @@ class EventsPostModel {
       'createAt': createAt,
       'description': description,
       'users': users.map((user) => user.toJson()).toList(),
+      'isPost': isPost,
     };
   }
 }

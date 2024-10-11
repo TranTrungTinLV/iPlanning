@@ -195,7 +195,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               ),
                             ),
                             TextFieldCustom(
-                              
                               controller: eventName,
                               title: 'Event Name',
                               radius: 10.0,
@@ -283,6 +282,81 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                         Container(
                                             child: Text(_endDate == null
                                                 ? 'Select End Date'
+                                                : '${_endDate!.toLocal()}'
+                                                    .split(' ')[0])),
+                                      ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        border: Border.all(color: Colors.grey)),
+                                  ),
+                                )),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            // !TIme
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    print('start time');
+                                    _presentDatePicker(isStartDate: true);
+                                  },
+                                  child: Container(
+                                    width: 150,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    height: 50,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          child: Icon(Icons.timer_outlined),
+                                        ),
+                                        Container(
+                                            child: Text(_startDate == null
+                                                ? 'Select Start Time'
+                                                : '${_startDate!.toLocal()}'
+                                                    .split(' ')[0]))
+                                      ],
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        border: Border.all(color: Colors.grey)),
+                                  ),
+                                )),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    print('end time');
+                                    _presentDatePicker(isStartDate: false);
+                                  },
+                                  child: Container(
+                                    width: 150,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    height: 50,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          child: Icon(Icons.timer_outlined),
+                                        ),
+                                        Container(
+                                            child: Text(_endDate == null
+                                                ? 'Select End Time'
                                                 : '${_endDate!.toLocal()}'
                                                     .split(' ')[0])),
                                       ],
@@ -437,7 +511,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               width: 3,
                             ),
                             Text(
-                              'Day, Date',
+                              "${_startDate?.day.toString()}, ${_startDate?.month.toString()}-${_startDate?.year.toString()}",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -455,7 +529,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               width: 3,
                             ),
                             Text(
-                              'Time',
+                              "${_startDate?.hour}:${_startDate?.minute}",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],

@@ -388,17 +388,24 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   // mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(
-                              'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-dep-thien-nhien-2-1.jpg'),
+                    if (fileImage != null && fileImage!.isNotEmpty)
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: fileImage!.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Image.memory(
+                                fileImage![index],
+                                fit: BoxFit.fill,
+                                width: 150,
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ),
                     Container(
                       child: Text(
                         eventName.text,

@@ -306,6 +306,7 @@ class _HomescreensState extends State<Homescreens> {
                                   )));
                       if (result == true) {
                         _loadPostEvent();
+                        _loadCategories();
                       }
                     },
                   ),

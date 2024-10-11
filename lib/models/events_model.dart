@@ -31,7 +31,7 @@ class EventsPostModel {
 
   List<UserModel> users;
   Budget? budget;
-  // CategoryModel? category;
+
   EventsPostModel(
       {required this.event_name,
       this.categoryModel,
@@ -127,6 +127,7 @@ class EventsPostModel {
       'eventDateEnd': eventDateEnd,
       'eventDateStart': eventDateStart,
       'uid': uid,
+      'todoList': todoList,
       'location': location,
       'createAt': createAt,
       'description': description,

@@ -41,6 +41,22 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   bool isLoading = false;
   int _index = 0;
   bool isChecked = false;
+
+  final _formKey = GlobalKey<FormState>();
+  bool isFormValid = false;
+
+  void validateForm() {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      setState(() {
+        isFormValid = true;
+      });
+    } else {
+      setState(() {
+        isFormValid = false;
+      });
+    }
+  }
+
   void _presentDatePicker({required bool isStartDate}) async {
     final now = DateTime.now();
     final firstDate = DateTime(now.day, now.month, now.year - 1);
@@ -110,9 +126,23 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
           },
           onStepContinue: () {
-            if (_index < 1) {
+            // final isValid = _formKey.currentState!.validate();
+
+            // if (isValid && _index < 1) {
+            //   isFormValid;
+            //   setState(() {
+            //     _index += 1;
+            //     isFormValid = true;
+            //   });
+            //   _formKey.currentState!.save();
+            //   try {} catch (e) {}
+            // } else {}
+            if (_formKey.currentState != null &&
+                _formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
               setState(() {
                 _index += 1;
+                isFormValid = true;
               });
             }
           },
@@ -133,7 +163,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffF0534F)),
+                            backgroundColor:
+                                isFormValid ? Color(0xffF0534F) : Colors.grey),
                         onPressed: details.onStepContinue,
                         child: const Text(
                           'Next Event Details',
@@ -177,280 +208,315 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                 //   right: 10,
                 //   top: 10,
                 // ),
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.end,
-                  // crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    // Stack(
-                    //   children: [
-                    // ! Multiple-images picker
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: MutipleImage(
-                                images: fileImage!,
-                              ),
-                            ),
-                            TextFieldCustom(
-                              controller: eventName,
-                              title: 'Event Name',
-                              radius: 10.0,
-                            ),
-                            Dropdowncategories(
-                              list: widget.list,
-                              onCategoryChanged: (CategoryModel selected) {
-                                setState(() {
-                                  _selectedCategories = selected;
-                                });
-                              },
-                            ),
-                            Container(
-                                margin: EdgeInsets.symmetric(vertical: 20),
-                                child: TextFieldCustom(
-                                  controller: eventType,
-                                  title: 'Event Type',
-                                  radius: 10.0,
-                                )),
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                'Date&time',
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    print('start date');
-                                    _presentDatePicker(isStartDate: true);
-                                  },
-                                  child: Container(
-                                    width: 150,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          child: Icon(
-                                              Icons.calendar_month_outlined),
-                                        ),
-                                        Container(
-                                            child: Text(_startDate == null
-                                                ? 'Select Start Date'
-                                                : '${_startDate!.toLocal()}'
-                                                    .split(' ')[0]))
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(color: Colors.grey)),
-                                  ),
-                                )),
-                                SizedBox(
-                                  width: 20,
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: isFormValid
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.end,
+                    // crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Stack(
+                      //   children: [
+                      // ! Multiple-images picker
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: MutipleImage(
+                                  images: fileImage!,
                                 ),
-                                Expanded(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    print('end date');
-                                    _presentDatePicker(isStartDate: false);
-                                  },
-                                  child: Container(
-                                    width: 150,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          child: Icon(
-                                              Icons.calendar_month_outlined),
-                                        ),
-                                        Container(
-                                            child: Text(_endDate == null
-                                                ? 'Select End Date'
-                                                : '${_endDate!.toLocal()}'
-                                                    .split(' ')[0])),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(color: Colors.grey)),
-                                  ),
-                                )),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            // !TIme
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    print('start time');
-                                    _presentDatePicker(isStartDate: true);
-                                  },
-                                  child: Container(
-                                    width: 150,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          child: Icon(Icons.timer_outlined),
-                                        ),
-                                        Container(
-                                            child: Text(_startDate == null
-                                                ? 'Select Start Time'
-                                                : '${_startDate!.toLocal()}'
-                                                    .split(' ')[0]))
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(color: Colors.grey)),
-                                  ),
-                                )),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                    child: GestureDetector(
-                                  onTap: () {
-                                    print('end time');
-                                    _presentDatePicker(isStartDate: false);
-                                  },
-                                  child: Container(
-                                    width: 150,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    height: 50,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          child: Icon(Icons.timer_outlined),
-                                        ),
-                                        Container(
-                                            child: Text(_endDate == null
-                                                ? 'Select End Time'
-                                                : '${_endDate!.toLocal()}'
-                                                    .split(' ')[0])),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(color: Colors.grey)),
-                                  ),
-                                )),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFieldCustom(
-                              controller: description,
-                              title: 'Events description',
-                              minLine: 3,
-                              radius: 10.0,
-                              maxLine: 10,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: Text(
-                                'Location',
-                                style: TextStyle(fontSize: 25),
                               ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            TextFieldCustom(
-                              keyboardType: TextInputType.streetAddress,
-                              controller: location,
-                              title: 'Location',
-                              radius: 10,
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  child: Text(
-                                    "Bạn muốn đăng bài viết này không?",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
+                              TextFieldCustom(
+                                controller: eventName,
+                                onChanged: (value) {
+                                  validateForm();
+                                },
+                                title: 'Event Name',
+                                radius: 10.0,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Vui lòng nhập nội dung';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  eventName.text = value!;
+                                },
+                              ),
+                              Dropdowncategories(
+                                list: widget.list,
+                                onCategoryChanged: (CategoryModel selected) {
+                                  setState(() {
+                                    _selectedCategories = selected;
+                                  });
+                                },
+                              ),
+                              Container(
+                                  margin: EdgeInsets.symmetric(vertical: 20),
+                                  child: TextFieldCustom(
+                                    controller: eventType,
+                                    title: 'Event Type',
+                                    radius: 10.0,
+                                  )),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  'Date&time',
+                                  style: TextStyle(fontSize: 25),
                                 ),
-                                Checkbox(
-                                    value: isChecked,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isChecked = !isChecked;
-                                      });
-                                    })
-                              ],
-                            )
-                          ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      print('start date');
+                                      _presentDatePicker(isStartDate: true);
+                                    },
+                                    child: Container(
+                                      width: 150,
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      height: 50,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            child: Icon(
+                                                Icons.calendar_month_outlined),
+                                          ),
+                                          Container(
+                                              child: Text(_startDate == null
+                                                  ? 'Select Start Date'
+                                                  : '${_startDate!.toLocal()}'
+                                                      .split(' ')[0]))
+                                        ],
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border:
+                                              Border.all(color: Colors.grey)),
+                                    ),
+                                  )),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      print('end date');
+                                      _presentDatePicker(isStartDate: false);
+                                    },
+                                    child: Container(
+                                      width: 150,
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      height: 50,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            child: Icon(
+                                                Icons.calendar_month_outlined),
+                                          ),
+                                          Container(
+                                              child: Text(_endDate == null
+                                                  ? 'Select End Date'
+                                                  : '${_endDate!.toLocal()}'
+                                                      .split(' ')[0])),
+                                        ],
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border:
+                                              Border.all(color: Colors.grey)),
+                                    ),
+                                  )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              // !TIme
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      print('start time');
+                                      _presentDatePicker(isStartDate: true);
+                                    },
+                                    child: Container(
+                                      width: 150,
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      height: 50,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            child: Icon(Icons.timer_outlined),
+                                          ),
+                                          Container(
+                                              child: Text(_startDate == null
+                                                  ? 'Select Start Time'
+                                                  : '${_startDate!.toLocal()}'
+                                                      .split(' ')[0]))
+                                        ],
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border:
+                                              Border.all(color: Colors.grey)),
+                                    ),
+                                  )),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      print('end time');
+                                      _presentDatePicker(isStartDate: false);
+                                    },
+                                    child: Container(
+                                      width: 150,
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      height: 50,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            child: Icon(Icons.timer_outlined),
+                                          ),
+                                          Container(
+                                              child: Text(_endDate == null
+                                                  ? 'Select End Time'
+                                                  : '${_endDate!.toLocal()}'
+                                                      .split(' ')[0])),
+                                        ],
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border:
+                                              Border.all(color: Colors.grey)),
+                                    ),
+                                  )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFieldCustom(
+                                controller: description,
+                                title: 'Events description',
+                                minLine: 3,
+                                radius: 10.0,
+                                maxLine: 10,
+                                onChanged: (value) => validateForm(),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Vui lòng nhập nội dung';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  description.text = value!;
+                                },
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                child: Text(
+                                  'Location',
+                                  style: TextStyle(fontSize: 25),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              TextFieldCustom(
+                                keyboardType: TextInputType.streetAddress,
+                                controller: location,
+                                title: 'Location',
+                                radius: 10,
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      "Bạn muốn đăng bài viết này không?",
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                  Checkbox(
+                                      value: isChecked,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isChecked = !isChecked;
+                                        });
+                                      })
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     print('create Events');
-                    //     uploadEvent();
-                    //   },
-                    //   child: Align(
-                    //     alignment: Alignment.bottomCenter,
-                    //     child: Container(
-                    //       width: MediaQuery.of(context).size.width,
-                    //       height: 60,
-                    //       decoration: BoxDecoration(
-                    //           color: Color(0xff171924),
-                    //           borderRadius: BorderRadius.circular(20)),
-                    //       child: Center(
-                    //         child: Text(
-                    //           'Public Now',
-                    //           style: TextStyle(
-                    //               color: Colors.white,
-                    //               fontSize: 20,
-                    //               fontWeight: FontWeight.w600),
-                    //         ),
-                    //       ),
-                    //     ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     print('create Events');
+                      //     uploadEvent();
+                      //   },
+                      //   child: Align(
+                      //     alignment: Alignment.bottomCenter,
+                      //     child: Container(
+                      //       width: MediaQuery.of(context).size.width,
+                      //       height: 60,
+                      //       decoration: BoxDecoration(
+                      //           color: Color(0xff171924),
+                      //           borderRadius: BorderRadius.circular(20)),
+                      //       child: Center(
+                      //         child: Text(
+                      //           'Public Now',
+                      //           style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontSize: 20,
+                      //               fontWeight: FontWeight.w600),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
                     //   ),
-                    // ),
-                  ],
-                  //   ),
-                  // ],
+                    // ],
+                  ),
                 ),
               ),
             ),

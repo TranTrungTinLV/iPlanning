@@ -94,6 +94,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
           _isStartDateSelected = true; // Đặt thành true khi đã chọn
         } else {
           _endDate = pickedDate;
+          _isEndDateSelected = true;
         }
         _isDateValid = _validateDates();
       } else if (isStartDate) {
@@ -152,6 +153,16 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
           },
           onStepContinue: () {
+            if (_startDate == null) {
+              setState(() {
+                _isStartDateSelected = false; // Trigger error message
+              });
+            }
+            if (_endDate == null) {
+              setState(() {
+                _isEndDateSelected = false; // Trigger error message
+              });
+            }
             if (_formKey.currentState != null &&
                 _formKey.currentState!.validate() &&
                 _isDateValid &&
@@ -380,6 +391,15 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   width: MediaQuery.of(context).size.width,
                                   child: const Text(
                                     'Vui lòng chọn ngày bắt đầu',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              if (!_isEndDateSelected)
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: const Text(
+                                    'Vui lòng chọn ngày kết thúc',
                                     textAlign: TextAlign.end,
                                     style: TextStyle(color: Colors.red),
                                   ),

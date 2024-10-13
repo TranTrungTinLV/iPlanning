@@ -45,6 +45,11 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   final _formKey = GlobalKey<FormState>();
   bool isFormValid = false;
 
+  // !Date time
+  bool _isDateValid = true;
+  bool _isDate = true;
+  bool _isStartDateSelected = true;
+  bool _isEndDateSelected = true;
   void validateForm() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
@@ -55,6 +60,23 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
         isFormValid = false;
       });
     }
+  }
+
+  bool _validateDates() {
+    if (_startDate != null && _endDate != null) {
+      return _endDate!.isAfter(_startDate!) ||
+          _endDate!.isAtSameMomentAs(_startDate!);
+    }
+    return true;
+  }
+
+  bool _validateInputs() {
+    setState(() {
+      _isStartDateSelected = _startDate != null;
+      _isEndDateSelected = _endDate != null;
+    });
+
+    return _isStartDateSelected && _isEndDateSelected;
   }
 
   void _presentDatePicker({required bool isStartDate}) async {
@@ -69,9 +91,13 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
       if (pickedDate != null) {
         if (isStartDate) {
           _startDate = pickedDate;
+          _isStartDateSelected = true; // Đặt thành true khi đã chọn
         } else {
           _endDate = pickedDate;
         }
+        _isDateValid = _validateDates();
+      } else if (isStartDate) {
+        _isStartDateSelected = false; // Nếu không chọn, đặt thành false
       }
     });
   }
@@ -126,19 +152,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
           },
           onStepContinue: () {
-            // final isValid = _formKey.currentState!.validate();
-
-            // if (isValid && _index < 1) {
-            //   isFormValid;
-            //   setState(() {
-            //     _index += 1;
-            //     isFormValid = true;
-            //   });
-            //   _formKey.currentState!.save();
-            //   try {} catch (e) {}
-            // } else {}
             if (_formKey.currentState != null &&
-                _formKey.currentState!.validate()) {
+                _formKey.currentState!.validate() &&
+                _isDateValid &&
+                _isDate) {
               _formKey.currentState!.save();
               setState(() {
                 _index += 1;
@@ -294,10 +311,11 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                 Icons.calendar_month_outlined),
                                           ),
                                           Container(
-                                              child: Text(_startDate == null
-                                                  ? 'Select Start Date'
-                                                  : '${_startDate!.toLocal()}'
-                                                      .split(' ')[0]))
+                                            child: Text(_startDate == null
+                                                ? 'Select Start Date'
+                                                : '${_startDate!.toLocal()}'
+                                                    .split(' ')[0]),
+                                          ),
                                         ],
                                       ),
                                       decoration: BoxDecoration(
@@ -346,83 +364,104 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                 ],
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 3,
+                              ),
+                              if (!_isDateValid)
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: const Text(
+                                    'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              if (!_isStartDateSelected)
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: const Text(
+                                    'Vui lòng chọn ngày bắt đầu',
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              SizedBox(
+                                height: 5,
                               ),
                               // !TIme
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      child: GestureDetector(
-                                    onTap: () {
-                                      print('start time');
-                                      _presentDatePicker(isStartDate: true);
-                                    },
-                                    child: Container(
-                                      width: 150,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      height: 50,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Container(
-                                            child: Icon(Icons.timer_outlined),
-                                          ),
-                                          Container(
-                                              child: Text(_startDate == null
-                                                  ? 'Select Start Time'
-                                                  : '${_startDate!.toLocal()}'
-                                                      .split(' ')[0]))
-                                        ],
-                                      ),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border:
-                                              Border.all(color: Colors.grey)),
-                                    ),
-                                  )),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                      child: GestureDetector(
-                                    onTap: () {
-                                      print('end time');
-                                      _presentDatePicker(isStartDate: false);
-                                    },
-                                    child: Container(
-                                      width: 150,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      height: 50,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Container(
-                                            child: Icon(Icons.timer_outlined),
-                                          ),
-                                          Container(
-                                              child: Text(_endDate == null
-                                                  ? 'Select End Time'
-                                                  : '${_endDate!.toLocal()}'
-                                                      .split(' ')[0])),
-                                        ],
-                                      ),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border:
-                                              Border.all(color: Colors.grey)),
-                                    ),
-                                  )),
-                                ],
-                              ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   crossAxisAlignment: CrossAxisAlignment.center,
+                              //   children: [
+                              //     Expanded(
+                              //         child: GestureDetector(
+                              //       onTap: () {
+                              //         print('start time');
+                              //         _presentDatePicker(isStartDate: true);
+                              //       },
+                              //       child: Container(
+                              //         width: 150,
+                              //         padding:
+                              //             EdgeInsets.symmetric(horizontal: 10),
+                              //         height: 50,
+                              //         child: Row(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.spaceEvenly,
+                              //           children: [
+                              //             Container(
+                              //               child: Icon(Icons.timer_outlined),
+                              //             ),
+                              //             Container(
+                              //                 child: Text(_startDate == null
+                              //                     ? 'Select Start Time'
+                              //                     : '${_startDate!.toLocal()}'
+                              //                         .split(' ')[0]))
+                              //           ],
+                              //         ),
+                              //         decoration: BoxDecoration(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(10.0),
+                              //             border:
+                              //                 Border.all(color: Colors.grey)),
+                              //       ),
+                              //     )),
+                              //     SizedBox(
+                              //       width: 20,
+                              //     ),
+                              //     Expanded(
+                              //         child: GestureDetector(
+                              //       onTap: () {
+                              //         print('end time');
+                              //         _presentDatePicker(isStartDate: false);
+                              //       },
+                              //       child: Container(
+                              //         width: 150,
+                              //         padding:
+                              //             EdgeInsets.symmetric(horizontal: 10),
+                              //         height: 50,
+                              //         child: Row(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.spaceEvenly,
+                              //           children: [
+                              //             Container(
+                              //               child: Icon(Icons.timer_outlined),
+                              //             ),
+                              //             Container(
+                              //                 child: Text(_endDate == null
+                              //                     ? 'Select End Time'
+                              //                     : '${_endDate!.toLocal()}'
+                              //                         .split(' ')[0])),
+                              //           ],
+                              //         ),
+                              //         decoration: BoxDecoration(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(10.0),
+                              //             border:
+                              //                 Border.all(color: Colors.grey)),
+                              //       ),
+                              //     )),
+                              //   ],
+                              // ),
                               SizedBox(
                                 height: 20,
                               ),
@@ -458,6 +497,16 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               TextFieldCustom(
                                 keyboardType: TextInputType.streetAddress,
                                 controller: location,
+                                onChanged: (value) => validateForm(),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Vui lòng nhập địa chỉ';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  location.text = value!;
+                                },
                                 title: 'Location',
                                 radius: 10,
                               ),

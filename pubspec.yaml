@@ -51,6 +51,7 @@ dependencies:
   location: ^6.0.2
   geocoding: ^3.0.0
   flutter_map: ^7.0.2
+  http: ^1.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

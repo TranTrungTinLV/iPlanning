@@ -36,7 +36,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   List<Uint8List>? fileImage = [];
   TextEditingController description = TextEditingController();
   TextEditingController eventName = TextEditingController();
-  TextEditingController location = TextEditingController();
+  TextEditingController location = TextEditingController(text: "");
   TextEditingController eventType = TextEditingController();
   CategoryModel? _selectedCategories;
   bool isLoading = false;
@@ -695,9 +695,14 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                         ),
                       ],
                     ),
-                    MapScreen(
-                      location: location,
+                    SizedBox(
+                      height: 20,
                     ),
+                    if (_index >= 1)
+                      MapScreen(
+                        location: location.text,
+                        categories: _selectedCategories!.name,
+                      ),
                     SizedBox(
                       height: 30,
                     ),

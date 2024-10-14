@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/screens/loading_manager.dart';
+import 'package:iplanning/screens/mapScreen.dart';
 import 'package:iplanning/services/categories.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
@@ -693,6 +694,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                           ),
                         ),
                       ],
+                    ),
+                    MapScreen(
+                      location: location,
                     ),
                     SizedBox(
                       height: 30,

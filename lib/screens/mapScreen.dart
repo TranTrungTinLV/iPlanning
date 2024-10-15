@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as flutter_map;
 import 'package:latlong2/latlong.dart' as latlong;
-// import 'package:geolocator/geolocator.dart' as geo;
-// import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart'
     as google_maps_flutter;
-// import 'package:location/location.dart';
 
 // ignore: must_be_immutable
 class MapScreen extends StatefulWidget {
@@ -66,13 +61,9 @@ class _MapScreenState extends State<MapScreen> {
               point: pickedLocation!,
               child: Container(
                 child: Column(
-                  mainAxisSize: MainAxisSize
-                      .min, // Đảm bảo Column có kích thước tối thiểu cần thiết
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Nhãn "shop"
                     Container(
-                      // width: 30,
-                      // height: 20,
                       padding:
                           EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                       decoration: BoxDecoration(
@@ -94,9 +85,7 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                        height: 10), // Khoảng cách 20px giữa nhãn và biểu tượng
-                    // Biểu tượng màu đỏ
+                    SizedBox(height: 10),
                     Icon(
                       Icons.location_on,
                       color: Colors.red,
@@ -118,49 +107,49 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _searchPlaces() async {
-    try {
-      final input = widget.location;
-      print("Địa điểm: $input");
-      List<Location> locations = await locationFromAddress(input);
-      if (locations.isEmpty) {
-        print("Không tìm thấy địa điểm.");
-        return;
-      }
-      double latitude = locations[0].latitude;
-      double longitude = locations[0].longitude;
-      print("Tọa độ: $latitude, $longitude");
-      final url = Uri.parse(
-        'http://router.project-osrm.org/route/v1/driving/$longitude,$latitude;108.277,14.0609848?steps=true&annotations=true&geometries=geojson&overview=full',
-      );
-      final response = await http.get(url);
-      print('Response Status: ${response.statusCode}');
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['routes'].isEmpty) {
-          print('Không tìm thấy tuyến đường.');
-          return;
-        }
+  // Future<void> _searchPlaces() async {
+  //   try {
+  //     final input = widget.location;
+  //     print("Địa điểm: $input");
+  //     List<Location> locations = await locationFromAddress(input);
+  //     if (locations.isEmpty) {
+  //       print("Không tìm thấy địa điểm.");
+  //       return;
+  //     }
+  //     double latitude = locations[0].latitude;
+  //     double longitude = locations[0].longitude;
+  //     print("Tọa độ: $latitude, $longitude");
+  //     final url = Uri.parse(
+  //       'http://router.project-osrm.org/route/v1/driving/$longitude,$latitude;108.277,14.0609848?steps=true&annotations=true&geometries=geojson&overview=full',
+  //     );
+  //     final response = await http.get(url);
+  //     print('Response Status: ${response.statusCode}');
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       if (data['routes'].isEmpty) {
+  //         print('Không tìm thấy tuyến đường.');
+  //         return;
+  //       }
 
-        // Lấy danh sách tọa độ từ phản hồi JSON
-        final coordinatesList =
-            data['routes'][0]['geometry']['coordinates'] as List;
+  //       // Lấy danh sách tọa độ từ phản hồi JSON
+  //       final coordinatesList =
+  //           data['routes'][0]['geometry']['coordinates'] as List;
 
-        setState(() {
-          routpoints = coordinatesList
-              .map<google_maps_flutter.LatLng>(
-                  (coord) => google_maps_flutter.LatLng(coord[1], coord[0]))
-              .toList();
-        });
+  //       setState(() {
+  //         routpoints = coordinatesList
+  //             .map<google_maps_flutter.LatLng>(
+  //                 (coord) => google_maps_flutter.LatLng(coord[1], coord[0]))
+  //             .toList();
+  //       });
 
-        print("Route Points: $routpoints");
-      } else {
-        print('Lỗi API: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Lỗi: $e');
-    }
-  }
+  //       print("Route Points: $routpoints");
+  //     } else {
+  //       print('Lỗi API: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Lỗi: $e');
+  //   }
+  // }
 
   // Future<void> _searchPlaces() async {
   //   print(widget.location);

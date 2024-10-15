@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/screens/budgetList.dart';
+import 'package:iplanning/screens/budgetScreen.dart';
 import 'package:iplanning/screens/guestList.dart';
 import 'package:iplanning/screens/taskList.dart';
 import 'package:iplanning/services/cloud.dart';
@@ -188,7 +189,7 @@ class _ListEventState extends State<ListEvent>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (ctx) => BudgetList()),
+                                        builder: (ctx) => Budgetscreen()),
                                   );
                                 } else if (result == 'TaskList') {
                                   Navigator.push(

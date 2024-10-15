@@ -312,7 +312,14 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   images: fileImage!,
                                 ),
                               ),
-                              if (!_isImage) Text('Vui lòng thêm ảnh'),
+                              if (!_isImage)
+                                Text(
+                                  'Vui lòng thêm ảnh',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              SizedBox(
+                                height: 10,
+                              ),
                               TextFieldCustom(
                                 controller: eventName,
                                 onChanged: (value) {

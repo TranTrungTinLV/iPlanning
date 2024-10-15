@@ -206,7 +206,8 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 25),
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.15)),
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 25),
               width: MediaQuery.of(context).size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -48,9 +48,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
 
   // !Date time
   bool _isDateValid = true;
-  bool _isDate = true;
+
   bool _isStartDateSelected = true;
   bool _isEndDateSelected = true;
+  bool _isImage = true;
   void validateForm() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
@@ -78,6 +79,13 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
     });
 
     return _isStartDateSelected && _isEndDateSelected;
+  }
+
+  bool _validChoosenImage() {
+    setState(() {
+      _isImage = fileImage != null && fileImage!.isNotEmpty;
+    });
+    return _isImage;
   }
 
   void _presentDatePicker({required bool isStartDate}) async {
@@ -159,6 +167,11 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                 _isStartDateSelected = false; // Trigger error message
               });
             }
+            if (fileImage?.isEmpty ?? true) {
+              setState(() {
+                _isImage = false;
+              });
+            }
             if (_endDate == null) {
               setState(() {
                 _isEndDateSelected = false; // Trigger error message
@@ -167,7 +180,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             if (_formKey.currentState != null &&
                 _formKey.currentState!.validate() &&
                 _isDateValid &&
-                _isDate) {
+                _startDate != null &&
+                _endDate != null &&
+                _isImage) {
               _formKey.currentState!.save();
               setState(() {
                 _index += 1;
@@ -176,9 +191,57 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
           },
           onStepTapped: (int index) {
-            setState(() {
-              _index = index;
-            });
+            // setState(() {
+            //   _index = index;
+            // });
+            if (index <= _index) {
+              setState(() {
+                _index = index;
+              });
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  content: Stack(
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(16.0),
+                          height: 90,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: Text(
+                              'Vui lòng hoàn thành bước hiện tại trước.',
+                              style: TextStyle(fontSize: 14.0),
+                            ),
+                          )),
+                      Positioned(
+                        right: 10,
+                        top: 5,
+                        child: Align(
+                            alignment: Alignment.topRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                              },
+                              child: Icon(
+                                Icons.delete,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
+
+                  // backgroundColor: Colors.red,
+                ),
+              );
+            }
           },
           controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Padding(
@@ -231,23 +294,13 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
               title: Text('Create Event'),
               content: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
-                // padding: EdgeInsets.only(bottom: 10),
-                // margin: EdgeInsets.only(
-                //   left: 10,
-                //   right: 10,
-                //   top: 10,
-                // ),
                 child: Form(
                   key: _formKey,
                   autovalidateMode: isFormValid
                       ? AutovalidateMode.onUserInteraction
                       : AutovalidateMode.disabled,
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.end,
-                    // crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      // Stack(
-                      //   children: [
                       // ! Multiple-images picker
                       Expanded(
                         child: SingleChildScrollView(
@@ -259,6 +312,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   images: fileImage!,
                                 ),
                               ),
+                              if (!_isImage) Text('Vui lòng thêm ảnh'),
                               TextFieldCustom(
                                 controller: eventName,
                                 onChanged: (value) {

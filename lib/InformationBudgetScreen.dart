@@ -258,7 +258,11 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       ],
                                     ),
                                   ),
-                                )
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Text("Hello")
                               ],
                             ),
                           ),

@@ -334,6 +334,8 @@ class _HomescreensState extends State<Homescreens> {
                       ]),
                     ),
                     onTap: () {
+                      _scaffoldKey.currentState?.closeDrawer();
+
                       Navigator.push(context,
                           MaterialPageRoute(builder: (ctx) => ListEvent()));
                     },

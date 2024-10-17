@@ -55,6 +55,7 @@ class ClouMethods {
           eventDateEnd: eventDateEnd,
           eventDateStart: eventDateStart,
           eventImage: postImageUrls,
+          // budget: budget,
           isPost: isPost ?? false,
           users: []);
       await CategoriesMethod()

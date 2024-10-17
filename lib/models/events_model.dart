@@ -32,7 +32,7 @@ class EventsPostModel {
   Map<String, InvitationStatus>? invitationStatuses;
 
   List<UserModel> users;
-  List<Budget>? budget;
+  List<String>? budget;
 
   EventsPostModel(
       {required this.event_name,
@@ -74,8 +74,8 @@ class EventsPostModel {
           : null,
 
       budget: json['budget'] != null
-          ? List<Budget>.from(
-              (json['budget'] as List).map((item) => Budget.fromJson(item)))
+          ? List<String>.from(json[
+              'budget']) // Sử dụng List<String> nếu budget chỉ là danh sách chuỗi
           : null, // Convert budget properly
       event_id: json['event_id'] as String,
       isPending:
@@ -125,7 +125,7 @@ class EventsPostModel {
           (key, value) => MapEntry(key, value.toString().split('.').last)),
       'username': username,
       'profilePic': profilePic,
-      'budget': budget != null ? budget!.map((b) => b.toJson()).toList() : null,
+      'budget': budget,
       'event_id': event_id,
       'eventImage': eventImage,
       'category_id': categoryModel?.category_id,

@@ -20,7 +20,7 @@ class BudgetMethod {
       Budget budgetModel = Budget(
         event_id: event_id,
         budget_name: budget_name,
-        budget_id: budgetId,
+        // budget_id: budgetId,
         note_id: note_id,
         paidAmount: estimate_amount,
       );
@@ -33,10 +33,27 @@ class BudgetMethod {
     return res;
   }
 
+  Future<List<Budget>> loadBudgetwithEvent(String event_id) async {
+    try {
+      QuerySnapshot snapshot =
+          await budgetEvents.where('event_id', isEqualTo: event_id).get();
+      print('Documents found: ${snapshot.docs.length}');
+      List<Budget> budget = snapshot.docs.map((doc) {
+        return Budget.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+      return budget;
+    } catch (e, stacktrace) {
+      print('Failed to get all: $e');
+      print('Stacktrace: $stacktrace');
+      return [];
+    }
+  }
+
   Future<void> updateBudgetEventIds(String budget_id, String eventId) async {
     try {
-      DocumentReference budgetRef =
-          FirebaseFirestore.instance.collection('eventPosts').doc(eventId); //Đọc theo id của events để cập nhật budget
+      DocumentReference budgetRef = FirebaseFirestore.instance
+          .collection('eventPosts')
+          .doc(eventId); //Đọc theo id của events để cập nhật budget
 
       // Instead of adding to an array, update the field with a single String
       await budgetRef.update({

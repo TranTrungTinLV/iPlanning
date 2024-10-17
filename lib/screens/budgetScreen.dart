@@ -13,6 +13,7 @@ class Budgetscreen extends StatefulWidget {
 }
 
 class _BudgetscreenState extends State<Budgetscreen> {
+  @override
   initState() {
     super.initState();
     _loadBudgets();
@@ -55,59 +56,63 @@ class _BudgetscreenState extends State<Budgetscreen> {
           : budgets.isEmpty
               ? Center(child: Text('No Budgets found'))
               : Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
                   child: Column(
                     children: [
-                      Expanded(
+                      Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
                           child: ListView.builder(
-                        itemCount: budgets.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 22),
+                            itemCount: budgets.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Checkbox(
+                                      value: _isChecked[index],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _isChecked[index] = value!;
+                                        });
+                                      }),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("${budgets[index].budget_name}"),
+                                      Text("${budgets[index].paidAmount}"),
+                                    ],
+                                  )
+                                ],
+                              );
+                            },
+                          )),
+                      Container(
+                        child: GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => BudgetList(
+                                          event_id: widget.eventId,
+                                        )));
+                            if (result == true) {
+                              _loadBudgets();
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(10),
                             child: Row(
                               children: [
-                                Checkbox(
-                                    value: _isChecked[index],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _isChecked[index] = value!;
-                                      });
-                                    }),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("${budgets[index].budget_name}"),
-                                    Text("${budgets[index].paidAmount}"),
-                                  ],
-                                )
+                                Icon(
+                                  Icons.add,
+                                  color: Color(0xffF0534F),
+                                ),
+                                Text(
+                                  "Add Budget",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Color(0xffF0534F)),
+                                ),
                               ],
                             ),
-                          );
-                        },
-                      )),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (ctx) => BudgetList(
-                                        event_id: widget.eventId,
-                                      )));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: Color(0xffF0534F),
-                              ),
-                              Text(
-                                "Add Budget",
-                                style: TextStyle(
-                                    fontSize: 18, color: Color(0xffF0534F)),
-                              ),
-                            ],
                           ),
                         ),
                       ),

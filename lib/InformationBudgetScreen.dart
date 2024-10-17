@@ -172,15 +172,15 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                       controller: _tabController,
                       tabs: tabs,
                     ),
-                    Container(
-                      // color: Color(0xffE7EBEE),
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      width: MediaQuery.of(context).size.width,
+                    // Container(
+                    //   color: Color(0xffE7EBEE),
+                    //   height: MediaQuery.of(context).size.height,
+                    //   width: MediaQuery.of(context).size.width,
+                    Expanded(
                       child: TabBarView(
                         controller: _tabController,
                         children: [
                           Container(
-                              child: SingleChildScrollView(
                             child: Column(
                               children: [
                                 Card(
@@ -226,16 +226,24 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                 ),
                                 Center(
                                   child: Container(
+                                    height: 300,
                                     child: GridView.count(
                                       crossAxisCount: 2,
                                       childAspectRatio: 2.5,
                                       crossAxisSpacing: 10,
                                       mainAxisSpacing: 10,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics: ScrollPhysics(),
                                       shrinkWrap: true,
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 10),
                                       children: [
+                                        budgetItems(),
+                                        budgetItems(),
+                                        budgetItems(),
+                                        budgetItems(),
+                                        budgetItems(),
+                                        budgetItems(),
+                                        budgetItems(),
                                         budgetItems(),
                                         budgetItems(),
                                         budgetItems(),
@@ -253,7 +261,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                 )
                               ],
                             ),
-                          )),
+                          ),
                           Container(
                               margin: EdgeInsets.only(bottom: 350),
                               child: Card(

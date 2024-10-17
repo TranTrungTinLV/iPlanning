@@ -1,32 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/services/budget.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
-const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
-
-enum IconLabel {
-  smile('Smile', Icons.sentiment_satisfied_outlined),
-  cloud(
-    'Cloud',
-    Icons.cloud_outlined,
-  ),
-  brush('Brush', Icons.brush_outlined),
-  heart('Heart', Icons.favorite);
-
-  const IconLabel(this.label, this.icon);
-  final String label;
-  final IconData icon;
-}
-
 class BudgetList extends StatefulWidget {
-  BudgetList({super.key});
-
+  BudgetList({super.key, required this.event_id});
+  final String event_id;
   @override
   State<BudgetList> createState() => _BudgetListState();
 }
 
 class _BudgetListState extends State<BudgetList> {
-  String? dropdownValue = "Thu Chi";
   bool isOpen = false;
+  bool isLoading = false;
+  TextEditingController budgetName = TextEditingController();
+  TextEditingController note = TextEditingController();
+  TextEditingController estimateAmount = TextEditingController();
+  createBudget() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      double? estimateAmountValue = double.tryParse(estimateAmount.text);
+      if (estimateAmountValue == null) {
+        Fluttertoast.showToast(
+            msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      String res = await BudgetMethod().addBudget(
+          budget_name: budgetName.text,
+          estimate_amount: estimateAmountValue,
+          event_id: widget.event_id);
+      if (res == 'success') {
+        // Sử dụng popUntil để quay về HomeScreen
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +60,6 @@ class _BudgetListState extends State<BudgetList> {
           children: [
             SingleChildScrollView(
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
@@ -52,18 +71,30 @@ class _BudgetListState extends State<BudgetList> {
                     margin: EdgeInsets.only(bottom: 20),
                   ),
                   TextFieldCustom(
+                    controller: budgetName,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Vui lòng nhập tên budget';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      budgetName.text = value!;
+                    },
                     title: 'Enter Name',
                     labelText: 'Enter Name',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
+                    controller: note,
                     title: 'Enter Note',
                     labelText: 'Enter Note',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
+                    controller: estimateAmount,
                     title: 'Estimate Amount',
                     labelText: 'Estimate Amount',
                     radius: 10.0,
@@ -171,6 +202,9 @@ class _BudgetListState extends State<BudgetList> {
             Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
+                onTap: () {
+                  createBudget();
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 60,

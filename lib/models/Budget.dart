@@ -1,15 +1,29 @@
+import 'package:iplanning/models/events_model.dart';
+
 class Budget {
-  double budget;
+  String budget_id;
+  String budget_name;
+  String? event_id;
   double paidAmount;
-  String note;
-  Budget(this.budget, this.note, this.paidAmount);
-  factory Budget.fromMap(Map<String, dynamic> json) {
+  String? note_id;
+  Budget(
+      {required this.budget_id,
+      this.note_id,
+      required this.paidAmount,
+      required this.event_id,
+      required this.budget_name});
+  factory Budget.fromJson(Map<String, dynamic> json) {
     return Budget(
-      json['budget'] as double,
-      json['note'] as String,
-      json['paidAmount'] as double,
-    );
+        note_id: json['note'] as String?,
+        paidAmount: json['paidAmount'] as double,
+        event_id: json['event_id'] as String,
+        budget_name: json['budget_name'] as String,
+        budget_id: json['budget_id'] as String);
   }
-  Map<String, dynamic> toJson() =>
-      {'budget': budget, 'paidAmount': paidAmount, 'note': note};
+  Map<String, dynamic> toJson() => {
+        'paidAmount': paidAmount,
+        'note_id': note_id,
+        'event_id': event_id,
+        'budget_name': budget_name
+      };
 }

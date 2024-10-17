@@ -189,7 +189,9 @@ class _ListEventState extends State<ListEvent>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (ctx) => Budgetscreen()),
+                                        builder: (ctx) => Budgetscreen(
+                                              eventId: event.event_id,
+                                            )),
                                   );
                                 } else if (result == 'TaskList') {
                                   Navigator.push(

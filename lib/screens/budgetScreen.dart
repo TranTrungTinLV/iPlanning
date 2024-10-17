@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class Budgetscreen extends StatefulWidget {
-  const Budgetscreen({super.key});
-
+  const Budgetscreen({super.key, required this.eventId});
+  final String eventId;
   @override
   State<Budgetscreen> createState() => _BudgetscreenState();
 }
@@ -27,8 +28,12 @@ class _BudgetscreenState extends State<Budgetscreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (ctx) => BudgetList()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => BudgetList(
+                                event_id: widget.eventId,
+                              )));
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

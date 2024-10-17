@@ -32,7 +32,7 @@ class EventsPostModel {
   Map<String, InvitationStatus>? invitationStatuses;
 
   List<UserModel> users;
-  Budget? budget;
+  List<Budget>? budget;
 
   EventsPostModel(
       {required this.event_name,
@@ -74,7 +74,8 @@ class EventsPostModel {
           : null,
 
       budget: json['budget'] != null
-          ? Budget.fromMap(json['budget'] as Map<String, dynamic>)
+          ? List<Budget>.from(
+              (json['budget'] as List).map((item) => Budget.fromJson(item)))
           : null, // Convert budget properly
       event_id: json['event_id'] as String,
       isPending:
@@ -124,7 +125,7 @@ class EventsPostModel {
           (key, value) => MapEntry(key, value.toString().split('.').last)),
       'username': username,
       'profilePic': profilePic,
-      'budget': budget?.toJson(),
+      'budget': budget != null ? budget!.map((b) => b.toJson()).toList() : null,
       'event_id': event_id,
       'eventImage': eventImage,
       'category_id': categoryModel?.category_id,

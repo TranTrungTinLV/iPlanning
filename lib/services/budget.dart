@@ -10,7 +10,7 @@ class BudgetMethod {
 
   addBudget({
     required String budget_name,
-    String? note_id,
+    List<String>? note_id,
     required double estimate_amount,
     required String event_id,
   }) async {

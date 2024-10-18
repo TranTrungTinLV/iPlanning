@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:iplanning/firebase_options.dart';
 import 'package:iplanning/screens/splashScreen.dart';
 import 'package:iplanning/services/categories.dart';
+import 'package:iplanning/sqlhelper/budget_sqlife.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  BudgetSQLHelper.getDatabase;
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp(

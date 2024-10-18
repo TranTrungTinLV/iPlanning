@@ -5,7 +5,7 @@ class Budget {
   String budget_name;
   String? event_id;
   double paidAmount;
-  String? note_id;
+  List<String>? note_id;
   Budget(
       {
       // required this.budget_id,
@@ -15,7 +15,8 @@ class Budget {
       required this.budget_name});
   factory Budget.fromJson(Map<String, dynamic> json) {
     return Budget(
-      note_id: json['note_id'] != null ? json['note_id'] as String : null,
+      note_id:
+          json['note_id'] != null ? List<String>.from(json['note_id']) : null,
       paidAmount: (json['paidAmount'] ?? 0.0) as double,
       event_id: json['event_id'] != null ? json['event_id'] as String : null,
       budget_name: json['budget_name'] as String,

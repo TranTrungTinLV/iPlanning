@@ -2,21 +2,31 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:path/path.dart' as p;
 
-class BudgetSqlife {
-  static Future<Database> initState() async {
+class BudgetSQLHelper {
+  static Database? _database;
+  static get getDatabase async {
+    if (_database != null) return _database;
+    _database = await initStateDatabase();
+    return _database;
+  }
+
+  static Future<Database> initStateDatabase() async {
     String path = p.join(await getDatabasesPath(), 'budget_database.db');
     return await openDatabase(path, onCreate: _onCreate, version: 1);
   }
 
   static Future _onCreate(Database db, int version) async {
-    await db.execute('''
+    // Batch batch = db.batch();
+    db.execute('''
 CREATE TABLE note_id
-    (id TEXT PRIMARY KEY,
+    (
+    note_id TEXT PRIMARY KEY,
     budget_id Text,
     description TEXT,
-    expense REAL,
-    income REAL,
+    expense DOUBLE,
+    income DOUBLE
 )
 ''');
+    print("on created was called");
   }
 }

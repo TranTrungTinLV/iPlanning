@@ -23,7 +23,7 @@ class TransactionScreen extends StatelessWidget {
                     radius: 10.0,
                   ),
                   TextFieldCustom(
-                    title: 'Enter amount',
+                    title: 'Enter note',
                     bottom: 26,
                     radius: 10.0,
                   ),

@@ -188,62 +188,6 @@ class _BudgetListState extends State<BudgetList> {
                   SizedBox(
                     height: 30,
                   ),
-                  Container(
-                    // margin: EdgeInsets.symmetric(vertical: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          child: Text(
-                            "Payments",
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        // SizedBox(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (ctx) => TransactionScreen()));
-                          },
-                          child: Container(
-                            height: 25,
-                            width: 25,
-                            decoration: BoxDecoration(
-                              color: Colors.pink,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                weight: 2.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 140,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8.0)),
-                    child: Center(
-                        child: Text(
-                      "No payment not found",
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.w300),
-                    )),
-                  )
                 ],
               ),
             ),

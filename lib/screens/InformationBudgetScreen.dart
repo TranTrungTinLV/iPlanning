@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/screens/transactionScreen.dart';
+import 'package:iplanning/widgets/budgetItems.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class InformationBudgetScreen extends StatefulWidget {
@@ -164,6 +166,60 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 height: 20,
               ),
               Container(
+                // margin: EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Payments",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (ctx) => TransactionScreen()));
+                      },
+                      child: Container(
+                        height: 25,
+                        width: 25,
+                        decoration: BoxDecoration(
+                          color: Colors.pink,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            weight: 2.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 140,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: Center(
+                    child: Text(
+                  "No payment not found",
+                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w300),
+                )),
+              ),
+              Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -172,10 +228,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                       controller: _tabController,
                       tabs: tabs,
                     ),
-                    // Container(
-                    //   color: Color(0xffE7EBEE),
-                    //   height: MediaQuery.of(context).size.height,
-                    //   width: MediaQuery.of(context).size.width,
                     Expanded(
                       child: TabBarView(
                         controller: _tabController,
@@ -316,42 +368,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class budgetItems extends StatelessWidget {
-  const budgetItems({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Container(
-            child: Icon(Icons.place),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Food&Drink',
-                style: TextStyle(fontSize: 14.0),
-              ),
-              Text(
-                '1tr2',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              )
-            ],
-          )
-        ],
       ),
     );
   }

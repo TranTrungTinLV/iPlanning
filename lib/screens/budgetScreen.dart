@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:iplanning/InformationBudgetScreen.dart';
+import 'package:iplanning/screens/InformationBudgetScreen.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/screens/budgetList.dart';

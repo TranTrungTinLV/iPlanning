@@ -26,6 +26,7 @@ class _BudgetscreenState extends State<Budgetscreen> {
   List<bool> _isChecked = [];
   List<Budget> budgets = [];
   bool isLoading = true;
+  bool isChoose = false;
   final _formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
   Future<void> _loadBudgets() async {
     try {
@@ -48,6 +49,25 @@ class _BudgetscreenState extends State<Budgetscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isChoose = !isChoose;
+              });
+            },
+            child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsetsDirectional.only(end: 20),
+                child: Text(
+                  !isChoose ? 'Chọn' : "Huỷ",
+                  style: TextStyle(color: Colors.white),
+                )),
+          )
+        ],
         title: Text(
           'Budget',
           style: TextStyle(fontSize: 24),
@@ -63,117 +83,129 @@ class _BudgetscreenState extends State<Budgetscreen> {
                   child: Column(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: ListView.builder(
-                            itemCount: budgets.length,
-                            itemBuilder: (context, index) {
-                              final amount = budgets[index].paidAmount;
-                              final formattedValue = _formatterAmount
-                                  .format(amount)
-                                  .replaceAll('.', ',');
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      // Checkbox(
-                                      //     value: _isChecked[index],
-                                      //     onChanged: (value) {
-                                      //       setState(() {
-                                      //         _isChecked[index] = value!;
-                                      //       });
-                                      //     }),
-                                      Container(
-                                          margin: EdgeInsets.only(right: 10),
-                                          child: IconButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (ctx) =>
-                                                      InformationBudgetScreen(
-                                                    budgetName: budgets[index]
-                                                        .budget_name,
-                                                    note: budgets[index]
-                                                                .note_id !=
-                                                            null
-                                                        ? budgets[index].note_id
-                                                            as String
-                                                        : "Hiện không có",
-                                                    estimateAmount:
-                                                        (budgets[index]
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        child: ListView.builder(
+                          itemCount: budgets.length,
+                          itemBuilder: (context, index) {
+                            final amount = budgets[index].paidAmount;
+                            final formattedValue = _formatterAmount
+                                .format(amount)
+                                .replaceAll('.', ',');
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                        margin: EdgeInsets.only(right: 10),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            !isChoose
+                                                ? Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          InformationBudgetScreen(
+                                                        budgetName:
+                                                            budgets[index]
+                                                                .budget_name,
+                                                        note: budgets[index]
+                                                                    .note_id !=
+                                                                null
+                                                            ? budgets[index]
+                                                                    .note_id
+                                                                as String
+                                                            : "Hiện không có",
+                                                        estimateAmount: (budgets[
+                                                                        index]
                                                                     .paidAmount
                                                                 as double)
                                                             .toString(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            icon: Icon(
-                                                Icons.info_outline_rounded),
-                                            color: Colors.blue.withOpacity(0.8),
-                                          )),
-
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${budgets[index].budget_name}",
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Text(
-                                            "${formattedValue.toString()}",
-                                            style: TextStyle(fontSize: 14.0),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "Thu vào",
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ),
-                                          Text(
-                                            "Chi ra",
-                                            style: TextStyle(color: Colors.red),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '10,000,000',
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ),
-                                          Text(
-                                            '10,000',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
-                          )),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : null;
+                                          },
+                                          icon: Icon(!isChoose
+                                              ? Icons.info_outline_rounded
+                                              : Icons.check),
+                                          color: Colors.blue.withOpacity(0.8),
+                                        )),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${budgets[index].budget_name}",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Text(
+                                          "${formattedValue.toString()}",
+                                          style: TextStyle(fontSize: 14.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "Thu vào",
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                        Text(
+                                          "Chi ra",
+                                          style: TextStyle(color: Colors.red),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '10,000,000',
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                        Text(
+                                          '10,000',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      if (isChoose)
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Sự kiện hiện tại sẽ được kích hoạt"),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                '"Thanh Toán"',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
                       Container(
                         child: GestureDetector(
                           onTap: () async {

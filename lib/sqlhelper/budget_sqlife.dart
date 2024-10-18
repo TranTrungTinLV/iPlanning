@@ -10,12 +10,12 @@ class BudgetSqlife {
 
   static Future _onCreate(Database db, int version) async {
     await db.execute('''
-CREATE TABLE budgets
+CREATE TABLE note_id
     (id TEXT PRIMARY KEY,
     budget_id Text,
     description TEXT,
     expense REAL,
-    income REAL
+    income REAL,
 )
 ''');
   }

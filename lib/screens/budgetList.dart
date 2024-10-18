@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/screens/transactionScreen.dart';
 import 'package:iplanning/services/budget.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
@@ -168,18 +169,6 @@ class _BudgetListState extends State<BudgetList> {
                         Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
-                          // decoration: BoxDecoration(
-                          //     border: Border(
-                          //   left: BorderSide(
-                          //     color: Colors.black54,
-                          //   ),
-                          //   right: BorderSide(
-                          //     color: Colors.black54,
-                          //   ),
-                          //   bottom: BorderSide(
-                          //     color: Colors.black54,
-                          //   ),
-                          // )),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -196,6 +185,65 @@ class _BudgetListState extends State<BudgetList> {
                         ),
                       ],
                     ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    // margin: EdgeInsets.symmetric(vertical: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          child: Text(
+                            "Payments",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        // SizedBox(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => TransactionScreen()));
+                          },
+                          child: Container(
+                            height: 25,
+                            width: 25,
+                            decoration: BoxDecoration(
+                              color: Colors.pink,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                weight: 2.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 140,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Center(
+                        child: Text(
+                      "No payment not found",
+                      style: TextStyle(
+                          fontSize: 15.0, fontWeight: FontWeight.w300),
+                    )),
+                  )
                 ],
               ),
             ),

@@ -365,39 +365,40 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
-                                      child: GestureDetector(
-                                    onTap: () {
-                                      print('start date');
-                                      _presentDatePicker(isStartDate: true);
-                                    },
-                                    child: Container(
-                                      width: 150,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      height: 50,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Container(
-                                            child: Icon(
-                                                Icons.calendar_month_outlined),
-                                          ),
-                                          Container(
-                                            child: Text(_startDate == null
-                                                ? 'Select Start Date'
-                                                : '${_startDate!.toLocal()}'
-                                                    .split(' ')[0]),
-                                          ),
-                                        ],
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        print('start date');
+                                        _presentDatePicker(isStartDate: true);
+                                      },
+                                      child: Container(
+                                        width: 150,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        height: 50,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Container(
+                                              child: Icon(Icons
+                                                  .calendar_month_outlined),
+                                            ),
+                                            Container(
+                                              child: Text(_startDate == null
+                                                  ? 'Select Start Date'
+                                                  : '${_startDate!.toLocal()}'
+                                                      .split(' ')[0]),
+                                            ),
+                                          ],
+                                        ),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            border:
+                                                Border.all(color: Colors.grey)),
                                       ),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border:
-                                              Border.all(color: Colors.grey)),
                                     ),
-                                  )),
+                                  ),
                                   SizedBox(
                                     width: 20,
                                   ),

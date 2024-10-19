@@ -16,6 +16,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
   TextEditingController name = TextEditingController();
   TextEditingController note = TextEditingController();
   TextEditingController content = TextEditingController();
+  TextEditingController amount = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +34,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   TextFieldCustom(
                     controller: name,
                     title: 'Name',
+                    bottom: 26,
+                    radius: 10.0,
+                  ),
+                  TextFieldCustom(
+                    controller: amount,
+                    title: 'Amount',
                     bottom: 26,
                     radius: 10.0,
                   ),
@@ -115,13 +123,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
-                onTap: () {
-                  NoteSQLHelper.insertNote(
-                      
+                onTap: () async {
+                  double? amountValue = double.tryParse(amount.text) ?? 0.0;
+                  String res = await NoteSQLHelper.insertNote(
+                      amount: amountValue,
                       name: name.text,
                       budget_id: widget.budgetId,
                       content: content.text,
                       transactionType: _transactionType!);
+                  if (res == 'success') {
+                    // Sử dụng popUntil để quay về HomeScreen
+                    Navigator.pop(context, true);
+                  }
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,

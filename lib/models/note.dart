@@ -6,9 +6,11 @@ class NoteModel {
   final String note_id;
   final String budget_id;
   final TransactionType transactionType;
+  final double amount;
   final String? content;
   NoteModel({
     required this.name,
+    required this.amount,
     this.content,
     required this.budget_id,
     required this.note_id,
@@ -18,6 +20,7 @@ class NoteModel {
   factory NoteModel.fromJson(Map<String, dynamic> json) {
     return NoteModel(
       name: json['name'] as String,
+      amount: (json['amount'] ?? 0.0) as double,
       note_id: json['note_id'] as String,
       budget_id: json['budget_id'] as String,
       content: json['content'] as String?,
@@ -32,6 +35,7 @@ class NoteModel {
       'name': name,
       'note_id': note_id,
       'content': content,
+      'amount': amount,
       'budget_id': budget_id,
       'transactionType': transactionType.toString()
     };

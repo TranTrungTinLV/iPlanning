@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/transactionScreen.dart';
+import 'package:iplanning/sqlhelper/note_sqlife.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -23,12 +25,25 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     with SingleTickerProviderStateMixin {
   bool isOpen = true;
   bool isCheck = false;
+  List<NoteModel> noteModels = [];
+
   late final TabController _tabController;
+
+  Future<void> _loadNoteModel() async {
+    final notes = await NoteSQLHelper.loadNotesModel(widget.budgetId);
+    setState(() {
+      noteModels = notes
+          .map((note) => NoteModel.fromJson(note as Map<String, dynamic>))
+          .toList();
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _loadNoteModel();
   }
 
   @override
@@ -183,13 +198,16 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (ctx) => TransactionScreen(
                                       budgetId: widget.budgetId,
                                     )));
+                        if (result == true) {
+                          _loadNoteModel();
+                        }
                       },
                       child: Container(
                         height: 25,
@@ -229,55 +247,16 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                     : Container(
                         margin:
                             EdgeInsets.symmetric(vertical: 13, horizontal: 11),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 19,
-                                  child: Checkbox(
-                                    value: isCheck,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isCheck = value!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Name",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 18),
-                                    ),
-                                    Text(
-                                      "Purchased date",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade600),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            Container(
-                              child: Text(
-                                "1000",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            )
-                          ],
+                        child: ListView.builder(
+                          itemCount: noteModels.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final note = noteModels[index];
+                            return ListTile(
+                              title: Text(note.name),
+                              subtitle:
+                                  Text(note.content ?? 'No content available'),
+                            );
+                          },
                         ),
                       ),
               ),

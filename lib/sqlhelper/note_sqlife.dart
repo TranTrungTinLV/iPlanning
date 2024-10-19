@@ -28,7 +28,8 @@ CREATE TABLE notes
     name TEXT,
     budget_id TEXT,
     content TEXT,
-    transactionType TEXT
+    transactionType TEXT,
+    amount REAL
 )
 ''');
     print("on created was called");
@@ -39,6 +40,7 @@ CREATE TABLE notes
     required String name,
     required String budget_id,
     required String content,
+    required double amount,
     required TransactionType transactionType,
   }) async {
     String res = 'Some Error';
@@ -47,6 +49,7 @@ CREATE TABLE notes
       String noteId = const Uuid().v4().split('-')[0];
       NoteModel notes = NoteModel(
           name: name,
+          amount: amount,
           budget_id: budget_id,
           transactionType: transactionType,
           content: content,
@@ -59,5 +62,17 @@ CREATE TABLE notes
       res = e.toString();
     }
     return res;
+  }
+
+  // ! getNoteModel
+  static Future<List<Map<String, dynamic>>> loadNotesModel(
+      String budgetId) async {
+    Database db = await getDatabase;
+    List<Map<String, dynamic>> maps =
+        await db.query('notes', where: 'budget_id = ?', whereArgs: [budgetId]);
+    List<NoteModel> notesList = maps.map((map) {
+      return NoteModel.fromJson(map);
+    }).toList();
+    return maps;
   }
 }

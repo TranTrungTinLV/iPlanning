@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iplanning/services/note.dart';
 import 'package:iplanning/sqlhelper/note_sqlife.dart';
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
@@ -17,6 +19,31 @@ class _TransactionScreenState extends State<TransactionScreen> {
   TextEditingController note = TextEditingController();
   TextEditingController content = TextEditingController();
   TextEditingController amount = TextEditingController();
+  NoteMethod _noteService = NoteMethod();
+
+  createNodeModel() async {
+    try {
+      double? amountValue = double.tryParse(amount.text) ?? 0.0;
+      if (amountValue == null) {
+        Fluttertoast.showToast(
+            msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
+        setState(() {
+          // isLoading = false;
+        });
+        return;
+      }
+      String res = await _noteService.addNote(
+          amount: amountValue,
+          name: name.text,
+          budget_id: widget.budgetId,
+          content: content.text,
+          transactionType: _transactionType!);
+      if (res == 'success') {
+        // Sử dụng popUntil để quay về HomeScreen
+        Navigator.pop(context, true);
+      }
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +71,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     radius: 10.0,
                   ),
                   TextFieldCustom(
-                    controller: note,
-                    title: 'Enter note',
+                    controller: content,
+                    title: 'Enter content',
                     bottom: 26,
                     radius: 10.0,
                   ),
@@ -123,18 +150,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
-                onTap: () async {
-                  double? amountValue = double.tryParse(amount.text) ?? 0.0;
-                  String res = await NoteSQLHelper.insertNote(
-                      amount: amountValue,
-                      name: name.text,
-                      budget_id: widget.budgetId,
-                      content: content.text,
-                      transactionType: _transactionType!);
-                  if (res == 'success') {
-                    // Sử dụng popUntil để quay về HomeScreen
-                    Navigator.pop(context, true);
-                  }
+                onTap: () {
+                  createNodeModel();
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,

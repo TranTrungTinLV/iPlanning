@@ -119,11 +119,10 @@ class _BudgetscreenState extends State<Budgetscreen> {
                                                                   ?.join(
                                                                       ", ") ??
                                                               "Hiện không có",
-                                                          estimateAmount: (budgets[
-                                                                          index]
+                                                          estimateAmount:
+                                                              (budgets[index]
                                                                       .paidAmount
-                                                                  as double)
-                                                              .toString(),
+                                                                  as double),
                                                           budgetId:
                                                               budgets[index]
                                                                   .budget_id,

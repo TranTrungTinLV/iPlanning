@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/transactionScreen.dart';
+import 'package:iplanning/services/note.dart';
 import 'package:iplanning/sqlhelper/note_sqlife.dart';
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:intl/intl.dart';
 
 class InformationBudgetScreen extends StatefulWidget {
   const InformationBudgetScreen(
@@ -18,7 +20,7 @@ class InformationBudgetScreen extends StatefulWidget {
   final String budgetName;
   final String budgetAmount;
   final String note;
-  final String estimateAmount;
+  final double estimateAmount;
   final String budgetId;
   @override
   State<InformationBudgetScreen> createState() =>
@@ -30,24 +32,50 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   bool isOpen = true;
   bool isCheck = false;
   List<NoteModel> noteModels = [];
-
+  double _icome = 0.0;
+  double _expense = 0.0;
   late final TabController _tabController;
+  double totals = 0.0;
+  final formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
   Future<void> _loadNoteModel() async {
-    final notes = await NoteSQLHelper.loadNotesModel(widget.budgetId);
+    final notes = await NoteMethod().loadNoteModelwithBudget(widget.budgetId);
+
     setState(() {
-      noteModels = notes
-          .map((note) => NoteModel.fromJson(note as Map<String, dynamic>))
-          .toList();
+      noteModels = notes;
     });
+  }
+
+  Future<double> _total() async {
+    if (noteModels.isEmpty) return 0.0;
+
+    double icome = noteModels
+        .where((note) => note.transactionType == TransactionType.income)
+        .map((note) => note.amount)
+        .reduce((acc, element) => acc + element);
+    double expense = noteModels
+        .where((note) => note.transactionType == TransactionType.expense)
+        .map((note) => note.amount)
+        .reduce((acc, element) => acc + element);
+    double total = (widget.estimateAmount + icome) - expense;
+    setState(() {
+      _icome = icome;
+
+      _expense = expense;
+      totals = total;
+    });
+    return icome;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
-    _loadNoteModel();
+    _loadNoteModel().then((_) {
+      _total();
+    });
   }
 
   @override
@@ -100,7 +128,31 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
               ),
               Text(
-                widget.estimateAmount,
+                "${formatterAmount.format(widget.estimateAmount).replaceAll('.', ',')}",
+                style: TextStyle(fontSize: 18),
+              ),
+              Text(
+                "Icome ",
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                "${formatterAmount.format(_icome).replaceAll('.', ',')}",
+                style: TextStyle(fontSize: 18),
+              ),
+              Text(
+                "Expense ",
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                "${formatterAmount.format(_expense).replaceAll('.', ',')}",
+                style: TextStyle(fontSize: 18),
+              ),
+              Text(
+                "Remaining ",
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                "${formatterAmount.format(totals).replaceAll('.', ',')}",
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(
@@ -123,7 +175,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Balance: ${widget.budgetAmount}",
+                        "Balance: ${formatterAmount.format(widget.estimateAmount).replaceAll('.', ',')}",
                         style: TextStyle(fontSize: 16),
                       ),
                       Icon(
@@ -182,18 +234,20 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                                 TransactionType.income
                                             ? MainAxisAlignment.start
                                             : MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       noteDoc.transactionType ==
                                               TransactionType.income
                                           ? Text(
-                                              noteDoc.amount.toString(),
+                                              formatterAmount
+                                                  .format(noteDoc.amount)
+                                                  .replaceAll('.', ','),
                                               style: TextStyle(
                                                   color: Colors.green),
                                             )
                                           : Text(
-                                              noteDoc.amount.toString(),
+                                              formatterAmount
+                                                  .format(noteDoc.amount)
+                                                  .replaceAll('.', ','),
                                               style:
                                                   TextStyle(color: Colors.red),
                                             ),
@@ -235,7 +289,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       budgetId: widget.budgetId,
                                     )));
                         if (result == true) {
-                          _loadNoteModel();
+                          _loadNoteModel().then((_) {
+                            _total();
+                          });
                         }
                       },
                       child: Container(
@@ -304,7 +360,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ],
                                   ),
                                   Container(
-                                    child: Text(note.amount.toString()),
+                                    child: Text(
+                                        "${formatterAmount.format(note.amount).replaceAll('.', ',')}"),
                                   )
                                 ],
                               ),

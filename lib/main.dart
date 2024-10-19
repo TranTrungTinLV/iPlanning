@@ -9,7 +9,7 @@ import 'package:iplanning/sqlhelper/note_sqlife.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  NoteSQLHelper.getDatabase;
+  // NoteSQLHelper.getDatabase;
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp(

@@ -20,7 +20,7 @@ class BudgetMethod {
       Budget budgetModel = Budget(
         event_id: event_id,
         budget_name: budget_name,
-        // budget_id: budgetId,
+        budget_id: budgetId,
         note_id: note_id,
         paidAmount: estimate_amount,
       );

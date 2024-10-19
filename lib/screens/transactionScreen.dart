@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/sqlhelper/note_sqlife.dart';
+import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
-class TransactionScreen extends StatelessWidget {
-  const TransactionScreen({super.key});
+class TransactionScreen extends StatefulWidget {
+  TransactionScreen({super.key, required this.budgetId});
+  final String budgetId;
+  @override
+  State<TransactionScreen> createState() => _TransactionScreenState();
+}
 
+class _TransactionScreenState extends State<TransactionScreen> {
+  bool isCheck = false;
+  TransactionType? _transactionType;
+  TextEditingController name = TextEditingController();
+  TextEditingController note = TextEditingController();
+  TextEditingController content = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,11 +30,13 @@ class TransactionScreen extends StatelessWidget {
               child: Column(
                 children: [
                   TextFieldCustom(
+                    controller: name,
                     title: 'Name',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
+                    controller: note,
                     title: 'Enter note',
                     bottom: 26,
                     radius: 10.0,
@@ -59,11 +73,6 @@ class TransactionScreen extends StatelessWidget {
                                 style: TextStyle(fontSize: 15),
                               ),
                             ),
-                            Container(
-                              child: Row(
-                                children: [],
-                              ),
-                            )
                           ],
                         ),
                         decoration: BoxDecoration(
@@ -72,13 +81,48 @@ class TransactionScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Container(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile(
+                              title: Text("Icome"),
+                              value: TransactionType.income,
+                              groupValue: _transactionType,
+                              onChanged: (TransactionType? value) {
+                                setState(() {
+                                  _transactionType = value;
+                                });
+                              }),
+                        ),
+                        Expanded(
+                          child: RadioListTile(
+                              title: Text("Expense"),
+                              value: TransactionType.expense,
+                              groupValue: _transactionType,
+                              onChanged: (TransactionType? value) {
+                                setState(() {
+                                  _transactionType = value;
+                                });
+                              }),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  NoteSQLHelper.insertNote(
+                      
+                      name: name.text,
+                      budget_id: widget.budgetId,
+                      content: content.text,
+                      transactionType: _transactionType!);
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 60,

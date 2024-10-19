@@ -8,11 +8,12 @@ class InformationBudgetScreen extends StatefulWidget {
       {super.key,
       required this.budgetName,
       required this.note,
-      required this.estimateAmount});
+      required this.estimateAmount,
+      required this.budgetId});
   final String budgetName;
   final String note;
   final String estimateAmount;
-
+  final String budgetId;
   @override
   State<InformationBudgetScreen> createState() =>
       _InformationBudgetScreenState();
@@ -21,6 +22,7 @@ class InformationBudgetScreen extends StatefulWidget {
 class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     with SingleTickerProviderStateMixin {
   bool isOpen = true;
+  bool isCheck = false;
   late final TabController _tabController;
   @override
   void initState() {
@@ -175,7 +177,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                       child: Text(
                         "Payments",
                         style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w600),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     GestureDetector(
@@ -183,7 +187,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (ctx) => TransactionScreen()));
+                                builder: (ctx) => TransactionScreen(
+                                      budgetId: widget.budgetId,
+                                    )));
                       },
                       child: Container(
                         height: 25,
@@ -213,11 +219,67 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0)),
-                child: Center(
-                    child: Text(
-                  "No payment not found",
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w300),
-                )),
+                child: !isOpen
+                    ? Center(
+                        child: Text(
+                        "No payment not found",
+                        style: TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.w300),
+                      ))
+                    : Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 13, horizontal: 11),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 19,
+                                  child: Checkbox(
+                                    value: isCheck,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isCheck = value!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Name",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18),
+                                    ),
+                                    Text(
+                                      "Purchased date",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey.shade600),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            Container(
+                              child: Text(
+                                "1000",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
               ),
               Container(
                 height: MediaQuery.of(context).size.height,

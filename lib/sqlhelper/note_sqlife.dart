@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/utils/transactionType.dart';
@@ -54,8 +56,11 @@ CREATE TABLE notes
           transactionType: transactionType,
           content: content,
           note_id: noteId);
+
       await db.insert('notes', notes.toJson(),
           conflictAlgorithm: ConflictAlgorithm.replace);
+      await updateNoteModelwithBudgetIds(noteId, budget_id);
+
       print(await db.query('notes'));
       res = "success";
     } catch (e) {
@@ -74,5 +79,24 @@ CREATE TABLE notes
       return NoteModel.fromJson(map);
     }).toList();
     return maps;
+  }
+
+  // ! NoteModel and Budget
+  static Future<void> updateNoteModelwithBudgetIds(
+      String note_id, String budgetId) async {
+    try {
+      DocumentReference budgetRef =
+          FirebaseFirestore.instance.collection('budgets').doc(budgetId);
+      //
+      await budgetRef.update(
+        {
+          'note_id': FieldValue.arrayUnion([note_id])
+        },
+      );
+      print("Updated event_ids with: $budgetId");
+      print("Updated event_ids with: $note_id");
+    } catch (e) {
+      print('Error updating $budgetId: $e');
+    }
   }
 }

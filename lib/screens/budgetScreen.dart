@@ -107,6 +107,10 @@ class _BudgetscreenState extends State<Budgetscreen> {
                                                       MaterialPageRoute(
                                                         builder: (ctx) =>
                                                             InformationBudgetScreen(
+                                                          budgetAmount:
+                                                              budgets[index]
+                                                                  .paidAmount
+                                                                  .toString(),
                                                           budgetName:
                                                               budgets[index]
                                                                   .budget_name,

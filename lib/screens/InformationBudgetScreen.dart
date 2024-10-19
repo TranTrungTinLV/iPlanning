@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/transactionScreen.dart';
 import 'package:iplanning/sqlhelper/note_sqlife.dart';
+import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -11,8 +13,10 @@ class InformationBudgetScreen extends StatefulWidget {
       required this.budgetName,
       required this.note,
       required this.estimateAmount,
-      required this.budgetId});
+      required this.budgetId,
+      required this.budgetAmount});
   final String budgetName;
+  final String budgetAmount;
   final String note;
   final String estimateAmount;
   final String budgetId;
@@ -88,7 +92,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
               ),
               Text(
-                widget.note,
+                widget.budgetId,
                 style: TextStyle(fontSize: 18),
               ),
               Text(
@@ -119,11 +123,11 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Balance",
+                        "Balance: ${widget.budgetAmount}",
                         style: TextStyle(fontSize: 16),
                       ),
                       Icon(
-                        Icons.arrow_downward,
+                        !isOpen ? Icons.arrow_downward : Icons.arrow_upward,
                         size: 18,
                       ),
                     ],
@@ -135,48 +139,73 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
               ),
               if (isOpen)
                 Container(
+                  height: 200,
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.black),
                       borderRadius: BorderRadius.circular(5)),
-                  child: ListView(
-                    primary: true,
-                    shrinkWrap: true,
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Thu",
-                              style: TextStyle(color: Colors.green),
-                            ),
-                            Text(
-                              "Chi",
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Thu",
+                                style: TextStyle(color: Colors.green),
+                              ),
+                              Text(
+                                "Chi",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "200",
-                              style: TextStyle(color: Colors.green),
-                            ),
-                            Text(
-                              "100",
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ],
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          primary: true,
+                          shrinkWrap: true,
+                          itemCount: noteModels.length,
+                          itemBuilder: (context, index) {
+                            final noteDoc = noteModels[index];
+
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        noteDoc.transactionType ==
+                                                TransactionType.income
+                                            ? MainAxisAlignment.start
+                                            : MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      noteDoc.transactionType ==
+                                              TransactionType.income
+                                          ? Text(
+                                              noteDoc.amount.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.green),
+                                            )
+                                          : Text(
+                                              noteDoc.amount.toString(),
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               SizedBox(
@@ -251,10 +280,34 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                           itemCount: noteModels.length,
                           itemBuilder: (BuildContext context, int index) {
                             final note = noteModels[index];
-                            return ListTile(
-                              title: Text(note.name),
-                              subtitle:
-                                  Text(note.content ?? 'No content available'),
+                            return Container(
+                              padding: EdgeInsets.only(
+                                  right: 10, left: 10, bottom: 10),
+                              margin: EdgeInsets.only(top: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        note.name,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(note.transactionType.toString()),
+                                    ],
+                                  ),
+                                  Container(
+                                    child: Text(note.amount.toString()),
+                                  )
+                                ],
+                              ),
                             );
                           },
                         ),

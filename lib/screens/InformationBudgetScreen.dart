@@ -67,6 +67,36 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     return icome;
   }
 
+  // ! data Structure chart
+  List<GaugeRange> _buildRangePointers() {
+    double cumulativeValue = 0;
+    double totalValue = _icome + _expense;
+    // Tổng giá trị của tất cả chi phí
+    List<GaugeRange> ranges = [];
+    double incomePercent = (_icome / totalValue) * 100;
+    double expensePercent = (_expense / totalValue) * 100;
+    ranges.add(GaugeRange(
+      startValue: expensePercent,
+      endValue: incomePercent,
+      color: Colors.green,
+      startWidth: 0.3,
+      endWidth: 0.3,
+      sizeUnit: GaugeSizeUnit.factor,
+    ));
+
+    // Phạm vi cho chi phí
+    ranges.add(GaugeRange(
+      startValue: incomePercent,
+      endValue: 100,
+      color: Colors.red,
+      startWidth: 0.3,
+      endWidth: 0.3,
+      sizeUnit: GaugeSizeUnit.factor,
+    ));
+
+    return ranges;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,7 +104,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
 
     _tabController = TabController(length: 2, vsync: this);
     _loadNoteModel().then((_) {
-      _total();
+      _total().then((_) {
+        _buildRangePointers();
+      });
     });
   }
 
@@ -402,26 +434,26 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                               width: 20,
                                               cornerStyle:
                                                   CornerStyle.bothCurve,
-                                              gradient: SweepGradient(
-                                                colors: [
-                                                  Colors.blue.shade500,
-                                                  Colors.blue.shade200,
-                                                  Colors.blue.shade400,
-                                                ],
-                                                stops: [0.1, 0.75, 0.4],
-                                              ),
+                                              // gradient: SweepGradient(
+
+                                              //   stops: [0.1, 0.75, 0.4],
+                                              // ),
                                             ),
                                           ],
                                           axisLineStyle: AxisLineStyle(
                                             thickness: 35,
                                             color: Colors.grey.shade300,
                                           ),
-                                          startAngle: 5,
-                                          endAngle: 5,
+                                          startAngle: 360,
+                                          endAngle: 360,
+                                          maximum: 100,
+                                          minimum: 0,
+                                          ranges: _buildRangePointers(),
                                           showLabels: false,
                                           showTicks: false,
-                                          showLastLabel: false,
                                           showAxisLine: false,
+                                          canScaleToFit: true,
+                                          radiusFactor: 0.8,
                                         ),
                                       ],
                                     ),

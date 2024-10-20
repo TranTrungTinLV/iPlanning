@@ -37,7 +37,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   late final TabController _tabController;
   double totals = 0.0;
   final formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
-
+  double incomePercent = 0.0;
+  double expensePercent = 0.0;
   Future<void> _loadNoteModel() async {
     final notes = await NoteMethod().loadNoteModelwithBudget(widget.budgetId);
 
@@ -70,15 +71,21 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   // ! data Structure chart
   List<GaugeRange> _buildRangePointers() {
     double cumulativeValue = 0;
-    double totalValue = _icome + _expense;
-    // Tổng giá trị của tất cả chi phí
+
     List<GaugeRange> ranges = [];
-    double incomePercent = (_icome / totalValue) * 100;
-    double expensePercent = (_expense / totalValue) * 100;
+    double totalValue = _icome + _expense;
+    print(_expense);
+    print(_icome);
+    print(totalValue);
+    incomePercent = cumulativeValue + (_icome / totalValue) * 100;
+    expensePercent = cumulativeValue + (_expense / totalValue) * 100;
+    incomePercent = 100 - expensePercent;
+    print('Income Percent: $incomePercent');
+    print('Expense Percent: $expensePercent');
     ranges.add(GaugeRange(
-      startValue: expensePercent,
+      startValue: cumulativeValue,
       endValue: incomePercent,
-      color: Colors.green,
+      color: Colors.red.shade700,
       startWidth: 0.3,
       endWidth: 0.3,
       sizeUnit: GaugeSizeUnit.factor,
@@ -88,12 +95,12 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     ranges.add(GaugeRange(
       startValue: incomePercent,
       endValue: 100,
-      color: Colors.red,
+      color: Colors.yellow.shade700,
       startWidth: 0.3,
       endWidth: 0.3,
       sizeUnit: GaugeSizeUnit.factor,
     ));
-
+    cumulativeValue = incomePercent;
     return ranges;
   }
 
@@ -207,7 +214,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Balance: ${formatterAmount.format(widget.estimateAmount).replaceAll('.', ',')}",
+                        "Balance: ${formatterAmount.format(totals).replaceAll('.', ',')}",
                         style: TextStyle(fontSize: 16),
                       ),
                       Icon(
@@ -247,49 +254,85 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             ],
                           ),
                         ),
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          primary: true,
-                          shrinkWrap: true,
-                          itemCount: noteModels.length,
-                          itemBuilder: (context, index) {
-                            final noteDoc = noteModels[index];
 
-                            return Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 5),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        noteDoc.transactionType ==
-                                                TransactionType.income
-                                            ? MainAxisAlignment.start
-                                            : MainAxisAlignment.end,
-                                    children: [
-                                      noteDoc.transactionType ==
-                                              TransactionType.income
-                                          ? Text(
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                // padding: EdgeInsets.symmetric(
+                                //     horizontal: 20, vertical: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: noteModels
+                                            .where((note) =>
+                                                note.transactionType ==
+                                                TransactionType.income)
+                                            .length,
+                                        itemBuilder: (context, index) {
+                                          final incomeNote = noteModels
+                                              .where((note) =>
+                                                  note.transactionType ==
+                                                  TransactionType.income)
+                                              .elementAt(index);
+                                          return Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 5),
+                                            child: Text(
                                               formatterAmount
-                                                  .format(noteDoc.amount)
+                                                  .format(incomeNote.amount)
                                                   .replaceAll('.', ','),
                                               style: TextStyle(
                                                   color: Colors.green),
-                                            )
-                                          : Text(
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: noteModels
+                                            .where((note) =>
+                                                note.transactionType ==
+                                                TransactionType.expense)
+                                            .length,
+                                        itemBuilder: (context, index) {
+                                          final expenseNote = noteModels
+                                              .where((note) =>
+                                                  note.transactionType ==
+                                                  TransactionType.expense)
+                                              .elementAt(index);
+                                          return Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 5),
+                                            child: Text(
                                               formatterAmount
-                                                  .format(noteDoc.amount)
+                                                  .format(expenseNote.amount)
                                                   .replaceAll('.', ','),
                                               style:
                                                   TextStyle(color: Colors.red),
+                                              textAlign: TextAlign.right,
                                             ),
-                                    ],
-                                  ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            );
-                          },
+                              ),
+                            ],
+                          ),
                         ),
+                        // },
+                        // ),
                       ],
                     ),
                   ),
@@ -426,78 +469,75 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       shape: BoxShape.circle,
                                     ),
                                     child: SfRadialGauge(
+                                      animationDuration: 1000,
+                                      enableLoadingAnimation: true,
                                       axes: [
                                         RadialAxis(
-                                          pointers: [
-                                            RangePointer(
-                                              value: 65,
-                                              width: 20,
-                                              cornerStyle:
-                                                  CornerStyle.bothCurve,
-                                              // gradient: SweepGradient(
-
-                                              //   stops: [0.1, 0.75, 0.4],
-                                              // ),
+                                          annotations: <GaugeAnnotation>[
+                                            GaugeAnnotation(
+                                              widget: Text(
+                                                  "${incomePercent.toStringAsFixed(2)}%"),
+                                              positionFactor: 1.5,
+                                              angle: 40,
                                             ),
+                                            GaugeAnnotation(
+                                              widget: Text(
+                                                  "${expensePercent.toStringAsFixed(2)}%"),
+                                              positionFactor: 1.5,
+                                              angle: 200,
+                                            )
                                           ],
                                           axisLineStyle: AxisLineStyle(
                                             thickness: 35,
                                             color: Colors.grey.shade300,
                                           ),
-                                          startAngle: 360,
-                                          endAngle: 360,
-                                          maximum: 100,
                                           minimum: 0,
-                                          ranges: _buildRangePointers(),
+                                          maximum: 100,
                                           showLabels: false,
                                           showTicks: false,
                                           showAxisLine: false,
-                                          canScaleToFit: true,
+                                          canScaleToFit: false,
                                           radiusFactor: 0.8,
+                                          startAngle: 360,
+                                          ranges: _buildRangePointers(),
+                                          endAngle: 360,
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 Center(
                                   child: Container(
                                     height: 300,
-                                    child: GridView.count(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 2.5,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                      physics: ScrollPhysics(),
+                                    child: GridView.builder(
                                       shrinkWrap: true,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      children: [
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                        budgetItems(),
-                                      ],
+                                      itemCount: noteModels.length,
+                                      physics: ScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final note = noteModels[index];
+                                        return budgetItems(
+                                          title: note.name,
+                                          isCoulors: TransactionType.income ==
+                                              note.transactionType,
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 100,
                                 ),
-                                Text("Hello")
                               ],
                             ),
                           ),

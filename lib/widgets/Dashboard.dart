@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/screens/notification.dart';
 
 class TopBar extends StatefulWidget {
-  TopBar({super.key, required this.drawer, this.eventId});
+  TopBar(
+      {super.key,
+      required this.drawer,
+      this.eventId,
+      required this.getPicture});
+  final void Function() getPicture;
   final void Function() drawer;
   String? eventId;
   @override
@@ -69,6 +74,7 @@ class _TopBarState extends State<TopBar> {
                 MaterialPageRoute(
                     builder: (ctx) => NotificationScreen(
                           event_id: widget.eventId!,
+                          getPicture: widget.getPicture,
                         )));
           },
         ),

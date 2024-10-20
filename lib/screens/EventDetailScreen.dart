@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/details.dart';
+import 'package:intl/intl.dart';
 
 class Eventdetailscreen extends StatefulWidget {
   Eventdetailscreen({
@@ -19,6 +20,7 @@ class Eventdetailscreen extends StatefulWidget {
     required this.discription,
     required this.backgroundIMG,
     required this.event_id,
+    required this.ammount,
   });
   final String uid;
   final String titleEvent;
@@ -29,6 +31,7 @@ class Eventdetailscreen extends StatefulWidget {
   final String discription;
   final String backgroundIMG;
   final String event_id;
+  final double ammount;
   bool isLoadingInvite = true;
 
   @override
@@ -38,6 +41,7 @@ class Eventdetailscreen extends StatefulWidget {
 class _EventdetailscreenState extends State<Eventdetailscreen> {
   bool isInvited = false;
   bool isLoadingWishList = false;
+  final _formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
   @override
   void initState() {
@@ -107,9 +111,13 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                     gradient: LinearGradient(
                         colors: [Colors.black45, Colors.black45]))),
           ),
+          // !Detail
           Align(
               alignment: Alignment.bottomCenter,
               child: Details(
+                ammount: _formatterAmount
+                    .format(widget.ammount)
+                    .replaceAll('.', ','),
                 userName: widget.userName,
                 uid: widget.uid,
                 titleEvent: widget.titleEvent,

@@ -1,13 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iplanning/models/Budget.dart';
+
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/mapScreen.dart';
-import 'package:iplanning/services/categories.dart';
+
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/dropdownCategories.dart';
@@ -30,7 +29,7 @@ class CreateEventScreens extends StatefulWidget {
 }
 
 class _CreateEventScreensState extends State<CreateEventScreens> {
-  DateTime? _selectedDate;
+  // DateTime? _selectedDate;
   DateTime? _startDate;
   DateTime? _endDate;
   List<Uint8List>? fileImage = [];

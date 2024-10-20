@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/InformationBudgetScreen.dart';
 import 'package:iplanning/models/Budget.dart';
-import 'package:iplanning/models/events_model.dart';
+
 import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/services/budget.dart';
-import 'package:iplanning/widgets/TextCustomFeild.dart';
+import 'package:iplanning/services/note.dart';
+import 'package:iplanning/utils/transactionType.dart';
 
 class Budgetscreen extends StatefulWidget {
   const Budgetscreen({super.key, required this.eventId});
@@ -18,23 +20,32 @@ class _BudgetscreenState extends State<Budgetscreen> {
   @override
   initState() {
     super.initState();
-    _loadBudgets();
+    _loadBudgets().then((_) {
+      _loadNoteModel().then((_) {
+        _total();
+      });
+    });
   }
 
   final _budgetService = BudgetMethod();
 
+  // ignore: unused_field
   List<bool> _isChecked = [];
-  List<Budget> budgets = [];
+  Budget? budgets;
   bool isLoading = true;
   bool isChoose = false;
+  double _income = 0.0;
+  double _expense = 0.0;
+  double totalExpense = 0.0;
   final _formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+  List<NoteModel> noteModels = [];
+
   Future<void> _loadBudgets() async {
     try {
-      List<Budget> loadedBudgets =
+      Budget? loadedBudgets =
           await _budgetService.loadBudgetwithEvent(widget.eventId);
       setState(() {
         budgets = loadedBudgets;
-        _isChecked = List<bool>.filled(loadedBudgets.length, false);
         isLoading = false;
       });
     } catch (e) {
@@ -43,6 +54,35 @@ class _BudgetscreenState extends State<Budgetscreen> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> _loadNoteModel() async {
+    final notes =
+        await NoteMethod().loadNoteModelwithBudget(budgets!.budget_id);
+    setState(() {
+      noteModels = notes;
+    });
+  }
+
+  Future<double> _total() async {
+    if (noteModels.isEmpty) return 0.0;
+    double icome = noteModels
+        .where((note) => note.transactionType == TransactionType.income)
+        .map((note) => note.amount)
+        .reduce((acc, element) => acc + element);
+
+    double expense = noteModels
+        .where((note) => note.transactionType == TransactionType.expense)
+        .map((note) => note.amount)
+        .reduce((acc, element) => acc + element);
+
+    setState(() {
+      _income = icome;
+
+      _expense = expense;
+    });
+
+    return icome;
   }
 
   @override
@@ -80,121 +120,111 @@ class _BudgetscreenState extends State<Budgetscreen> {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
               child: Column(
                 children: [
-                  budgets.isEmpty
+                  budgets == null
                       ? Center(child: Text('No Budgets found'))
                       : Container(
                           height: MediaQuery.of(context).size.height * 0.3,
-                          child: ListView.builder(
-                            itemCount: budgets.length,
-                            itemBuilder: (context, index) {
-                              final amount = budgets[index].paidAmount;
-                              final formattedValue = _formatterAmount
-                                  .format(amount)
-                                  .replaceAll('.', ',');
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          child: Container(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                          margin: EdgeInsets.only(right: 10),
-                                          child: IconButton(
-                                            onPressed: () {
-                                              !isChoose
-                                                  ? Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (ctx) =>
-                                                            InformationBudgetScreen(
-                                                          budgetAmount:
-                                                              budgets[index]
-                                                                  .paidAmount
-                                                                  .toString(),
-                                                          budgetName:
-                                                              budgets[index]
-                                                                  .budget_name,
-                                                          note: budgets[index]
-                                                                  .note_id
-                                                                  ?.join(
-                                                                      ", ") ??
-                                                              "Hiện không có",
-                                                          estimateAmount:
-                                                              (budgets[index]
-                                                                      .paidAmount
-                                                                  as double),
-                                                          budgetId:
-                                                              budgets[index]
-                                                                  .budget_id,
-                                                        ),
+                                  Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          !isChoose
+                                              ? {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          InformationBudgetScreen(
+                                                        budgetAmount: budgets!
+                                                            .paidAmount
+                                                            .toString(),
+                                                        budgetName: budgets!
+                                                            .budget_name,
+                                                        note: budgets!.note_id
+                                                                ?.join(", ") ??
+                                                            "Hiện không có",
+                                                        estimateAmount:
+                                                            (budgets!.paidAmount
+                                                                as double),
+                                                        budgetId:
+                                                            budgets!.budget_id,
                                                       ),
-                                                    )
-                                                  : null;
-                                            },
-                                            icon: Icon(!isChoose
-                                                ? Icons.info_outline_rounded
-                                                : Icons.check),
-                                            color: Colors.blue.withOpacity(0.8),
-                                          )),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${budgets[index].budget_name}",
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Text(
-                                            "${formattedValue.toString()}",
-                                            style: TextStyle(fontSize: 14.0),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
+                                                    ),
+                                                  )
+                                                }
+                                              : null;
+                                        },
+                                        icon: Icon(!isChoose
+                                            ? Icons.info_outline_rounded
+                                            : Icons.check),
+                                        color: Colors.blue.withOpacity(0.8),
+                                      )),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "Thu vào",
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ),
-                                          Text(
-                                            "Chi ra",
-                                            style: TextStyle(color: Colors.red),
-                                          )
-                                        ],
+                                      Text(
+                                        "${budgets!.budget_name}",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                      SizedBox(
-                                        width: 5,
+                                      Text(
+                                        "${_formatterAmount.format(budgets!.paidAmount).replaceAll('.', ',').toString()}",
+                                        style: TextStyle(fontSize: 14.0),
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '10,000,000',
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ),
-                                          Text(
-                                            '10,000',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ],
-                                      )
                                     ],
                                   ),
                                 ],
-                              );
-                            },
-                          ),
+                              ),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Thu vào",
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      Text(
+                                        "Chi ra",
+                                        style: TextStyle(color: Colors.red),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        _formatterAmount
+                                            .format(_income)
+                                            .replaceAll('.', ','),
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                      Text(
+                                        _formatterAmount
+                                            .format(_expense)
+                                            .replaceAll('.', ','),
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                              // },
+                              ),
                         ),
                   if (isChoose)
                     Container(
@@ -213,37 +243,38 @@ class _BudgetscreenState extends State<Budgetscreen> {
                         ],
                       ),
                     ),
-                  Container(
-                    child: GestureDetector(
-                      onTap: () async {
-                        final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (ctx) => BudgetList(
-                                      event_id: widget.eventId,
-                                    )));
-                        if (result == true) {
-                          _loadBudgets();
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.add,
-                              color: Color(0xffF0534F),
-                            ),
-                            Text(
-                              "Add Budget",
-                              style: TextStyle(
-                                  fontSize: 18, color: Color(0xffF0534F)),
-                            ),
-                          ],
+                  if (budgets == null)
+                    Container(
+                      child: GestureDetector(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => BudgetList(
+                                        event_id: widget.eventId,
+                                      )));
+                          if (result == true) {
+                            _loadBudgets();
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: Color(0xffF0534F),
+                              ),
+                              Text(
+                                "Add Budget",
+                                style: TextStyle(
+                                    fontSize: 18, color: Color(0xffF0534F)),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

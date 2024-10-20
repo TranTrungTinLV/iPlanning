@@ -33,19 +33,19 @@ class BudgetMethod {
     return res;
   }
 
-  Future<List<Budget>> loadBudgetwithEvent(String event_id) async {
+  Future<Budget?> loadBudgetwithEvent(String event_id) async {
     try {
       QuerySnapshot snapshot =
           await budgetEvents.where('event_id', isEqualTo: event_id).get();
       print('Documents found: ${snapshot.docs.length}');
-      List<Budget> budget = snapshot.docs.map((doc) {
-        return Budget.fromJson(doc.data() as Map<String, dynamic>);
-      }).toList();
+      Budget budget =
+          Budget.fromJson(snapshot.docs.first.data() as Map<String, dynamic>);
+
       return budget;
     } catch (e, stacktrace) {
       print('Failed to get all: $e');
       print('Stacktrace: $stacktrace');
-      return [];
+      return null;
     }
   }
 

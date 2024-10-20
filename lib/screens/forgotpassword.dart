@@ -6,7 +6,6 @@ import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/button.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/textForm.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class ForgotpasswordScreen extends StatefulWidget {
   const ForgotpasswordScreen({super.key});
@@ -46,7 +45,8 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     child: Text(
                       errorMessage,
-                      style: const TextStyle(fontSize: 18.0, color: Colors.white),
+                      style:
+                          const TextStyle(fontSize: 18.0, color: Colors.white),
                     ))),
           );
           return;

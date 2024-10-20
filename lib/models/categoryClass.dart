@@ -1,5 +1,3 @@
-import 'package:iplanning/models/events_model.dart';
-
 class CategoryModel {
   String category_id;
   String name;

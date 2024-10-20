@@ -11,8 +11,10 @@ class Details extends StatelessWidget {
       required this.location,
       required this.startDate,
       required this.avartar,
-      required this.discription});
+      required this.discription,
+      required this.ammount});
   final String uid;
+  final String? ammount;
   final String titleEvent;
   final String userName;
   final String location;
@@ -82,7 +84,7 @@ class Details extends StatelessWidget {
                                 color: Colors.orange,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Text(
-                              "200.000 VND",
+                              "${ammount != null ? ammount : "Free"}",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 10),
                             )),

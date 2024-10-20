@@ -1,5 +1,3 @@
-import 'package:iplanning/models/events_model.dart';
-
 class Budget {
   String budget_id;
   String budget_name;

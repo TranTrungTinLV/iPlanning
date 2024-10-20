@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class budgetItems extends StatelessWidget {
-  const budgetItems({
+  budgetItems({
     super.key,
     required this.title,
-    required this.isCoulors,
+    this.isCoulors = false,
   });
   final String title;
-  final bool isCoulors;
+  bool? isCoulors;
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
-      color: isCoulors ? Colors.red.shade700 : Colors.yellow.shade700,
+      color: isCoulors! ? Colors.red.shade700 : Colors.yellow.shade700,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,7 +26,9 @@ class budgetItems extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 18.0),
+                style: TextStyle(
+                    fontSize: 18.0,
+                    color: isCoulors! ? Colors.white : Colors.black),
               ),
               SizedBox()
             ],

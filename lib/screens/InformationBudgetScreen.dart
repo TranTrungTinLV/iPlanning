@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iplanning/models/Budget.dart';
+
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/transactionScreen.dart';
 import 'package:iplanning/services/note.dart';
-import 'package:iplanning/sqlhelper/note_sqlife.dart';
+
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
+
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:intl/intl.dart';
 
@@ -41,7 +42,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   double expensePercent = 0.0;
   Future<void> _loadNoteModel() async {
     final notes = await NoteMethod().loadNoteModelwithBudget(widget.budgetId);
-
     setState(() {
       noteModels = notes;
     });
@@ -49,15 +49,16 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
 
   Future<double> _total() async {
     if (noteModels.isEmpty) return 0.0;
-
     double icome = noteModels
         .where((note) => note.transactionType == TransactionType.income)
         .map((note) => note.amount)
         .reduce((acc, element) => acc + element);
+
     double expense = noteModels
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)
         .reduce((acc, element) => acc + element);
+
     double total = (widget.estimateAmount + icome) - expense;
     setState(() {
       _icome = icome;
@@ -65,6 +66,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
       _expense = expense;
       totals = total;
     });
+
     return icome;
   }
 
@@ -104,12 +106,128 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     return ranges;
   }
 
+  List<GaugeRange> _buildIncomeRangePointers() {
+    double cumulativeValue = 0;
+    List<GaugeRange> ranges = [];
+    // ! Income Filter
+    List<NoteModel> incomeNotes = noteModels
+        .where((note) => note.transactionType == TransactionType.income)
+        .toList();
+    for (NoteModel incomeNote in incomeNotes) {
+      double incomePercent = (incomeNote.amount / _icome) * 100;
+      ranges.add(GaugeRange(
+        startValue: cumulativeValue,
+        endValue: cumulativeValue + incomePercent,
+        color: Colors.yellow.shade700,
+        startWidth: 0.3,
+        endWidth: 0.3,
+        sizeUnit: GaugeSizeUnit.factor,
+      ));
+      cumulativeValue += incomePercent;
+    }
+    return ranges;
+  }
+
+  List<GaugeRange> _buildExpenseRangePointers() {
+    double cumulativeValue = 0;
+    List<GaugeRange> ranges = [];
+    // ! Expense Filter
+    List<NoteModel> expenseNotes = noteModels
+        .where((note) => note.transactionType == TransactionType.expense)
+        .toList();
+    for (NoteModel expenseNote in expenseNotes) {
+      double expensePercent = (expenseNote.amount / _expense) * 100;
+      ranges.add(GaugeRange(
+        startValue: cumulativeValue,
+        endValue: cumulativeValue + expensePercent,
+        color: Colors.red.shade700,
+        startWidth: 0.3,
+        endWidth: 0.3,
+        sizeUnit: GaugeSizeUnit.factor,
+      ));
+      cumulativeValue += expensePercent;
+    }
+    return ranges;
+  }
+
+  List<GaugeAnnotation> _buildIncomeAnnotations() {
+    double cumulativeValue = 0;
+    List<GaugeAnnotation> annotations = [];
+    List<NoteModel> incomeNotes = noteModels
+        .where((note) => note.transactionType == TransactionType.income)
+        .toList();
+    double angle = (cumulativeValue + incomePercent / 2) * 3.6; // Tính lại góc
+
+    double adjustedAngle =
+        angle + (incomePercent < 1 ? 5 : 0); // Điều chỉnh góc nhỏ
+    double positionFactor =
+        adjustedAngle > 180 ? 0.7 : 1.2; // Điều chỉnh vị trí
+
+    for (NoteModel incomeNote in incomeNotes) {
+      double incomePercent = (incomeNote.amount / _icome) * 100;
+
+      annotations.add(GaugeAnnotation(
+        widget: Text("${incomeNote.name} - ${incomePercent.toStringAsFixed(2)}",
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.black)),
+        angle: -350 -
+            (cumulativeValue + (incomePercent)) /
+                3.6 *
+                360, // Đặt annotation giữa các phần
+        positionFactor:
+            positionFactor, // Đặt vị trí của annotation ở bên ngoài biểu đồ
+      ));
+      cumulativeValue += incomePercent;
+    }
+    ;
+    return annotations;
+  }
+
+  List<GaugeAnnotation> _buildExpenseAnnotations() {
+    double cumulativeValue = 0;
+    List<GaugeAnnotation> annotations = [];
+    List<NoteModel> expenseNotes = noteModels
+        .where((note) => note.transactionType == TransactionType.expense)
+        .toList();
+    double angle = (cumulativeValue + expensePercent / 2) * 3.6; // Tính lại góc
+
+    double adjustedAngle =
+        angle + (expensePercent < 1 ? 5 : 0); // Điều chỉnh góc nhỏ
+    double positionFactor =
+        adjustedAngle > 180 ? 0.7 : 1.2; // Điều chỉnh vị trí
+
+    for (NoteModel expenseNotes in expenseNotes) {
+      double expensePercent = (expenseNotes.amount / _expense) * 100;
+
+      annotations.add(GaugeAnnotation(
+        widget: Text(
+            "${expenseNotes.name} - ${expensePercent.toStringAsFixed(2)}",
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.black)),
+        angle: -350 -
+            (cumulativeValue + (expensePercent)) /
+                3.6 *
+                360, // Đặt annotation giữa các phần
+        positionFactor:
+            positionFactor, // Đặt vị trí của annotation ở bên ngoài biểu đồ
+      ));
+      cumulativeValue += expensePercent;
+    }
+    ;
+    return annotations;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+
     _loadNoteModel().then((_) {
       _total().then((_) {
         _buildRangePointers();
@@ -125,7 +243,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   }
 
   final List<Tab> tabs = [
-    Tab(text: "Thu"),
+    Tab(text: "Tổng quan"),
+    Tab(
+      text: "Thu",
+    ),
     Tab(text: "Chi"),
   ];
 
@@ -254,13 +375,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             ],
                           ),
                         ),
-
                         SingleChildScrollView(
                           child: Column(
                             children: [
                               Container(
-                                // padding: EdgeInsets.symmetric(
-                                //     horizontal: 20, vertical: 5),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -331,8 +449,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             ],
                           ),
                         ),
-                        // },
-                        // ),
                       ],
                     ),
                   ),
@@ -341,7 +457,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 height: 20,
               ),
               Container(
-                // margin: EdgeInsets.symmetric(vertical: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -395,6 +510,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 width: MediaQuery.of(context).size.width,
                 height: 140,
                 decoration: BoxDecoration(
+                    // color: Colors.white,
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0)),
                 child: !isOpen
@@ -412,6 +528,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                           itemBuilder: (BuildContext context, int index) {
                             final note = noteModels[index];
                             return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xffFCFCFC).withOpacity(0.1),
+                              ),
                               padding: EdgeInsets.only(
                                   right: 10, left: 10, bottom: 10),
                               margin: EdgeInsets.only(top: 10),
@@ -435,8 +555,12 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ],
                                   ),
                                   Container(
-                                    child: Text(
-                                        "${formatterAmount.format(note.amount).replaceAll('.', ',')}"),
+                                    child: TransactionType.income ==
+                                            note.transactionType
+                                        ? Text(
+                                            "+${formatterAmount.format(note.amount).replaceAll('.', ',')}")
+                                        : Text(
+                                            "-${formatterAmount.format(note.amount).replaceAll('.', ',')}"),
                                   )
                                 ],
                               ),
@@ -542,46 +666,163 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             ),
                           ),
                           Container(
-                              margin: EdgeInsets.only(bottom: 350),
-                              child: Card(
-                                child: Container(
-                                  height: 150,
-                                  margin: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: SfRadialGauge(
-                                    axes: [
-                                      RadialAxis(
-                                        pointers: [
-                                          RangePointer(
-                                            value: 65,
-                                            width: 20,
-                                            cornerStyle: CornerStyle.bothCurve,
-                                            gradient: SweepGradient(
-                                              colors: [
-                                                Colors.orange.shade500,
-                                                Colors.orange.shade200,
-                                                Colors.orange.shade400,
-                                              ],
-                                              stops: [0.1, 0.75, 0.4],
-                                            ),
-                                          ),
-                                        ],
-                                        axisLineStyle: AxisLineStyle(
+                            height: MediaQuery.of(context).size.height,
+                            child: Column(
+                              children: [
+                                Card(
+                                  child: Container(
+                                    height: 150,
+                                    margin: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: SfRadialGauge(
+                                      animationDuration: 1000,
+                                      enableLoadingAnimation: true,
+                                      axes: [
+                                        RadialAxis(
+                                          annotations:
+                                              _buildIncomeAnnotations(),
+                                          axisLineStyle: AxisLineStyle(
                                             thickness: 35,
-                                            color: Colors.grey.shade300),
-                                        startAngle: 5,
-                                        endAngle: 5,
-                                        showLabels: false,
-                                        showTicks: false,
-                                        showLastLabel: false,
-                                        showAxisLine: false,
-                                      ),
-                                    ],
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          minimum: 0,
+                                          maximum: 100,
+                                          showLabels: false,
+                                          showTicks: false,
+                                          showAxisLine: false,
+                                          canScaleToFit: false,
+                                          radiusFactor: 0.8,
+                                          startAngle: 270,
+                                          ranges: _buildIncomeRangePointers(),
+                                          endAngle: (incomePercent / 100) * 360,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              )),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                // !Icome
+                                Center(
+                                  child: Container(
+                                    height: 300,
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: noteModels
+                                          .where((note) =>
+                                              note.transactionType ==
+                                              TransactionType.income)
+                                          .length,
+                                      physics: ScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final note = noteModels.where((note) =>
+                                            note.transactionType ==
+                                            TransactionType.income);
+                                        return budgetItems(
+                                          title: note.first.name,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height,
+                            child: Column(
+                              children: [
+                                Card(
+                                  child: Container(
+                                    height: 150,
+                                    margin: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: SfRadialGauge(
+                                      animationDuration: 1000,
+                                      enableLoadingAnimation: true,
+                                      axes: [
+                                        RadialAxis(
+                                          annotations:
+                                              _buildExpenseAnnotations(),
+                                          axisLineStyle: AxisLineStyle(
+                                            thickness: 35,
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          minimum: 0,
+                                          maximum: 100,
+                                          showLabels: false,
+                                          showTicks: false,
+                                          showAxisLine: false,
+                                          canScaleToFit: false,
+                                          radiusFactor: 0.8,
+                                          startAngle: 270,
+                                          ranges: _buildExpenseRangePointers(),
+                                          endAngle:
+                                              (expensePercent / 100) * 360,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                // !Expense
+                                Center(
+                                  child: Container(
+                                    height: 300,
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: noteModels
+                                          .where((note) =>
+                                              note.transactionType ==
+                                              TransactionType.expense)
+                                          .length,
+                                      physics: ScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final note = noteModels.where((note) =>
+                                            note.transactionType ==
+                                            TransactionType.expense);
+                                        return budgetItems(
+                                          title: note.first.name,
+                                          isCoulors:
+                                              note.first.transactionType ==
+                                                  TransactionType.expense,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

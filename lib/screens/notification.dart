@@ -5,9 +5,10 @@ import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/services/cloud.dart';
 
 class NotificationScreen extends StatefulWidget {
-  NotificationScreen({super.key, required this.event_id});
+  NotificationScreen(
+      {super.key, required this.event_id, required this.getPicture});
   final String event_id;
-
+  final Function() getPicture;
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
 }
@@ -165,6 +166,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                                   widget
                                                                       .event_id,
                                                                   'isRejected');
+                                                          await widget
+                                                              .getPicture();
                                                         },
                                                         child: Container(
                                                           width: 100,

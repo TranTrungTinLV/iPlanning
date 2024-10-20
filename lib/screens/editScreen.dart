@@ -8,6 +8,7 @@ import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/services/auth.dart';
 
+// ignore: must_be_immutable
 class EditScreen extends StatefulWidget {
   UserModel userData;
   EditScreen(
@@ -41,6 +42,7 @@ class _EditScreenState extends State<EditScreen> {
   bool _isLoading = false;
   @override
   void initState() {
+    super.initState();
     // TODO: implement initState
     _nameController = TextEditingController(text: widget.fisrtName);
     _emailController = TextEditingController(text: widget.enteremail);

@@ -1,5 +1,4 @@
 import 'package:iplanning/utils/transactionType.dart';
-import 'package:uuid/uuid.dart';
 
 class NoteModel {
   final String name;
@@ -20,7 +19,9 @@ class NoteModel {
   factory NoteModel.fromJson(Map<String, dynamic> json) {
     return NoteModel(
       name: json['name'] as String,
-      amount: (json['amount'] ?? 0.0) as double,
+      amount: (json['amount'] is int)
+          ? (json['amount'] as int).toDouble()
+          : (json['amount'] ?? 0.0) as double,
       note_id: json['note_id'] as String,
       budget_id: json['budget_id'] as String,
       content: json['content'] as String?,

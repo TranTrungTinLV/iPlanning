@@ -30,27 +30,39 @@ class _HomescreensState extends State<Homescreens> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
-  EventsPostModel? _eventData;
+  // EventsPostModel? _eventData;
   List<EventsPostModel>? _eventPosts;
   EventsPostModel? event;
   List<CategoryModel>? _categoriesModel;
   String? _selectedCategoryId;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
+  // ignore: unused_field
   bool _isLoading = true;
   bool inviting = false;
   int inviters = 0;
+  double? _paidAmount;
   bool _isLoadingEvents = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadData();
+    _loadData().then((value) {
+      if (event != null) {
+        _getDataPicture();
+      }
+    });
+    _loadPostEvent().then(((value) {
+      _getDataPicture();
+    }));
+    _getDataPicture();
   }
 
   Future<void> _loadData() async {
     await _loadUserData();
-    await _loadPostEvent();
+    await _loadPostEvent().then((value) {
+      getBudgetFromEventPOST(event!.event_id);
+    });
     await _loadCategories();
   }
 
@@ -65,17 +77,43 @@ class _HomescreensState extends State<Homescreens> {
   }
 
   Future<void> _loadPostEvent() async {
-    List<EventsPostModel> events = await _eventService.getAllEventPosts();
+    FirebaseFirestore.instance
+        .collection('eventPosts')
+        .snapshots()
+        .listen((snapshot) {
+      List<EventsPostModel> events = snapshot.docs.map((doc) {
+        return EventsPostModel.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
 
-    if (mounted) {
       setState(() {
         _eventPosts = events;
-        _isLoading = false;
         if (_eventPosts != null && _eventPosts!.isNotEmpty) {
           event = _eventPosts!.first;
-          _getDataPicture();
+          _getDataPicture(); // Tải hình ảnh người tham dự
         }
       });
+    });
+  }
+
+  Future<double?> getBudgetFromEventPOST(String eventId) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('budgets')
+        .where('event_id', isEqualTo: eventId)
+        .limit(1)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      // Lấy document đầu tiên từ kết quả truy vấn
+      final budgetDoc = snapshot.docs.first;
+      // Lấy paidAmount từ tài liệu budget
+      double? paidAmount =
+          (budgetDoc.data() as Map<String, dynamic>)['paidAmount'];
+      setState(() {
+        _paidAmount = paidAmount;
+      });
+      return paidAmount;
+    } else {
+      print('No budget found for event_id: $eventId');
+      return null;
     }
   }
 
@@ -148,7 +186,7 @@ class _HomescreensState extends State<Homescreens> {
     });
   }
 
-  void _getDataPicture() async {
+  Future<void> _getDataPicture() async {
     setState(() {
       _isLoading = true; // Thêm trạng thái để biết đang tải
     });
@@ -195,6 +233,9 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   Widget build(BuildContext context) {
+    if (_userData == null || event == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     List<EventsPostModel> filteredEvents = _selectedCategoryId != null
         ? (_eventPosts ?? []).where((event) {
             return _categoriesModel!
@@ -530,6 +571,7 @@ class _HomescreensState extends State<Homescreens> {
                           _scaffoldKey.currentState?.openDrawer();
                         },
                         eventId: event != null ? event!.event_id : '',
+                        getPicture: _getDataPicture,
                       ));
                 }),
               ),
@@ -625,7 +667,7 @@ class _HomescreensState extends State<Homescreens> {
                                                     MaterialPageRoute(
                                                       builder: (ctx) =>
                                                           Eventdetailscreen(
-                                                        // isLoadingInvite: _isLoading,
+                                                        ammount: _paidAmount!,
                                                         uid: event.uid,
                                                         titleEvent:
                                                             event.event_name,

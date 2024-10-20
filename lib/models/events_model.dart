@@ -1,9 +1,5 @@
-import 'dart:ffi';
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:iplanning/models/Budget.dart';
+
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/todoList.dart';
 import 'package:iplanning/models/user_models.dart';
@@ -32,7 +28,7 @@ class EventsPostModel {
   Map<String, InvitationStatus>? invitationStatuses;
 
   List<UserModel> users;
-  List<String>? budget;
+  String? budget;
 
   EventsPostModel(
       {required this.event_name,
@@ -73,10 +69,9 @@ class EventsPostModel {
               .toList()
           : null,
 
-      budget: json['budget'] != null
-          ? List<String>.from(json[
-              'budget']) // Sử dụng List<String> nếu budget chỉ là danh sách chuỗi
-          : null, // Convert budget properly
+      budget: json['budget']
+          as String? // Sử dụng List<String> nếu budget chỉ là danh sách chuỗi
+      , // Convert budget properly
       event_id: json['event_id'] as String,
       isPending:
           json['isPending'] != null ? List<String>.from(json['isPending']) : [],

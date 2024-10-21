@@ -30,7 +30,6 @@ class CreateEventScreens extends StatefulWidget {
 }
 
 class _CreateEventScreensState extends State<CreateEventScreens> {
-  // DateTime? _selectedDate;
   DateTime? _startDate;
   DateTime? _endDate;
   List<Uint8List>? fileImage = [];
@@ -100,14 +99,14 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
       if (pickedDate != null) {
         if (isStartDate) {
           _startDate = pickedDate;
-          _isStartDateSelected = true; // Đặt thành true khi đã chọn
+          _isStartDateSelected = true;
         } else {
           _endDate = pickedDate;
           _isEndDateSelected = true;
         }
         _isDateValid = _validateDates();
       } else if (isStartDate) {
-        _isStartDateSelected = false; // Nếu không chọn, đặt thành false
+        _isStartDateSelected = false;
       }
     });
   }
@@ -173,7 +172,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
           onStepContinue: () {
             if (_startDate == null) {
               setState(() {
-                _isStartDateSelected = false; // Trigger error message
+                _isStartDateSelected = false;
               });
             }
             if (fileImage?.isEmpty ?? true) {
@@ -183,7 +182,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
             if (_endDate == null) {
               setState(() {
-                _isEndDateSelected = false; // Trigger error message
+                _isEndDateSelected = false;
               });
             }
             if (_formKey.currentState != null &&
@@ -200,9 +199,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             }
           },
           onStepTapped: (int index) {
-            // setState(() {
-            //   _index = index;
-            // });
             if (index <= _index) {
               setState(() {
                 _index = index;
@@ -246,8 +242,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                       ),
                     ],
                   ),
-
-                  // backgroundColor: Colors.red,
                 ),
               );
             }
@@ -630,35 +624,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                           ),
                         ),
                       ),
-
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     print('create Events');
-                      //     uploadEvent();
-                      //   },
-                      //   child: Align(
-                      //     alignment: Alignment.bottomCenter,
-                      //     child: Container(
-                      //       width: MediaQuery.of(context).size.width,
-                      //       height: 60,
-                      //       decoration: BoxDecoration(
-                      //           color: Color(0xff171924),
-                      //           borderRadius: BorderRadius.circular(20)),
-                      //       child: Center(
-                      //         child: Text(
-                      //           'Public Now',
-                      //           style: TextStyle(
-                      //               color: Colors.white,
-                      //               fontSize: 20,
-                      //               fontWeight: FontWeight.w600),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
-                    //   ),
-                    // ],
                   ),
                 ),
               ),

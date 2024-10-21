@@ -15,7 +15,7 @@ class Details extends StatelessWidget {
       required this.ammount,
       required this.onTap});
   final String uid;
-  final String? ammount;
+  final double ammount;
   final String titleEvent;
   final String userName;
   final String location;
@@ -86,7 +86,7 @@ class Details extends StatelessWidget {
                                 color: Colors.orange,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Text(
-                              "${ammount != null ? ammount : "Free"}",
+                              "${ammount != null && ammount != 0.0 ? ammount.toString() : "Free"}",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 10),
                             )),

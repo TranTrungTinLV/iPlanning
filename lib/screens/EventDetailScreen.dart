@@ -26,8 +26,6 @@ class Eventdetailscreen extends StatefulWidget {
     required this.discription,
     required this.backgroundIMG,
     required this.event_id,
-    required this.ammount,
-    // required this.userProfile,
   }) : super(key: key);
   final String uid;
   final String titleEvent;
@@ -38,8 +36,6 @@ class Eventdetailscreen extends StatefulWidget {
   final String discription;
   final String backgroundIMG;
   final String event_id;
-  final double ammount;
-  // UserModel? userProfile;
 
   bool isLoadingInvite = true;
 
@@ -53,6 +49,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
   final _formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
   UserModel? userProfile;
   final _authService = AuthenticationService();
+  double? ammount;
 
   @override
   void initState() {
@@ -61,6 +58,28 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
     _checkInviteStatus();
     _checkWishList();
     _loadUserData();
+    getBudgetFromEventPOST(widget.event_id);
+  }
+
+  Future<double?> getBudgetFromEventPOST(String eventId) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('budgets')
+        .where('event_id', isEqualTo: eventId)
+        .limit(1)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      final budgetDoc = snapshot.docs.first;
+      double? paidAmount =
+          (budgetDoc.data() as Map<String, dynamic>)['paidAmount'];
+      setState(() {
+        ammount = paidAmount;
+      });
+      print("eventId ${eventId}");
+      return paidAmount;
+    } else {
+      print('No budget found for event_id: $eventId');
+      return null;
+    }
   }
 
   void _checkInviteStatus() async {
@@ -186,11 +205,9 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           // !Detail
           Align(
             alignment: Alignment.bottomCenter,
-            // child: GestureDetector(
-            //   child:
+
             child: Details(
-              ammount:
-                  _formatterAmount.format(widget.ammount).replaceAll('.', ','),
+              ammount: ammount ?? 0,
               userName: widget.userName,
               uid: widget.uid,
               titleEvent: widget.titleEvent,

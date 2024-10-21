@@ -53,18 +53,17 @@ class _HomescreensState extends State<Homescreens> {
         _getDataPicture();
       }
     });
-    _loadPostEvent().then(((value) {
+    _loadPostEvent().then(((value) async {
       _getDataPicture();
     }));
     _getDataPicture();
+    if (event != null) {}
   }
 
   Future<void> _loadData() async {
     await _loadUserData();
     await _loadPostEvent().then((value) {
-      if (event != null) {
-        getBudgetFromEventPOST(event!.event_id);
-      }
+      if (event != null) {}
     });
     await _loadCategories();
   }
@@ -105,26 +104,6 @@ class _HomescreensState extends State<Homescreens> {
     setState(() {
       _isLoading = false;
     });
-  }
-
-  Future<double?> getBudgetFromEventPOST(String eventId) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('budgets')
-        .where('event_id', isEqualTo: eventId)
-        .limit(1)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      final budgetDoc = snapshot.docs.first;
-      double? paidAmount =
-          (budgetDoc.data() as Map<String, dynamic>)['paidAmount'];
-      setState(() {
-        _paidAmount = paidAmount ?? 0.0;
-      });
-      return paidAmount;
-    } else {
-      print('No budget found for event_id: $eventId');
-      return null;
-    }
   }
 
   void _filterEventsByCategory(String categoryId) {
@@ -198,7 +177,7 @@ class _HomescreensState extends State<Homescreens> {
 
   Future<void> _getDataPicture() async {
     setState(() {
-      _isLoading = true; // Thêm trạng thái để biết đang tải
+      _isLoading = true;
     });
 
     DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
@@ -213,7 +192,6 @@ class _HomescreensState extends State<Homescreens> {
       List<String> avatars = [];
 
       for (String userIds in acceptedUser) {
-        // Lấy thông tin người dùng từ Firestore
         DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userIds)
@@ -681,8 +659,6 @@ class _HomescreensState extends State<Homescreens> {
                                                     MaterialPageRoute(
                                                       builder: (ctx) =>
                                                           Eventdetailscreen(
-                                                        ammount:
-                                                            _paidAmount ?? 0.0,
                                                         uid: event.uid,
                                                         titleEvent:
                                                             event.event_name,

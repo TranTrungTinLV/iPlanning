@@ -15,10 +15,8 @@ class EditScreen extends StatefulWidget {
       {super.key,
       required this.enteremail,
       this.fisrtName,
-      // this.lastName,
       this.phoneNumber,
       this.country,
-      // required this.onSave,
       required this.avatarEdit,
       required this.userData});
   final String enteremail;
@@ -106,7 +104,7 @@ class _EditScreenState extends State<EditScreen> {
             children: [
               Stack(alignment: Alignment.center, children: [
                 SizedBox(
-                  width: 200, // Kích thước mới lớn hơn
+                  width: 200,
                   height: 200,
                   child: ImageUserPicker(
                     onPickImage: (File pickedImage) {
@@ -117,8 +115,7 @@ class _EditScreenState extends State<EditScreen> {
                 IgnorePointer(
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 40.0),
-
-                    width: 200, // Kích thước lớn hơn cho icon camera
+                    width: 200,
                     height: 200,
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,

@@ -68,12 +68,10 @@ class _AllEventScreenState extends State<AllEventScreen> {
                                     discription: event.description!,
                                     backgroundIMG: event.eventImage![0],
                                     event_id: event.event_id,
-                                    ammount: widget.paidAmount ?? 0.0,
                                   )));
                     },
                     child: Card(
                       child: Container(
-                        // margin: EdgeInsets.symmetric(horizontal: 14),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -34,7 +34,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // _loadUserData();
   }
 
   @override
@@ -61,7 +60,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 20),
-              child: Text(widget.username),
+              child: Text(
+                widget.username,
+                style: TextStyle(fontSize: 24),
+              ),
             ),
             isMe
                 ? GestureDetector(
@@ -84,10 +86,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // margin: EdgeInsets.symmetric(vertical: 10),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: const Color(0xff5669FF),
-                              strokeAlign: 2.0)),
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                            color: const Color(0xff5669FF), strokeAlign: 2.0),
+                      ),
 
                       child: const Text(
                         'Edit Profile',
@@ -96,9 +98,119 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   )
                 : Container(
-                    child: Row(
-                    children: <Widget>[],
-                  )),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '350',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Following',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 80,
+                            ),
+                            Container(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '346',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    'Follower',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 130,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Center(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.person_add_alt_1,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Follow",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                width: 130,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.blue),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.messenger_outline_sharp,
+                                      size: 20,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        'Message',
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    )),
           ],
         ),
       ),

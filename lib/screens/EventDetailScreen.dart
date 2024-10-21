@@ -186,7 +186,20 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           // !Detail
           Align(
             alignment: Alignment.bottomCenter,
-            child: GestureDetector(
+            // child: GestureDetector(
+            //   child:
+            child: Details(
+              ammount:
+                  _formatterAmount.format(widget.ammount).replaceAll('.', ','),
+              userName: widget.userName,
+              uid: widget.uid,
+              titleEvent: widget.titleEvent,
+              location: widget.location,
+              startDate: widget.startDate,
+              avartar: (widget.avartar != "" && widget.avartar != null)
+                  ? widget.avartar
+                  : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+              discription: widget.discription,
               onTap: () {
                 if (userProfile != null) {
                   Navigator.push(
@@ -213,21 +226,8 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   );
                 }
               },
-              child: Details(
-                ammount: _formatterAmount
-                    .format(widget.ammount)
-                    .replaceAll('.', ','),
-                userName: widget.userName,
-                uid: widget.uid,
-                titleEvent: widget.titleEvent,
-                location: widget.location,
-                startDate: widget.startDate,
-                avartar: (widget.avartar != "" && widget.avartar != null)
-                    ? widget.avartar
-                    : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                discription: widget.discription,
-              ),
             ),
+            // ),
           ),
           Align(
             alignment: Alignment.center,

@@ -12,7 +12,8 @@ class Details extends StatelessWidget {
       required this.startDate,
       required this.avartar,
       required this.discription,
-      required this.ammount});
+      required this.ammount,
+      required this.onTap});
   final String uid;
   final String? ammount;
   final String titleEvent;
@@ -21,6 +22,7 @@ class Details extends StatelessWidget {
   final String avartar;
   final Timestamp startDate;
   final String discription;
+  final void Function() onTap;
   @override
   Widget build(BuildContext context) {
     var isMe = authInstance.currentUser!.uid == uid;
@@ -102,31 +104,37 @@ class Details extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(avartar),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Text(
-                            userName ?? 'User name',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 20),
+                GestureDetector(
+                  onTap: () {
+                    print("Hello");
+                    onTap();
+                  },
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(avartar),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(
+                              userName ?? 'User name',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 20),
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Text(isMe ? 'Me' : 'hosting'),
-                        ),
-                      ],
-                    ),
-                  ],
+                          Container(
+                            child: Text(isMe ? 'Me' : 'hosting'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 isMe
                     ? Icon(Icons.more_horiz)

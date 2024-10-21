@@ -8,6 +8,7 @@ import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/mapScreen.dart';
 
 import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/utils/dialog.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/dropdownCategories.dart';
 import 'package:iplanning/widgets/mutipleImage.dart';
@@ -149,6 +150,15 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
       isLoading: isLoading,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () async {
+              bool? shouldExit = await showExitConfirmationDialog(context);
+              if (shouldExit != null && shouldExit) {
+                Navigator.pop(context);
+              }
+            },
+          ),
           title: const Text('Customizing'),
         ),
         body: Stepper(
@@ -277,7 +287,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                     Expanded(
                       child: ElevatedButton(
                         // onPressed: details.onStepCancel,
-                        onPressed: () {},
+                        onPressed: () {
+                          uploadEvent();
+                        },
                         child: const Text('Done'),
                       ),
                     ),

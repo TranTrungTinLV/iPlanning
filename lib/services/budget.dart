@@ -57,8 +57,7 @@ class BudgetMethod {
 
       // Instead of adding to an array, update the field with a single String
       await budgetRef.update({
-        'budget': FieldValue.arrayUnion(
-            [budget_id]) // Directly set the event_id as a String
+        'budget': budget_id, // Directly set the event_id as a String
       });
 
       print("Updated event_ids with: $eventId");

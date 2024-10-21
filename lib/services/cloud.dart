@@ -28,7 +28,7 @@ class ClouMethods {
     required String uid, //user_id
     required String location,
     required List<Uint8List> eventImages,
-    // required Budget budget,
+    String? budget,
     required String description,
   }) async {
     String res = 'Some Error';
@@ -55,7 +55,7 @@ class ClouMethods {
           eventDateEnd: eventDateEnd,
           eventDateStart: eventDateStart,
           eventImage: postImageUrls,
-          // budget: budget,
+          budget: budget,
           isPost: isPost ?? false,
           users: []);
       await CategoriesMethod()
@@ -93,6 +93,7 @@ class ClouMethods {
         List rejectList =
             (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
 
+        // Check UID
         if (inviting.contains(uid)) {
           if (isStatus == 'isPending') {
             if (inviting.contains(uid)) {
@@ -147,35 +148,47 @@ class ClouMethods {
 
   wishlistUser(String uid, String eventId) async {
     try {
-      // Truy vấn tài liệu người dùng từ collection 'users' dựa vào uid
+      // Lấy thông tin sự kiện
+      DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+          .collection('eventPosts')
+          .doc(eventId)
+          .get();
+
+      // Lấy thông tin người dùng
       DocumentSnapshot userSnapshot = await users.doc(uid).get();
       if (!userSnapshot.exists) {
         print("Tài liệu không tồn tại.");
         return;
       }
+
       if (userSnapshot.exists && userSnapshot.data() != null) {
-        // Lấy danh sách wishlist hiện tại (nếu có)
         List wishlist = (userSnapshot.data()! as dynamic)['wishlist'] ?? [];
 
         if (wishlist.contains(eventId)) {
-          // Nếu sự kiện đã có trong wishlist, xóa khỏi danh sách (unwishlist)
           await users.doc(uid).update({
             'wishlist': FieldValue.arrayRemove([eventId]),
           });
           Fluttertoast.showToast(msg: "Removed from wishlist");
         } else {
-          // Nếu sự kiện chưa có trong wishlist, thêm vào danh sách
+          // Hành động add (thêm vào wishlist)
+          if (eventSnapshot.exists && eventSnapshot.data() != null) {
+            String eventCreatorUid = (eventSnapshot.data()!
+                as dynamic)['uid']; // Lấy UID người tạo sự kiện
+
+            if (eventCreatorUid == uid) {
+              // Nếu sự kiện là của chính người dùng, không cho phép thêm vào wishlist
+              Fluttertoast.showToast(
+                  msg: "You cannot add your own event to the wishlist");
+              return;
+            }
+          }
+
+          // Thêm vào wishlist
           await users.doc(uid).update({
             'wishlist': FieldValue.arrayUnion([eventId]),
           });
           Fluttertoast.showToast(msg: "Added to wishlist");
         }
-      } else {
-        // Nếu tài liệu người dùng chưa tồn tại, tạo tài liệu với trường wishlist
-        await users.doc(uid).set({
-          'wishlist': [eventId],
-        }, SetOptions(merge: true));
-        Fluttertoast.showToast(msg: "Added to wishlist");
       }
     } catch (e) {
       print("Error in wishlistUser: $e");

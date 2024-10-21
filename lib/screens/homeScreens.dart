@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/AllEventScreen.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
 import 'package:iplanning/screens/LoginScreen.dart';
 import 'package:iplanning/screens/createEventScreens.dart';
@@ -30,14 +31,14 @@ class _HomescreensState extends State<Homescreens> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
-  // EventsPostModel? _eventData;
+
   List<EventsPostModel>? _eventPosts;
   EventsPostModel? event;
   List<CategoryModel>? _categoriesModel;
   String? _selectedCategoryId;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
-  // ignore: unused_field
+
   bool _isLoading = true;
   bool inviting = false;
   int inviters = 0;
@@ -61,12 +62,17 @@ class _HomescreensState extends State<Homescreens> {
   Future<void> _loadData() async {
     await _loadUserData();
     await _loadPostEvent().then((value) {
-      getBudgetFromEventPOST(event!.event_id);
+      if (event != null) {
+        getBudgetFromEventPOST(event!.event_id);
+      }
     });
     await _loadCategories();
   }
 
   Future<void> _loadUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
     UserModel? userData = await _authService.getUserData();
     if (mounted) {
       setState(() {
@@ -77,6 +83,9 @@ class _HomescreensState extends State<Homescreens> {
   }
 
   Future<void> _loadPostEvent() async {
+    setState(() {
+      _isLoading = true;
+    });
     FirebaseFirestore.instance
         .collection('eventPosts')
         .snapshots()
@@ -93,6 +102,9 @@ class _HomescreensState extends State<Homescreens> {
         }
       });
     });
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
@@ -102,13 +114,11 @@ class _HomescreensState extends State<Homescreens> {
         .limit(1)
         .get();
     if (snapshot.docs.isNotEmpty) {
-      // Lấy document đầu tiên từ kết quả truy vấn
       final budgetDoc = snapshot.docs.first;
-      // Lấy paidAmount từ tài liệu budget
       double? paidAmount =
           (budgetDoc.data() as Map<String, dynamic>)['paidAmount'];
       setState(() {
-        _paidAmount = paidAmount;
+        _paidAmount = paidAmount ?? 0.0;
       });
       return paidAmount;
     } else {
@@ -193,7 +203,7 @@ class _HomescreensState extends State<Homescreens> {
 
     DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
         .collection('eventPosts')
-        .doc(event!.event_id)
+        .doc(event != null ? event!.event_id : '')
         .get();
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
       List<dynamic> acceptedUser =
@@ -233,9 +243,6 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   Widget build(BuildContext context) {
-    if (_userData == null || event == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
     List<EventsPostModel> filteredEvents = _selectedCategoryId != null
         ? (_eventPosts ?? []).where((event) {
             return _categoriesModel!
@@ -248,7 +255,7 @@ class _HomescreensState extends State<Homescreens> {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: _userData == null
+      drawer: (_userData == null)
           ? const Center(child: CircularProgressIndicator())
           : Drawer(
               child: Column(
@@ -409,7 +416,8 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => WishListScreen(
-                                    event_id: event?.event_id ?? '',
+                                    event_id:
+                                        event != null ? event!.event_id : null,
                                   )));
                     },
                   ),
@@ -621,7 +629,12 @@ class _HomescreensState extends State<Homescreens> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    print('See all');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (ctx) => AllEventScreen(
+                                                  paidAmount: _paidAmount,
+                                                )));
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 10.0),
@@ -638,7 +651,8 @@ class _HomescreensState extends State<Homescreens> {
                               scrollDirection: Axis.horizontal,
                               child: _isLoadingEvents
                                   ? Container()
-                                  : filteredEvents.isEmpty
+                                  : (filteredEvents.isEmpty ||
+                                          event!.event_id == null)
                                       ? Center(
                                           child: Container(
                                             width: MediaQuery.of(context)
@@ -667,7 +681,8 @@ class _HomescreensState extends State<Homescreens> {
                                                     MaterialPageRoute(
                                                       builder: (ctx) =>
                                                           Eventdetailscreen(
-                                                        ammount: _paidAmount!,
+                                                        ammount:
+                                                            _paidAmount ?? 0.0,
                                                         uid: event.uid,
                                                         titleEvent:
                                                             event.event_name,
@@ -703,7 +718,9 @@ class _HomescreensState extends State<Homescreens> {
                                               child: CardCustom(
                                                 event: event,
                                                 RandomImages: RandomImages,
-                                                uid: _userData!.uid,
+                                                uid: _userData != null
+                                                    ? _userData!.uid
+                                                    : '',
                                                 count: inviters,
                                               ),
                                             );

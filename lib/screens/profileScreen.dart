@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/editScreen.dart';
 import 'package:iplanning/services/auth.dart';
@@ -28,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _authService = AuthenticationService();
   UserModel? _userData;
   bool? _isLoading;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -35,18 +37,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // _loadUserData();
   }
 
-  // void _loadUserData() async {
-  //   UserModel? userData = await _authService.getUserData();
-  //   if (mounted) {
-  //     setState(() {
-  //       _userData = userData;
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    var isMe = authInstance.currentUser!.uid == widget.userData.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -69,35 +63,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
               margin: const EdgeInsets.symmetric(vertical: 20),
               child: Text(widget.username),
             ),
-            GestureDetector(
-              onTap: () {
-                final result = Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => EditScreen(
-                            enteremail: widget.enteredemail,
-                            fisrtName: widget.username,
-                            avatarEdit: widget.avatarEdit ??
-                                'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                            phoneNumber: widget.phoneNumber,
-                            country: widget.country,
-                            userData: widget.userData,
-                            // userData: _userData!,
-                          )),
-                );
-              },
-              child: Container(
-                // margin: EdgeInsets.symmetric(vertical: 10),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                        color: const Color(0xff5669FF), strokeAlign: 2.0)),
-                child: const Text(
-                  'Edit Profile',
-                  style: TextStyle(fontSize: 18.0),
-                ),
-              ),
-            )
+            isMe
+                ? GestureDetector(
+                    onTap: () {
+                      final result = Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => EditScreen(
+                                  enteremail: widget.enteredemail,
+                                  fisrtName: widget.username,
+                                  avatarEdit: widget.avatarEdit ??
+                                      'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                  phoneNumber: widget.phoneNumber,
+                                  country: widget.country,
+                                  userData: widget.userData,
+                                  // userData: _userData!,
+                                )),
+                      );
+                    },
+                    child: Container(
+                      // margin: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              color: const Color(0xff5669FF),
+                              strokeAlign: 2.0)),
+
+                      child: const Text(
+                        'Edit Profile',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                  )
+                : Container(
+                    child: Row(
+                    children: <Widget>[],
+                  )),
           ],
         ),
       ),

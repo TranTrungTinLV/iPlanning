@@ -87,7 +87,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     ranges.add(GaugeRange(
       startValue: cumulativeValue,
       endValue: incomePercent,
-      color: Colors.red.shade700,
+      color: Color(0xff9E77ED),
       startWidth: 0.3,
       endWidth: 0.3,
       sizeUnit: GaugeSizeUnit.factor,
@@ -97,7 +97,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     ranges.add(GaugeRange(
       startValue: incomePercent,
       endValue: 100,
-      color: Colors.yellow.shade700,
+      color: Color(0xffD6BBFB),
       startWidth: 0.3,
       endWidth: 0.3,
       sizeUnit: GaugeSizeUnit.factor,
@@ -118,7 +118,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
       ranges.add(GaugeRange(
         startValue: cumulativeValue,
         endValue: cumulativeValue + incomePercent,
-        color: Colors.yellow.shade700,
+        color: Color(0xff9E77ED),
         startWidth: 0.3,
         endWidth: 0.3,
         sizeUnit: GaugeSizeUnit.factor,
@@ -140,7 +140,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
       ranges.add(GaugeRange(
         startValue: cumulativeValue,
         endValue: cumulativeValue + expensePercent,
-        color: Colors.red.shade700,
+        color: Color(0xffD6BBFB),
         startWidth: 0.3,
         endWidth: 0.3,
         sizeUnit: GaugeSizeUnit.factor,
@@ -255,6 +255,11 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text("Information Budget"),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            icon: Icon(Icons.arrow_back)),
         centerTitle: true,
       ),
       body: Container(
@@ -642,7 +647,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       physics: ScrollPhysics(),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 2,
                                         childAspectRatio: 2.5,
                                         crossAxisSpacing: 10,
                                         mainAxisSpacing: 10,
@@ -719,7 +724,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       physics: ScrollPhysics(),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 2,
                                         childAspectRatio: 2.5,
                                         crossAxisSpacing: 10,
                                         mainAxisSpacing: 10,
@@ -797,7 +802,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       physics: ScrollPhysics(),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
+                                        crossAxisCount: 2,
                                         childAspectRatio: 2.5,
                                         crossAxisSpacing: 10,
                                         mainAxisSpacing: 10,

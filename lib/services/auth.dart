@@ -158,6 +158,32 @@ class AuthenticationService {
     return null;
   }
 
+  Future<UserModel?> getUserProfile(String uid) async {
+    try {
+      if (user == null) {
+        // Handle trường hợp user chưa đăng nhập
+        return null;
+      }
+      final DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        // Sử dụng factory constructor fromJson
+        return UserModel.fromJson(userDoc.data() as Map<String, dynamic>);
+      } else {}
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Error fetching user data: $e",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return null;
+    }
+    return null;
+  }
+
   Future<void> updateUser(UserModel userModel, {File? newAvatars}) async {
     String uid = user!.uid;
 

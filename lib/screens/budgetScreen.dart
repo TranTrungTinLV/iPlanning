@@ -135,31 +135,34 @@ class _BudgetscreenState extends State<Budgetscreen> {
                                       margin: EdgeInsets.only(right: 10),
                                       child: IconButton(
                                         onPressed: () async {
-                                          !isChoose
-                                              ? {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (ctx) =>
-                                                          InformationBudgetScreen(
-                                                        budgetAmount: budgets!
-                                                            .paidAmount
-                                                            .toString(),
-                                                        budgetName: budgets!
-                                                            .budget_name,
-                                                        note: budgets!.note_id
-                                                                ?.join(", ") ??
-                                                            "Hiện không có",
-                                                        estimateAmount:
-                                                            (budgets!.paidAmount
-                                                                as double),
-                                                        budgetId:
-                                                            budgets!.budget_id,
-                                                      ),
-                                                    ),
-                                                  )
-                                                }
-                                              : null;
+                                          final result = Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  InformationBudgetScreen(
+                                                budgetAmount: budgets!
+                                                    .paidAmount
+                                                    .toString(),
+                                                budgetName:
+                                                    budgets!.budget_name,
+                                                note: budgets!.note_id
+                                                        ?.join(", ") ??
+                                                    "Hiện không có",
+                                                estimateAmount: (budgets!
+                                                    .paidAmount as double),
+                                                budgetId: budgets!.budget_id,
+                                              ),
+                                            ),
+                                          ).then((value) {
+                                            if (value == true) {
+                                              _loadBudgets().then((_) {
+                                                _loadNoteModel().then((_) {
+                                                  _total();
+                                                });
+                                              });
+                                              _loadNoteModel();
+                                            }
+                                          });
                                         },
                                         icon: Icon(!isChoose
                                             ? Icons.info_outline_rounded

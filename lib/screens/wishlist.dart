@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/services/cloud.dart';
 
 class WishListScreen extends StatefulWidget {
   WishListScreen({
     super.key,
-    this.event_id,
+    required this.event_id,
   });
   final String? event_id;
   @override
@@ -30,7 +31,7 @@ class _WishListScreenState extends State<WishListScreen> {
 
     DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
         .collection('eventPosts')
-        .doc(widget.event_id!)
+        .doc(widget.event_id)
         .get();
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
       setState(() {
@@ -74,7 +75,9 @@ class _WishListScreenState extends State<WishListScreen> {
               } else if (snapshot.hasError) {
                 return Center(
                     child: Text('Failed to load wishlist: ${snapshot.error}'));
-              } else if (!snapshot.hasData || !snapshot.data!.exists) {
+              } else if (!snapshot.hasData ||
+                  !snapshot.data!.exists ||
+                  widget.event_id == null) {
                 return const Center(child: Text('No Wishlist Available'));
               }
 
@@ -148,8 +151,7 @@ class _WishListScreenState extends State<WishListScreen> {
                                       child: IconButton(
                                           onPressed: () {
                                             ClouMethods().wishlistUser(
-                                                FirebaseAuth
-                                                    .instance.currentUser!.uid,
+                                                authInstance.currentUser!.uid,
                                                 widget.event_id!);
                                           },
                                           icon: Icon(

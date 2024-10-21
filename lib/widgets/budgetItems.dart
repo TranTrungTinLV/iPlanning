@@ -12,7 +12,7 @@ class budgetItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
-      color: isCoulors! ? Colors.red.shade700 : Colors.yellow.shade700,
+      color: isCoulors! ? Color(0xffD6BBFB) : Color(0xff9E77ED),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -23,12 +23,15 @@ class budgetItems extends StatelessWidget {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                    fontSize: 18.0,
-                    color: isCoulors! ? Colors.white : Colors.black),
+              Center(
+                child: Container(
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                ),
               ),
               SizedBox()
             ],

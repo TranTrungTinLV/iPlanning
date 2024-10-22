@@ -11,14 +11,13 @@ class EventsPostModel {
   Timestamp eventDateStart;
   List<String>? eventImage;
   Timestamp eventDateEnd;
-  String uid; //user_id
+  String uid;
   bool isPost;
   String location;
   String profilePic;
   Timestamp createAt;
   List<ToDoList>? todoList;
   CategoryModel? categoryModel;
-  // List inviteEvents;
   String? description;
   String username;
   String? eventType;

@@ -666,8 +666,8 @@ class _HomescreensState extends State<Homescreens> {
                                                             event.username,
                                                         location:
                                                             event.location,
-                                                        startDate:
-                                                            event.createAt,
+                                                        startDate: event
+                                                            .eventDateStart,
                                                         avartar: event
                                                                 .profilePic ??
                                                             'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',

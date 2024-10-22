@@ -61,16 +61,34 @@ class Details extends StatelessWidget {
                           SizedBox(
                             width: 20,
                           ),
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.date_range),
-                              Container(
-                                child: Text(
-                                    "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
-                                        'Start Date'),
+                              Row(
+                                children: [
+                                  Icon(Icons.date_range),
+                                  Container(
+                                    child: Text(
+                                        "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
+                                            'Start Date'),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.timer_outlined),
+                                  Container(
+                                    child: Text(
+                                        "${startDate.toDate().hour}:${startDate.toDate().minute}" ??
+                                            'Start Date'),
+                                  ),
+                                ],
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),

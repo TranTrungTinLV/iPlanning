@@ -1,8 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iplanning/services/todoList.dart';
+import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
-class TaskList extends StatelessWidget {
-  const TaskList({super.key});
+class TaskList extends StatefulWidget {
+  TaskList({super.key, required this.event_id});
+  final String event_id;
+
+  @override
+  State<TaskList> createState() => _TaskListState();
+}
+
+class _TaskListState extends State<TaskList> {
+  TextEditingController taskName = TextEditingController();
+  TextEditingController enterNote = TextEditingController();
+  TextEditingController amount = TextEditingController();
+  bool isLoading = true;
+
+  createTask() async {
+    try {
+      double? amountValue = double.tryParse(amount.text);
+      if (amountValue == null) {
+        Fluttertoast.showToast(
+            msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      await TodoListMethod().addTodo(
+          title: taskName.text,
+          completed: TodoStatus.notStarted,
+          details: enterNote.text,
+          event_id: widget.event_id,
+          amount: amountValue);
+      Navigator.of(context).pop(true);
+    } catch (e) {
+      print("Lỗi");
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +58,45 @@ class TaskList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFieldCustom(
+                    controller: taskName,
                     title: 'Task Name',
                     labelText: 'Task Name',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
+                    controller: enterNote,
                     title: 'Enter Note',
                     labelText: 'Enter Note',
                     radius: 10.0,
                   ),
+                  SizedBox(
+                    height: 26,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFieldCustom(
+                          controller: amount,
+                          title: 'Amount',
+                          labelText: 'Amount',
+                          radius: 10.0,
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      Expanded(child: Container())
+                    ],
+                  )
                 ],
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
+                onTap: () {
+                  print("taskList");
+                  createTask();
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 60,

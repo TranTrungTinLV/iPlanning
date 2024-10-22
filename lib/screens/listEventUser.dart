@@ -5,6 +5,7 @@ import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/screens/budgetScreen.dart';
 import 'package:iplanning/screens/guestList.dart';
 import 'package:iplanning/screens/taskList.dart';
+import 'package:iplanning/screens/taskScreen.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/widgets/popUpCustom.dart';
 import 'package:popover/popover.dart';
@@ -197,7 +198,9 @@ class _ListEventState extends State<ListEvent>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (ctx) => TaskList()),
+                                        builder: (ctx) => TaskScreen(
+                                              eventId: event.event_id,
+                                            )),
                                   );
                                 } else {
                                   Navigator.push(

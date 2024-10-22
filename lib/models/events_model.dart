@@ -16,7 +16,7 @@ class EventsPostModel {
   String location;
   String profilePic;
   Timestamp createAt;
-  List<ToDoList>? todoList;
+  List<String>? todoList;
   CategoryModel? categoryModel;
   String? description;
   String username;
@@ -62,11 +62,8 @@ class EventsPostModel {
           ? CategoryModel.fromJson(
               json['category']) // Kiểm tra nếu category tồn tại
           : null,
-      todoList: json['todoList'] != null
-          ? (json['todoList'] as List)
-              .map((item) => ToDoList.fromMap(item))
-              .toList()
-          : null,
+      todoList:
+          json['todoList'] != null ? List<String>.from(json['todoList']) : [],
 
       budget: json['budget']
           as String? // Sử dụng List<String> nếu budget chỉ là danh sách chuỗi

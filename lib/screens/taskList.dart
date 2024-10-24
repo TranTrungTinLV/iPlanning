@@ -21,19 +21,18 @@ class _TaskListState extends State<TaskList> {
   createTask() async {
     try {
       double? amountValue = double.tryParse(amount.text);
-      if (amountValue == null) {
-        Fluttertoast.showToast(
-            msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
-        setState(() {
-          isLoading = false;
-        });
-        return;
-      }
+      // if (amountValue == null) {
+      //   Fluttertoast.showToast(
+      //       msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
+      //   setState(() {
+      //     isLoading = false;
+      //   });
+      //   return;
+      // }
       String res = await TodoListMethod().createTaskWithTodo(
         budget_id: widget.budget_id,
-        
         content: enterNote.text,
-        amount: amountValue,
+        amount: amountValue ?? 0.0,
         name: taskName.text,
       );
 

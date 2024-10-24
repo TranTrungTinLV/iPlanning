@@ -17,12 +17,14 @@ class InformationBudgetScreen extends StatefulWidget {
       required this.note,
       required this.estimateAmount,
       required this.budgetId,
-      required this.budgetAmount});
+      required this.budgetAmount,
+      required this.event_ids});
   final String budgetName;
   final String budgetAmount;
   final String note;
   final double estimateAmount;
   final String budgetId;
+  final String event_ids;
   @override
   State<InformationBudgetScreen> createState() =>
       _InformationBudgetScreenState();
@@ -482,6 +484,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             MaterialPageRoute(
                                 builder: (ctx) => TransactionScreen(
                                       budgetId: widget.budgetId,
+                                      event_ids: widget.event_ids,
                                     )));
                         if (result == true) {
                           _loadNoteModel().then((_) {

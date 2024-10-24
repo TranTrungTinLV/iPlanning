@@ -5,9 +5,9 @@ import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class TaskList extends StatefulWidget {
-  TaskList({super.key, required this.budget_id});
+  TaskList({super.key, required this.budget_id, required this.event_id});
   final String budget_id;
-
+  final String event_id;
   @override
   State<TaskList> createState() => _TaskListState();
 }
@@ -21,19 +21,12 @@ class _TaskListState extends State<TaskList> {
   createTask() async {
     try {
       double? amountValue = double.tryParse(amount.text);
-      // if (amountValue == null) {
-      //   Fluttertoast.showToast(
-      //       msg: "Vui lòng nhập số hợp lệ cho số tiền ước tính");
-      //   setState(() {
-      //     isLoading = false;
-      //   });
-      //   return;
-      // }
       String res = await TodoListMethod().createTaskWithTodo(
         budget_id: widget.budget_id,
         content: enterNote.text,
         amount: amountValue ?? 0.0,
         name: taskName.text,
+        event_ids: widget.event_id,
       );
 
       Navigator.of(context).pop(true);

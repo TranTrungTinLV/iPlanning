@@ -17,6 +17,7 @@ class NoteMethod {
     required String budget_id,
     required String content,
     required double amount,
+    required String event_ids,
     required TransactionType transactionType,
   }) async {
     String res = 'Some Error';
@@ -27,12 +28,12 @@ class NoteMethod {
         todoId = const Uuid().v4().split('-')[0];
         TodoModel todoModel = TodoModel(
             amount: amount,
-            budget_id: budget_id,
             completed: TodoStatus.notStarted,
             details: content,
             note_id: noteId,
             title: name,
-            todoId: todoId);
+            todoId: todoId,
+            event_ids: event_ids);
         await todoList.doc(todoId).set(todoModel.toJson());
         await TodoListMethod().updateNoteTodowithBudgetIds(todoId, budget_id);
       }

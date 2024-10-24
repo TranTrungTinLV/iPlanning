@@ -151,6 +151,7 @@ class _BudgetscreenState extends State<Budgetscreen> {
                                                 estimateAmount: (budgets!
                                                     .paidAmount as double),
                                                 budgetId: budgets!.budget_id,
+                                                event_ids: budgets!.event_id!,
                                               ),
                                             ),
                                           ).then((value) {

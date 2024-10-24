@@ -6,8 +6,10 @@ import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class TransactionScreen extends StatefulWidget {
-  TransactionScreen({super.key, required this.budgetId});
+  TransactionScreen(
+      {super.key, required this.budgetId, required this.event_ids});
   final String budgetId;
+  final String event_ids;
   @override
   State<TransactionScreen> createState() => _TransactionScreenState();
 }
@@ -37,7 +39,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           name: name.text,
           budget_id: widget.budgetId,
           content: content.text,
-          transactionType: _transactionType!);
+          transactionType: _transactionType!,
+          event_ids: widget.event_ids);
       if (res == 'success') {
         // Sử dụng popUntil để quay về HomeScreen
         Navigator.pop(context, true);

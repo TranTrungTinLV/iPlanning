@@ -42,7 +42,7 @@ class NoteMethod {
           budget_id: budget_id,
           transactionType: transactionType,
           content: content,
-          todo_id: '',
+          todo_id: todoId,
           note_id: noteId);
       await noteBudget.doc(noteId).set(noteModel.toJson());
       await updateNoteModelwithBudgetIds(noteId, budget_id);

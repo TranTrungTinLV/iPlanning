@@ -16,7 +16,7 @@ class EventsPostModel {
   String location;
   String profilePic;
   Timestamp createAt;
-  List<String>? todoList;
+
   CategoryModel? categoryModel;
   String? description;
   String username;
@@ -33,7 +33,6 @@ class EventsPostModel {
       {required this.event_name,
       this.categoryModel,
       this.isPost = false,
-      this.todoList,
       this.eventType,
       this.isPending,
       this.isRejected,
@@ -62,8 +61,6 @@ class EventsPostModel {
           ? CategoryModel.fromJson(
               json['category']) // Kiểm tra nếu category tồn tại
           : null,
-      todoList:
-          json['todoList'] != null ? List<String>.from(json['todoList']) : [],
 
       budget: json['budget']
           as String? // Sử dụng List<String> nếu budget chỉ là danh sách chuỗi
@@ -123,7 +120,6 @@ class EventsPostModel {
       'eventDateEnd': eventDateEnd,
       'eventDateStart': eventDateStart,
       'uid': uid,
-      'todoList': todoList,
       'location': location,
       'createAt': createAt,
       'description': description,

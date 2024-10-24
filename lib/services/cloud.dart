@@ -41,7 +41,6 @@ class ClouMethods {
         true,
       );
       EventsPostModel eventsPostModel = EventsPostModel(
-          todoList: [],
           eventType: eventType ?? null,
           username: username,
           profilePic: profilePic ?? "",

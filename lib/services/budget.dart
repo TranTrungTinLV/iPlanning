@@ -11,6 +11,7 @@ class BudgetMethod {
   addBudget({
     required String budget_name,
     List<String>? note_id,
+    List<String>? todoId,
     required double estimate_amount,
     required String event_id,
   }) async {
@@ -18,6 +19,7 @@ class BudgetMethod {
     try {
       String budgetId = const Uuid().v4().split('-')[0];
       Budget budgetModel = Budget(
+        todoList: todoId,
         event_id: event_id,
         budget_name: budget_name,
         budget_id: budgetId,

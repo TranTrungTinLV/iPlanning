@@ -5,8 +5,8 @@ import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class TaskList extends StatefulWidget {
-  TaskList({super.key, required this.event_id});
-  final String event_id;
+  TaskList({super.key, required this.budget_id});
+  final String budget_id;
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -29,12 +29,14 @@ class _TaskListState extends State<TaskList> {
         });
         return;
       }
-      await TodoListMethod().addTodo(
-          title: taskName.text,
-          completed: TodoStatus.notStarted,
-          details: enterNote.text,
-          event_id: widget.event_id,
-          amount: amountValue);
+      String res = await TodoListMethod().createTaskWithTodo(
+        budget_id: widget.budget_id,
+        
+        content: enterNote.text,
+        amount: amountValue,
+        name: taskName.text,
+      );
+
       Navigator.of(context).pop(true);
     } catch (e) {
       print("Lỗi");

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/screens/taskList.dart';
 
 class TaskScreen extends StatefulWidget {
-  TaskScreen({super.key, required this.eventId});
-  final String eventId;
+  TaskScreen({super.key, required this.budgetId});
+  final String budgetId;
   @override
   State<TaskScreen> createState() => _TaskScreenState();
 }
@@ -26,13 +26,16 @@ class _TaskScreenState extends State<TaskScreen> {
             Container(
               child: GestureDetector(
                 onTap: () async {
-                  final result = await Navigator.push(
+                  final res = await Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (ctx) => TaskList(
-                                event_id: widget.eventId,
+                                budget_id: widget.budgetId,
+
                               )));
-                  if (result == true) {}
+                  if (res == "success") {
+                      
+                  }
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

@@ -5,8 +5,8 @@ import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class TaskList extends StatefulWidget {
-  TaskList({super.key, required this.budget_id, required this.event_id});
-  final String budget_id;
+  TaskList({super.key, this.budget_id, required this.event_id});
+  final String? budget_id;
   final String event_id;
   @override
   State<TaskList> createState() => _TaskListState();
@@ -21,8 +21,18 @@ class _TaskListState extends State<TaskList> {
   createTask() async {
     try {
       double? amountValue = double.tryParse(amount.text);
+      if (amountValue != null && amountValue > 0 && widget.budget_id == null) {
+        // Hiển thị thông báo lỗi nếu `budget_id` không tồn tại
+        Fluttertoast.showToast(
+          msg:
+              "Budget không tồn tại. Vui lòng tạo budget trước khi thêm khoản chi.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+        );
+        return; // Kết thúc hàm nếu budget không tồn tại
+      }
       String res = await TodoListMethod().createTaskWithTodo(
-        budget_id: widget.budget_id,
+        budget_id: widget.budget_id!,
         content: enterNote.text,
         amount: amountValue ?? 0.0,
         name: taskName.text,

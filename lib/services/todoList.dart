@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/note_models.dart';
-import 'package:iplanning/models/todoList.dart';
+import 'package:iplanning/models/todo_models.dart';
+import 'package:iplanning/services/budget.dart';
 import 'package:iplanning/services/note.dart';
 import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/utils/transactionType.dart';
@@ -9,24 +10,30 @@ import 'package:uuid/uuid.dart';
 
 class TodoListMethod {
   CollectionReference todoList = firestoreInstance.collection('todos');
-  CollectionReference events = firestoreInstance.collection('budgets');
+  CollectionReference budgetEvents = firestoreInstance.collection('budgets');
+  CollectionReference events = firestoreInstance.collection('eventPosts');
+
   CollectionReference noteBudget = firestoreInstance.collection('notes');
   createTaskWithTodo(
       {required double amount,
       required String name,
-      required String budget_id,
+      required String? budget_id,
       required String content,
       required String event_ids}) async {
     String res = 'Some Error';
     String? noteId;
     String todoId = const Uuid().v4().split('-')[0];
+    if (amount > 0 && budget_id == null) {
+      return 'Budget không tồn tại. Vui lòng tạo budget trước khi thêm khoản chi.';
+    }
     if (amount > 0) {
       noteId = const Uuid().v4().split('-')[0];
+
       NoteModel noteModel = NoteModel(
         note_id: noteId,
         todo_id: todoId,
         name: name,
-        budget_id: budget_id,
+        budget_id: budget_id!,
         content: content,
         amount: amount,
         transactionType: TransactionType.expense,

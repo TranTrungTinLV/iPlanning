@@ -199,7 +199,7 @@ class _ListEventState extends State<ListEvent>
                                     context,
                                     MaterialPageRoute(
                                         builder: (ctx) => TaskScreen(
-                                              budgetId: event.budget!,
+                                              budgetId: event.budget,
                                               event_id: event.event_id,
                                             )),
                                   );

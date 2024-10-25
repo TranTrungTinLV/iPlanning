@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:iplanning/models/todoList.dart';
+import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/screens/taskList.dart';
 import 'package:iplanning/services/todoList.dart';
 
 class TaskScreen extends StatefulWidget {
-  TaskScreen({super.key, required this.budgetId, required this.event_id});
-  final String budgetId;
+  TaskScreen({super.key, this.budgetId, required this.event_id});
+  final String? budgetId;
   final String event_id;
   @override
   State<TaskScreen> createState() => _TaskScreenState();

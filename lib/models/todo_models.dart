@@ -20,30 +20,21 @@ class TodoModel {
   });
   factory TodoModel.fromJson(Map<String, dynamic> json) {
     return TodoModel(
-      title: json['title'] as String? ??
-          'Default', // Kiểm tra null và cung cấp giá trị mặc định
+      title: json['title'] as String,
       completed: TodoStatus.values.firstWhere(
-        (e) => e.toString() == json['completed'],
-        orElse: () =>
-            TodoStatus.notStarted, // Giá trị mặc định nếu không tìm thấy
+        (e) => e.toString() == json['completed'], // Convert string to enum
       ),
-      details: json['details'] as String? ?? '', // Kiểm tra null
-      note_id: json['note_id'] as String? ?? '', // Có thể là null
-      todoId: json['todoId'] as String? ??
-          '', // Kiểm tra null và cung cấp giá trị mặc định
+      details: json['details'] as String,
+      note_id: json['note_id'] as String?,
+      todoId: json['todoId'] as String,
       amount: (json['amount'] ?? 0.0) as double,
-      event_ids: json['event_ids'] is List
-          ? (json['event_ids'] as List<dynamic>)
-              .join(', ') // Chuyển danh sách thành chuỗi
-          : json['event_ids'] as String? ??
-              '', // Kiểm tra null và cung cấp giá trị mặc định
+      event_ids: json['event_ids'] as String,
     );
   }
   Map<String, dynamic> toJson() => {
         'title': title,
         'completed': completed.toString(),
         'details': details,
-        
         'note_id': note_id,
         'todoId': todoId,
         'amount': amount,

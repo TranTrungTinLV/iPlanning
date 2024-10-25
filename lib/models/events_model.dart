@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:iplanning/models/categoryClass.dart';
-import 'package:iplanning/models/todoList.dart';
+import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/utils/InvitationStatus.dart';
 

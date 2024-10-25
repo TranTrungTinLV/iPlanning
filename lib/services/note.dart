@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/note.dart';
-import 'package:iplanning/models/todoList.dart';
+import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/services/todoList.dart';
 import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/utils/transactionType.dart';

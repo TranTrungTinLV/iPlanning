@@ -54,12 +54,13 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     double icome = noteModels
         .where((note) => note.transactionType == TransactionType.income)
         .map((note) => note.amount)
-        .reduce((acc, element) => acc + element);
-
+        .fold(0.0, (acc, element) => acc + element);
+    print("Thu: $icome");
     double expense = noteModels
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)
-        .reduce((acc, element) => acc + element);
+        .fold(0.0, (acc, element) => acc + element);
+    print("Thu: $expense");
 
     double total = (widget.estimateAmount + icome) - expense;
     setState(() {
@@ -521,7 +522,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                     // color: Colors.white,
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0)),
-                child: !isOpen
+                child: (_icome == 0 || _expense == 0)
                     ? Center(
                         child: Text(
                         "No payment not found",
@@ -559,7 +560,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(note.transactionType.toString()),
+                                      Text(note.transactionType
+                                          .toString()
+                                          .split('.')
+                                          .last),
                                     ],
                                   ),
                                   Container(
@@ -594,49 +598,58 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             child: Column(
                               children: [
                                 Card(
-                                  child: Container(
-                                    height: 150,
-                                    margin: EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: SfRadialGauge(
-                                      animationDuration: 1000,
-                                      enableLoadingAnimation: true,
-                                      axes: [
-                                        RadialAxis(
-                                          annotations: <GaugeAnnotation>[
-                                            GaugeAnnotation(
-                                              widget: Text(
-                                                  "${incomePercent.toStringAsFixed(2)}%"),
-                                              positionFactor: 1.5,
-                                              angle: 40,
-                                            ),
-                                            GaugeAnnotation(
-                                              widget: Text(
-                                                  "${expensePercent.toStringAsFixed(2)}%"),
-                                              positionFactor: 1.5,
-                                              angle: 200,
-                                            )
-                                          ],
-                                          axisLineStyle: AxisLineStyle(
-                                            thickness: 35,
-                                            color: Colors.grey.shade300,
+                                  child: (_icome != 0 || _expense != 0)
+                                      ? Container(
+                                          height: 150,
+                                          margin: EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
                                           ),
-                                          minimum: 0,
-                                          maximum: 100,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          showAxisLine: false,
-                                          canScaleToFit: false,
-                                          radiusFactor: 0.8,
-                                          startAngle: 360,
-                                          ranges: _buildRangePointers(),
-                                          endAngle: 360,
+                                          child: SfRadialGauge(
+                                            animationDuration: 1000,
+                                            enableLoadingAnimation: true,
+                                            axes: [
+                                              RadialAxis(
+                                                annotations: <GaugeAnnotation>[
+                                                  GaugeAnnotation(
+                                                    widget: Text(
+                                                        "${incomePercent.toStringAsFixed(2)}%"),
+                                                    positionFactor: 1.5,
+                                                    angle: 40,
+                                                  ),
+                                                  GaugeAnnotation(
+                                                    widget: Text(
+                                                        "${expensePercent.toStringAsFixed(2)}%"),
+                                                    positionFactor: 1.5,
+                                                    angle: 200,
+                                                  )
+                                                ],
+                                                axisLineStyle: AxisLineStyle(
+                                                  thickness: 35,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                                minimum: 0,
+                                                maximum: 100,
+                                                showLabels: false,
+                                                showTicks: false,
+                                                showAxisLine: false,
+                                                canScaleToFit: false,
+                                                radiusFactor: 0.8,
+                                                startAngle: 360,
+                                                ranges: _buildRangePointers(),
+                                                endAngle: 360,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 150.0,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                              child: Text(
+                                                  "Chưa có dữ liệu Tổng Quan")),
                                         ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                                 SizedBox(
                                   height: 20,
@@ -677,38 +690,49 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             height: MediaQuery.of(context).size.height,
                             child: Column(
                               children: [
+                                // !Icome
                                 Card(
-                                  child: Container(
-                                    height: 150,
-                                    margin: EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: SfRadialGauge(
-                                      animationDuration: 1000,
-                                      enableLoadingAnimation: true,
-                                      axes: [
-                                        RadialAxis(
-                                          annotations:
-                                              _buildIncomeAnnotations(),
-                                          axisLineStyle: AxisLineStyle(
-                                            thickness: 35,
-                                            color: Colors.grey.shade300,
+                                  child: _icome == 0.0
+                                      ? Container(
+                                          height: 150,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                              child: Text("Chưa có dữ liệu")),
+                                        )
+                                      : Container(
+                                          height: 150,
+                                          margin: EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
                                           ),
-                                          minimum: 0,
-                                          maximum: 100,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          showAxisLine: false,
-                                          canScaleToFit: false,
-                                          radiusFactor: 0.8,
-                                          startAngle: 270,
-                                          ranges: _buildIncomeRangePointers(),
-                                          endAngle: (incomePercent / 100) * 360,
+                                          child: SfRadialGauge(
+                                            animationDuration: 1000,
+                                            enableLoadingAnimation: true,
+                                            axes: [
+                                              RadialAxis(
+                                                annotations:
+                                                    _buildIncomeAnnotations(),
+                                                axisLineStyle: AxisLineStyle(
+                                                  thickness: 35,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                                minimum: 0,
+                                                maximum: 100,
+                                                showLabels: false,
+                                                showTicks: false,
+                                                showAxisLine: false,
+                                                canScaleToFit: false,
+                                                radiusFactor: 0.8,
+                                                startAngle: 270,
+                                                ranges:
+                                                    _buildIncomeRangePointers(),
+                                                endAngle:
+                                                    (incomePercent / 100) * 360,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                                 SizedBox(
                                   height: 20,
@@ -754,39 +778,52 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             height: MediaQuery.of(context).size.height,
                             child: Column(
                               children: [
+                                // ! Expense
                                 Card(
-                                  child: Container(
-                                    height: 150,
-                                    margin: EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: SfRadialGauge(
-                                      animationDuration: 1000,
-                                      enableLoadingAnimation: true,
-                                      axes: [
-                                        RadialAxis(
-                                          annotations:
-                                              _buildExpenseAnnotations(),
-                                          axisLineStyle: AxisLineStyle(
-                                            thickness: 35,
-                                            color: Colors.grey.shade300,
+                                  child: _expense == 0.0
+                                      ? Container(
+                                          height: 150,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: Text(
+                                                "Chưa có dữ liệu cho phần chi"),
                                           ),
-                                          minimum: 0,
-                                          maximum: 100,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          showAxisLine: false,
-                                          canScaleToFit: false,
-                                          radiusFactor: 0.8,
-                                          startAngle: 270,
-                                          ranges: _buildExpenseRangePointers(),
-                                          endAngle:
-                                              (expensePercent / 100) * 360,
+                                        )
+                                      : Container(
+                                          height: 150,
+                                          margin: EdgeInsets.all(10.0),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: SfRadialGauge(
+                                            animationDuration: 1000,
+                                            enableLoadingAnimation: true,
+                                            axes: [
+                                              RadialAxis(
+                                                annotations:
+                                                    _buildExpenseAnnotations(),
+                                                axisLineStyle: AxisLineStyle(
+                                                  thickness: 35,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                                minimum: 0,
+                                                maximum: 100,
+                                                showLabels: false,
+                                                showTicks: false,
+                                                showAxisLine: false,
+                                                canScaleToFit: false,
+                                                radiusFactor: 0.8,
+                                                startAngle: 270,
+                                                ranges:
+                                                    _buildExpenseRangePointers(),
+                                                endAngle:
+                                                    (expensePercent / 100) *
+                                                        360,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                                 SizedBox(
                                   height: 20,

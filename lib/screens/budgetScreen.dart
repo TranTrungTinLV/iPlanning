@@ -25,6 +25,7 @@ class _BudgetscreenState extends State<Budgetscreen> {
         _total();
       });
     });
+    _loadBudgets();
   }
 
   final _budgetService = BudgetMethod();
@@ -69,16 +70,15 @@ class _BudgetscreenState extends State<Budgetscreen> {
     double icome = noteModels
         .where((note) => note.transactionType == TransactionType.income)
         .map((note) => note.amount)
-        .reduce((acc, element) => acc + element);
+        .fold(0.0, (acc, element) => acc + element);
 
     double expense = noteModels
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)
-        .reduce((acc, element) => acc + element);
+        .fold(0.0, (acc, element) => acc + element);
 
     setState(() {
       _income = icome;
-
       _expense = expense;
     });
 
@@ -89,25 +89,6 @@ class _BudgetscreenState extends State<Budgetscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                isChoose = !isChoose;
-              });
-            },
-            child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10)),
-                margin: EdgeInsetsDirectional.only(end: 20),
-                child: Text(
-                  !isChoose ? 'Chọn' : "Huỷ",
-                  style: TextStyle(color: Colors.white),
-                )),
-          )
-        ],
         title: Text(
           'Budget',
           style: TextStyle(fontSize: 24),

@@ -66,7 +66,9 @@ class _TaskScreenState extends State<TaskScreen> {
                                     budget_id: widget.budgetId,
                                     event_id: widget.event_id,
                                   )));
-                      if (res == "success") {}
+                      if (res == true) {
+                        _loadNoteModel();
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.all(10),

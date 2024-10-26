@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:iplanning/firebase_options.dart';
 import 'package:iplanning/screens/splashScreen.dart';
 import 'package:iplanning/services/categories.dart';
+import 'package:iplanning/services/noti.dart';
 import 'package:iplanning/sqlhelper/note_sqlife.dart';
 
 void main() async {
@@ -15,6 +17,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  await Alarm.initialization(flutterLocalNotificationsPlugin);
+
+  
   await CategoriesMethod().uploadDefaultCategories();
   runApp(iPlanApp());
 }

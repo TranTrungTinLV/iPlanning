@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:intl/intl.dart';
 
 class Details extends StatelessWidget {
   Details(
@@ -82,7 +83,7 @@ class Details extends StatelessWidget {
                                   Icon(Icons.timer_outlined),
                                   Container(
                                     child: Text(
-                                        "${startDate.toDate().hour}:${startDate.toDate().minute}" ??
+                                        "${DateFormat('HH:mm').format(startDate.toDate()) ?? 'Start Time'}" ??
                                             'Start Date'),
                                   ),
                                 ],

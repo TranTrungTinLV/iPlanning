@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
@@ -14,6 +16,7 @@ import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/noti.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
 import 'package:iplanning/services/auth.dart';
@@ -31,14 +34,15 @@ class _HomescreensState extends State<Homescreens> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
-
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   List<EventsPostModel>? _eventPosts;
   EventsPostModel? event;
   List<CategoryModel>? _categoriesModel;
   String? _selectedCategoryId;
   final _authService = AuthenticationService();
   final _eventService = ClouMethods();
-
+  Timer? _eventTimer;
   bool _isLoading = true;
   bool inviting = false;
   int inviters = 0;
@@ -55,9 +59,18 @@ class _HomescreensState extends State<Homescreens> {
     });
     _loadPostEvent().then(((value) async {
       _getDataPicture();
+      _checkForUpcomingEvents();
     }));
     _getDataPicture();
-    if (event != null) {}
+    _startEventCountdown();
+    _initializeData();
+    Alarm.initialization(flutterLocalNotificationsPlugin);
+  }
+
+  Future<void> _initializeData() async {
+    await _loadData();
+    await _checkForUpcomingEvents();
+    _startEventCountdown();
   }
 
   Future<void> _loadData() async {
@@ -95,6 +108,7 @@ class _HomescreensState extends State<Homescreens> {
 
       setState(() {
         _eventPosts = events;
+        print("Loaded events: ${_eventPosts!.length}");
         if (_eventPosts != null && _eventPosts!.isNotEmpty) {
           event = _eventPosts!.first;
           _getDataPicture(); // Tải hình ảnh người tham dự
@@ -104,6 +118,56 @@ class _HomescreensState extends State<Homescreens> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _startEventCountdown() async {
+    _eventTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _checkForUpcomingEvents();
+      // print("haha");
+    });
+  }
+
+  Future<void> _checkForUpcomingEvents() async {
+    print('Checking for upcoming events...');
+    if (_eventPosts == null || _eventPosts!.isEmpty) {
+      print('No events found');
+      return;
+    }
+    // if (_eventPosts == null || _eventPosts!.isEmpty) return;
+
+    if (_eventPosts == null || _eventPosts!.isEmpty) {
+      print('No events found');
+      return;
+    }
+
+    _eventPosts!.forEach((event) {
+      final eventStartTime = event.eventDateStart.toDate();
+      print("Event ${event.event_name} starts at: $eventStartTime");
+    });
+
+    final upcomingEvent = _eventPosts!.firstWhere((event) {
+      final eventStartTime = event.eventDateStart.toDate();
+      final now = DateTime.now();
+      final timeUntilEvent = eventStartTime.difference(now).inMinutes;
+      print(
+          "Time until ${event.event_name}: $timeUntilEvent minutes"); // In ra thời gian còn lại của từng sự kiện
+      return timeUntilEvent > 0 && timeUntilEvent <= 10;
+    });
+
+    if (upcomingEvent != null) {
+      final now = DateTime.now();
+      final eventStartTime = upcomingEvent.eventDateStart.toDate();
+      final timeUntilEvent = eventStartTime.difference(now).inMinutes;
+      if (timeUntilEvent > 0 && timeUntilEvent <= 10) {
+        Alarm.showNotification(
+          flutterLocalNotificationsPlugin,
+          'Sự kiện sắp bắt đầu!',
+          'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
+        );
+      }
+    } else {
+      print("No upcoming events within the next 30 minutes.");
+    }
   }
 
   void _filterEventsByCategory(String categoryId) {

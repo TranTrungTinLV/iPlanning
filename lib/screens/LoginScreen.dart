@@ -55,7 +55,7 @@ class _LoginscreenState extends State<Loginscreen> {
           if (signInStatus == AuthStatus.successful) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const Homescreens()),
+              MaterialPageRoute(builder: (context) => Homescreens()),
               (route) => false,
             );
           }
@@ -76,7 +76,8 @@ class _LoginscreenState extends State<Loginscreen> {
                               BorderRadius.all(Radius.circular(10.0))),
                       child: Text(
                         errorMessage,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.white),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.white),
                       ))),
             );
             return;
@@ -114,7 +115,8 @@ class _LoginscreenState extends State<Loginscreen> {
                               BorderRadius.all(Radius.circular(10.0))),
                       child: Text(
                         errorMessage,
-                        style: const TextStyle(fontSize: 18.0, color: Colors.white),
+                        style: const TextStyle(
+                            fontSize: 18.0, color: Colors.white),
                       ))),
             );
 
@@ -377,8 +379,8 @@ class _LoginscreenState extends State<Loginscreen> {
                                                               value!;
                                                         });
                                                       },
-                                                      activeColor:
-                                                          const Color(0xff5669FF),
+                                                      activeColor: const Color(
+                                                          0xff5669FF),
                                                     ),
                                                   ),
                                                   GestureDetector(

@@ -145,28 +145,30 @@ class _HomescreensState extends State<Homescreens> {
       print("Event ${event.event_name} starts at: $eventStartTime");
     });
 
-    final upcomingEvent = _eventPosts!.firstWhere((event) {
+    final upcomingEvent = _eventPosts!.where((event) {
       final eventStartTime = event.eventDateStart.toDate();
       final now = DateTime.now();
       final timeUntilEvent = eventStartTime.difference(now).inMinutes;
       print(
           "Time until ${event.event_name}: $timeUntilEvent minutes"); // In ra thời gian còn lại của từng sự kiện
       return timeUntilEvent > 0 && timeUntilEvent <= 10;
-    });
+    }).toList();
 
-    if (upcomingEvent != null) {
+    if (upcomingEvent.isNotEmpty) {
       final now = DateTime.now();
-      final eventStartTime = upcomingEvent.eventDateStart.toDate();
-      final timeUntilEvent = eventStartTime.difference(now).inMinutes;
+      final eventStartTime = upcomingEvent.first.eventDateStart.toDate();
+      final timeUntilEvent =
+          eventStartTime.difference(DateTime.now()).inMinutes;
+
       if (timeUntilEvent > 0 && timeUntilEvent <= 10) {
         Alarm.showNotification(
           flutterLocalNotificationsPlugin,
           'Sự kiện sắp bắt đầu!',
-          'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
+          'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
         );
       }
     } else {
-      print("No upcoming events within the next 30 minutes.");
+      print("No upcoming events within the next 10 minutes.");
     }
   }
 

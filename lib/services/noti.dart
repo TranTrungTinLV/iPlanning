@@ -3,7 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Alarm {
   static Future initialization(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      Function(String? payload) onNotificationClick) async {
     const AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings('mipmap/ic_launcher');
     const DarwinInitializationSettings iOSInitializationSettings =
@@ -15,14 +16,18 @@ class Alarm {
     );
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
+      onDidReceiveNotificationResponse: (details) {
+        print("Notification clicked with payload: ${details.payload}");
+        onNotificationClick(details.payload);
+      },
     );
   }
 
   static Future showNotification(
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-    String title,
-    String body,
-  ) async {
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      String title,
+      String body,
+      String eventId) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'iplaning_channel',
@@ -37,12 +42,8 @@ class Alarm {
     );
     print("Attempting to show notification: $title - $body");
     try {
-      await flutterLocalNotificationsPlugin.show(
-        0,
-        title,
-        body,
-        notificationDetails,
-      );
+      await flutterLocalNotificationsPlugin
+          .show(0, title, body, notificationDetails, payload: eventId);
       print("Notification shown successfully");
     } catch (e) {
       print("Error showing notification: $e");

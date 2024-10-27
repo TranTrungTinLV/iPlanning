@@ -15,8 +15,8 @@ class FilterButton extends StatelessWidget {
           width: 75,
           // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: const BoxDecoration(
-              // color: Colors.red,
-              ),
+              // color: Colors.white.wi,
+              borderRadius: BorderRadius.all(Radius.circular(50))),
           child: ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
@@ -24,7 +24,7 @@ class FilterButton extends StatelessWidget {
                 height: 32,
                 width: 75,
                 decoration: const BoxDecoration(
-                  color: Colors.white10,
+                  // color: Colors.white10,
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
               ),

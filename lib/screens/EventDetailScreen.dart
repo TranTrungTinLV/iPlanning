@@ -163,7 +163,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pop(true); // Người dùng đồng ý hủy
+                      Navigator.of(context).pop(true);
                     },
                     child: Container(
                         decoration: BoxDecoration(

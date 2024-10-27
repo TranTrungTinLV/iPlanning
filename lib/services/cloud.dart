@@ -145,6 +145,7 @@ class ClouMethods {
     // return res;
   }
 
+  // ! add WishList
   wishlistUser(String uid, String eventId) async {
     try {
       // Lấy thông tin sự kiện
@@ -161,11 +162,11 @@ class ClouMethods {
       }
 
       if (userSnapshot.exists && userSnapshot.data() != null) {
-        List wishlist = (userSnapshot.data()! as dynamic)['wishlist'] ?? [];
+        List wishlist = (userSnapshot.data()! as dynamic)['wishList'] ?? [];
 
         if (wishlist.contains(eventId)) {
           await users.doc(uid).update({
-            'wishlist': FieldValue.arrayRemove([eventId]),
+            'wishList': FieldValue.arrayRemove([eventId]),
           });
           Fluttertoast.showToast(msg: "Removed from wishlist");
         } else {
@@ -184,13 +185,40 @@ class ClouMethods {
 
           // Thêm vào wishlist
           await users.doc(uid).update({
-            'wishlist': FieldValue.arrayUnion([eventId]),
+            'wishList': FieldValue.arrayUnion([eventId]),
           });
           Fluttertoast.showToast(msg: "Added to wishlist");
         }
       }
     } catch (e) {
       print("Error in wishlistUser: $e");
+    }
+  }
+
+  // !remove WishList
+  Future<void> removeWishList(String uid, String eventId) async {
+    try {
+      DocumentSnapshot userSnapshot = await users.doc(uid).get();
+      if (!userSnapshot.exists) {
+        print("User document does not exist.");
+        return;
+      }
+
+      List wishlist = (userSnapshot.data()! as dynamic)['wishList'] ?? [];
+      print("Current wishlist: $wishlist");
+
+      if (!wishlist.contains(eventId)) {
+        print("Event ID $eventId not found in wishlist.");
+        return;
+      }
+
+      await users.doc(uid).update({
+        'wishList': FieldValue.arrayRemove([eventId]),
+      });
+      Fluttertoast.showToast(msg: "Removed from wishlist");
+      print("Removed successfully from Firebase");
+    } catch (e) {
+      print("Error removing from wishlist: ${e.toString()}");
     }
   }
 }

@@ -64,7 +64,25 @@ class _HomescreensState extends State<Homescreens> {
     _getDataPicture();
     _startEventCountdown();
     _initializeData();
-    Alarm.initialization(flutterLocalNotificationsPlugin);
+    Alarm.initialization(
+      flutterLocalNotificationsPlugin,
+      (payload) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (ctx) => Eventdetailscreen(
+                    uid: event!.uid,
+                    titleEvent: event!.event_name,
+                    userName: event!.username,
+                    location: event!.location,
+                    startDate: event!.eventDateStart,
+                    avartar: event!.profilePic,
+                    discription:
+                        event!.description ?? 'không có nội dung ở đây',
+                    backgroundIMG: event!.eventImage![0],
+                    event_id: event!.event_id)));
+      },
+    );
   }
 
   Future<void> _initializeData() async {
@@ -111,7 +129,7 @@ class _HomescreensState extends State<Homescreens> {
         print("Loaded events: ${_eventPosts!.length}");
         if (_eventPosts != null && _eventPosts!.isNotEmpty) {
           event = _eventPosts!.first;
-          _getDataPicture(); // Tải hình ảnh người tham dự
+          _getDataPicture();
         }
       });
     });
@@ -123,7 +141,6 @@ class _HomescreensState extends State<Homescreens> {
   Future<void> _startEventCountdown() async {
     _eventTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
       _checkForUpcomingEvents();
-      // print("haha");
     });
   }
 
@@ -133,7 +150,6 @@ class _HomescreensState extends State<Homescreens> {
       print('No events found');
       return;
     }
-    // if (_eventPosts == null || _eventPosts!.isEmpty) return;
 
     if (_eventPosts == null || _eventPosts!.isEmpty) {
       print('No events found');
@@ -149,23 +165,21 @@ class _HomescreensState extends State<Homescreens> {
       final eventStartTime = event.eventDateStart.toDate();
       final now = DateTime.now();
       final timeUntilEvent = eventStartTime.difference(now).inMinutes;
-      print(
-          "Time until ${event.event_name}: $timeUntilEvent minutes"); // In ra thời gian còn lại của từng sự kiện
+      print("Time until ${event.event_name}: $timeUntilEvent minutes");
       return timeUntilEvent > 0 && timeUntilEvent <= 10;
     }).toList();
 
     if (upcomingEvent.isNotEmpty) {
       final now = DateTime.now();
       final eventStartTime = upcomingEvent.first.eventDateStart.toDate();
-      final timeUntilEvent =
-          eventStartTime.difference(DateTime.now()).inMinutes;
+      final timeUntilEvent = eventStartTime.difference(now).inMinutes;
 
       if (timeUntilEvent > 0 && timeUntilEvent <= 10) {
         Alarm.showNotification(
-          flutterLocalNotificationsPlugin,
-          'Sự kiện sắp bắt đầu!',
-          'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
-        );
+            flutterLocalNotificationsPlugin,
+            'Sự kiện sắp bắt đầu!',
+            'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
+            upcomingEvent.first.event_id);
       }
     } else {
       print("No upcoming events within the next 10 minutes.");
@@ -460,8 +474,7 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => WishListScreen(
-                                    event_id:
-                                        event != null ? event!.event_id : null,
+                                    event_id: event!.event_id,
                                   )));
                     },
                   ),
@@ -766,22 +779,7 @@ class _HomescreensState extends State<Homescreens> {
                                                 count: inviters,
                                               ),
                                             );
-                                          }).toList())
-                              // : Center(
-                              //     child: Container(
-                              //       width:
-                              //           MediaQuery.of(context).size.width,
-                              //       child: Center(
-                              //         child: Text(
-                              //           'No Events Available',
-                              //           style: TextStyle(
-                              //               color: Colors.red,
-                              //               fontSize: 20.0),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              ),
+                                          }).toList())),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 30, horizontal: 16),
@@ -857,7 +855,7 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            height: 100,
                           ),
                         ],
                       ),

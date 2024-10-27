@@ -109,9 +109,38 @@ class CardCustom extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(event.location),
-                )
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 20,
+                          ),
+                          Text(event.location),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 10.0,
+                            backgroundImage: NetworkImage(event.profilePic),
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text("By ${event.username}"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             )
           ],

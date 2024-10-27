@@ -19,9 +19,11 @@ void main() async {
   );
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  await Alarm.initialization(flutterLocalNotificationsPlugin);
+  await Alarm.initialization(
+    flutterLocalNotificationsPlugin,
+    (payload) {},
+  );
 
-  
   await CategoriesMethod().uploadDefaultCategories();
   runApp(iPlanApp());
 }

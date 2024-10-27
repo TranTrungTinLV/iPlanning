@@ -9,7 +9,7 @@ class WishListScreen extends StatefulWidget {
     super.key,
     required this.event_id,
   });
-  final String? event_id;
+  final String event_id;
   @override
   State<WishListScreen> createState() => _WishListScreenState();
 }
@@ -38,7 +38,6 @@ class _WishListScreenState extends State<WishListScreen> {
         isInvited = (eventSnapshot.data() as dynamic)['isPending']
                 ?.contains(FirebaseAuth.instance.currentUser!.uid) ??
             false;
-        // widget.isLoadingInvite = false;
       });
     } else {
       print("Event document does not exist or data is null.");
@@ -84,13 +83,13 @@ class _WishListScreenState extends State<WishListScreen> {
               // Lấy tài liệu người dùng từ snapshot
               final userDoc = snapshot.data;
 
-              // Kiểm tra sự tồn tại của trường 'wishlist'
-              if (userDoc!['wishlist'] == null ||
-                  (userDoc['wishlist'] as List).isEmpty) {
+              // Kiểm tra sự tồn tại của trường 'wishList'
+              if (userDoc!['wishList'] == null ||
+                  (userDoc['wishList'] as List).isEmpty) {
                 return const Center(child: Text('No Wishlist Available'));
               }
 
-              final List<dynamic> wishlist = userDoc['wishlist'];
+              final List<dynamic> wishlist = userDoc['wishList'];
 
               return ListView.builder(
                 itemCount: wishlist.length,
@@ -99,27 +98,18 @@ class _WishListScreenState extends State<WishListScreen> {
                   return FutureBuilder<DocumentSnapshot>(
                     future: eventPosts.doc(eventId).get(),
                     builder: (context, eventSnapShot) {
-                      if (widget.event_id == null || widget.event_id!.isEmpty) {
-                        return const Center(
-                            child: Text('No event ID available'));
+                      // Chỉ hiển thị CircularProgressIndicator khi dữ liệu đang tải lần đầu
+                      if (eventSnapShot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
                       }
-                      if (snapshot.hasError) {
-                        return CircularProgressIndicator();
-                      } else if (!snapshot.hasData || !snapshot.data!.exists) {
-                        return Center(child: Text('No Data Available'));
-                      } else if (eventSnapShot.hasError ||
-                          !eventSnapShot.hasData ||
+                      if (eventSnapShot.hasError) {
+                        return Center(
+                            child: Text(
+                                'Failed to load event data: ${eventSnapShot.error}'));
+                      } else if (!eventSnapShot.hasData ||
                           !eventSnapShot.data!.exists) {
-                        return Container(
-                            // height: MediaQuery.of(context).size.height,
-                            // width: MediaQuery.of(context).size.width,
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                          ],
-                        ));
+                        return Center(child: Text('No Data Available'));
                       }
 
                       final eventDoc = eventSnapShot.data!;
@@ -131,7 +121,6 @@ class _WishListScreenState extends State<WishListScreen> {
                             margin: EdgeInsets.all(10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Stack(
                                   children: [
@@ -149,10 +138,11 @@ class _WishListScreenState extends State<WishListScreen> {
                                     Align(
                                       alignment: Alignment.topRight,
                                       child: IconButton(
-                                          onPressed: () {
-                                            ClouMethods().wishlistUser(
+                                          onPressed: () async {
+                                            await ClouMethods().removeWishList(
                                                 authInstance.currentUser!.uid,
-                                                widget.event_id!);
+                                                eventId);
+                                            setState(() {});
                                           },
                                           icon: Icon(
                                             Icons.highlight_remove_rounded,
@@ -243,7 +233,7 @@ class _WishListScreenState extends State<WishListScreen> {
                                         await ClouMethods().invitedEvents(
                                             FirebaseAuth
                                                 .instance.currentUser!.uid,
-                                            widget.event_id!,
+                                            eventDoc['event_id'],
                                             'isPending');
                                         setState(() {
                                           isInvited = !isInvited;

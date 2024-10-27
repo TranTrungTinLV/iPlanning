@@ -47,6 +47,7 @@ class _ListEventState extends State<ListEvent>
                     Text(
                       'All event',
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15),
                     ),
                     Text('(100)')
                   ],
@@ -59,6 +60,7 @@ class _ListEventState extends State<ListEvent>
                 children: [
                   Text(
                     'Yes',
+                    style: TextStyle(fontSize: 15),
                     textAlign: TextAlign.center,
                   ),
                   Text('(102)')
@@ -72,6 +74,7 @@ class _ListEventState extends State<ListEvent>
                   Text(
                     'No',
                     textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
                   ),
                   Text('(102)')
                 ],
@@ -84,6 +87,7 @@ class _ListEventState extends State<ListEvent>
                   Text(
                     'Not Yet',
                     textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
                   ),
                   Text('(102)')
                 ],

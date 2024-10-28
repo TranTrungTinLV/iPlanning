@@ -4,14 +4,17 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/profileScreen.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/noti.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends StatefulWidget {
@@ -50,7 +53,8 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
   UserModel? userProfile;
   final _authService = AuthenticationService();
   double? ammount;
-
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +63,15 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
     _checkWishList();
     _loadUserData();
     getBudgetFromEventPOST(widget.event_id);
+    Alarm.initialization(flutterLocalNotificationsPlugin, (String? payload) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (ctx) => NotificationScreen(
+                    event_id: widget.event_id,
+                    getPicture: () {},
+                  )));
+    });
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
@@ -298,6 +311,21 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                     widget.event_id,
                     'isPending',
                   );
+                  final currentUserId =
+                      authInstance.currentUser!.uid == widget.uid;
+                  currentUserId
+                      ? Alarm.showNotification(
+                          flutterLocalNotificationsPlugin,
+                          'Thông báo',
+                          '${widget.userName} tham gia sự kiện',
+                          widget.event_id,
+                        )
+                      : Alarm.showNotification(
+                          flutterLocalNotificationsPlugin,
+                          'Thông báo',
+                          'Vui lòng đợi chủ xị',
+                          widget.event_id,
+                        );
                   setState(() {
                     isInvited =
                         false; // Sau khi mời, chuyển thành trạng thái 'Uninvite'

@@ -98,18 +98,22 @@ class _WishListScreenState extends State<WishListScreen> {
                   return FutureBuilder<DocumentSnapshot>(
                     future: eventPosts.doc(eventId).get(),
                     builder: (context, eventSnapShot) {
-                      // Chỉ hiển thị CircularProgressIndicator khi dữ liệu đang tải lần đầu
-                      if (eventSnapShot.connectionState ==
-                          ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                      if (widget.event_id == null || widget.event_id!.isEmpty) {
+                        return const Center(
+                            child: Text('No event ID available'));
                       }
-                      if (eventSnapShot.hasError) {
-                        return Center(
-                            child: Text(
-                                'Failed to load event data: ${eventSnapShot.error}'));
-                      } else if (!eventSnapShot.hasData ||
-                          !eventSnapShot.data!.exists) {
+                      if (snapshot.hasError) {
+                        return CircularProgressIndicator();
+                      } else if (!snapshot.hasData || !snapshot.data!.exists) {
                         return Center(child: Text('No Data Available'));
+                      } else if (eventSnapShot.hasError ||
+                          !eventSnapShot.hasData ||
+                          !eventSnapShot.data!.exists) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
                       }
 
                       final eventDoc = eventSnapShot.data!;

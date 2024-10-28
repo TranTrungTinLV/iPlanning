@@ -56,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? NetworkImage(widget.avatarEdit as String)
                     : NetworkImage(
                         'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+
               ),
             ),
             Container(

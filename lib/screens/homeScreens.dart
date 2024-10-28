@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'dart:math';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
@@ -21,6 +23,7 @@ import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/topSection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homescreens extends StatefulWidget {
   const Homescreens({super.key});
@@ -48,6 +51,8 @@ class _HomescreensState extends State<Homescreens> {
   int inviters = 0;
   double? _paidAmount;
   bool _isLoadingEvents = false;
+  String? _lastNotifiedEventId;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -112,18 +117,44 @@ class _HomescreensState extends State<Homescreens> {
     }
   }
 
+// !Load Events
   Future<void> _loadPostEvent() async {
     setState(() {
       _isLoading = true;
     });
     FirebaseFirestore.instance
         .collection('eventPosts')
+        .orderBy('createAt', descending: true)
         .snapshots()
-        .listen((snapshot) {
+        .listen((snapshot) async {
       List<EventsPostModel> events = snapshot.docs.map((doc) {
         return EventsPostModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
 
+      final latestEventId = events.isNotEmpty ? events.first.event_id : null;
+      print("latestEventId $latestEventId");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? lastNotifiedEventId = prefs.getString('lastNotifiedEventId');
+      print("lastNotifiedEventId $lastNotifiedEventId");
+      if (latestEventId != null && latestEventId != lastNotifiedEventId) {
+        final currentUserId = authInstance.currentUser!.uid == events.first.uid;
+        if (currentUserId) {
+          Alarm.showNotification(
+            flutterLocalNotificationsPlugin,
+            '${events.first.event_name} đã được đăng!',
+            '${events.first.event_name} đã được đăng!',
+            events.first.event_id,
+          );
+        } else {
+          Alarm.showNotification(
+            flutterLocalNotificationsPlugin,
+            'Bài viết mới',
+            'Sự kiện "${events.first.event_name}" đã được đăng!',
+            events.first.event_id,
+          );
+        }
+        await prefs.setString('lastNotifiedEventId', latestEventId);
+      }
       setState(() {
         _eventPosts = events;
         print("Loaded events: ${_eventPosts!.length}");

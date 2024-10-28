@@ -45,7 +45,7 @@ class CardCustom extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                           opacity: 0.8,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover ,
                           repeat: ImageRepeat.noRepeat,
                           image: NetworkImage(event.eventImage != null
                               ? event.eventImage![0]

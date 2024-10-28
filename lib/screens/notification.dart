@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/noti.dart';
 
 class NotificationScreen extends StatefulWidget {
   NotificationScreen(
@@ -15,6 +17,12 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +122,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   return const Text('User not found');
                                 }
                                 final userDoc = userSnapshot.data!;
+
                                 return Container(
                                   margin: EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 20),

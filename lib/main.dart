@@ -24,6 +24,8 @@ void main() async {
     (payload) {},
   );
 
+  
+
   await CategoriesMethod().uploadDefaultCategories();
   runApp(iPlanApp());
 }

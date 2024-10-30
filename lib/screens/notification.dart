@@ -7,9 +7,8 @@ import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/services/noti.dart';
 
 class NotificationScreen extends StatefulWidget {
-  NotificationScreen(
-      {super.key, required this.event_id, required this.getPicture});
-  final String event_id;
+  NotificationScreen({super.key, required this.getPicture});
+
   final Function() getPicture;
   @override
   State<NotificationScreen> createState() => _NotificationScreenState();
@@ -55,7 +54,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
               return const Center(child: Text('No Events Available'));
             }
 
-            // Lấy danh sách event từ snapshot
             final eventDocs = snapshot.data!.docs.where((eventDoc) {
               final List<dynamic>? isPending = eventDoc['isPending'];
               return isPending != null && isPending.isNotEmpty;

@@ -68,7 +68,6 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           context,
           MaterialPageRoute(
               builder: (ctx) => NotificationScreen(
-                    event_id: widget.event_id,
                     getPicture: () {},
                   )));
     });

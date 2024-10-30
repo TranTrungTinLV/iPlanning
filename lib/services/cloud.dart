@@ -92,34 +92,49 @@ class ClouMethods {
         List rejectList =
             (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
 
-        if (isStatus == 'isPending') {
-          if (inviting.contains(uid)) {
-            // Nếu `uid` đã có trong `isPending`, thực hiện xóa (Uninvite)
-            await postEvents.doc(eventId).update({
-              'isPending': FieldValue.arrayRemove([uid]),
-            });
-          } else {
-            // Nếu `uid` chưa có trong `isPending`, thực hiện thêm (Invite)
-            await postEvents.doc(eventId).update({
-              'isPending': FieldValue.arrayUnion([uid]),
-            });
+        // Check UID
+        if (inviting.contains(uid)) {
+          if (isStatus == 'isPending') {
+            if (inviting.contains(uid)) {
+              // Nếu `uid` đã có trong `isPending`, thực hiện xóa (Uninvite)
+              await postEvents.doc(eventId).update({
+                'isPending': FieldValue.arrayRemove([uid]),
+              });
+            } else {
+              // Nếu `uid` chưa có trong `isPending`, thực hiện thêm (Invite)
+              await postEvents.doc(eventId).update({
+                'isPending': FieldValue.arrayUnion([uid]),
+              });
+            }
           }
-        } else if (isStatus == 'isAccepted') {
-          // Chấp nhận: xóa khỏi isPending và thêm vào isAccept
-          if (inviting.contains(uid) || !inviting.contains(uid)) {
+          if (isStatus == 'isAccepted') {
+            // Chấp nhận: xóa khỏi isPending và thêm vào isAccept
             await postEvents.doc(eventId).update({
               'isPending': FieldValue.arrayRemove([uid]),
               'isAccepted': FieldValue.arrayUnion([uid]),
             });
-          }
-        } else if (isStatus == 'isRejected') {
-          // Từ chối: xóa khỏi isPending và thêm vào isRejected
-          if (inviting.contains(uid) || !inviting.contains(uid)) {
+          } else if (isStatus == 'isRejected') {
+            // Từ chối: xóa khỏi isPending và thêm vào isRejected
             await postEvents.doc(eventId).update({
               'isPending': FieldValue.arrayRemove([uid]),
               'isRejected': FieldValue.arrayUnion([uid]),
             });
           }
+        } else if (isStatus == 'isAccepted' && acceptList.contains(uid)) {
+          // Xóa khỏi isAccept nếu cần hủy bỏ (tùy vào logic của bạn)
+          await postEvents.doc(eventId).update({
+            'isAccepted': FieldValue.arrayRemove([uid]),
+          });
+        } else if (isStatus == 'isRejected' && rejectList.contains(uid)) {
+          // Xóa khỏi isRejected nếu cần (tùy vào logic của bạn)
+          await postEvents.doc(eventId).update({
+            'isRejected': FieldValue.arrayRemove([uid]),
+          });
+        } else {
+          // Nếu `isStatus` là `isAccept` hoặc `isReject`, thêm vào trạng thái tương ứng
+          await postEvents.doc(eventId).update({
+            isStatus: FieldValue.arrayUnion([uid]),
+          });
         }
       } else {
         print("Event document does not exist or data is null.");
@@ -127,6 +142,7 @@ class ClouMethods {
     } catch (e) {
       print("Error in invitedEvents: $e");
     }
+    // return res;
   }
 
   // ! add WishList

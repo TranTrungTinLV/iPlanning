@@ -73,7 +73,6 @@ class _TopBarState extends State<TopBar> {
                 context,
                 MaterialPageRoute(
                     builder: (ctx) => NotificationScreen(
-                          event_id: widget.eventId!,
                           getPicture: widget.getPicture,
                         )));
           },

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -63,14 +62,6 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
     _checkWishList();
     _loadUserData();
     getBudgetFromEventPOST(widget.event_id);
-    Alarm.initialization(flutterLocalNotificationsPlugin, (String? payload) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (ctx) => NotificationScreen(
-                    getPicture: () {},
-                  )));
-    });
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
@@ -258,47 +249,47 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
             ),
             // ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 25, vertical: 100),
-                  height: 100,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.phone,
-                        size: 40,
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Icon(
-                        Icons.directions,
-                        size: 40,
-                      )
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10.0,
-                          spreadRadius: 2.0,
-                        )
-                      ]),
-                ),
-                SizedBox(
-                  height: 100,
-                )
-              ],
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Container(
+          //         margin: EdgeInsets.symmetric(horizontal: 25, vertical: 100),
+          //         height: 100,
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             Icon(
+          //               Icons.phone,
+          //               size: 40,
+          //             ),
+          //             SizedBox(
+          //               width: 50,
+          //             ),
+          //             Icon(
+          //               Icons.directions,
+          //               size: 40,
+          //             )
+          //           ],
+          //         ),
+          //         decoration: BoxDecoration(
+          //             color: Colors.white,
+          //             borderRadius: BorderRadius.circular(20),
+          //             boxShadow: [
+          //               BoxShadow(
+          //                 color: Colors.black.withOpacity(0.2),
+          //                 blurRadius: 10.0,
+          //                 spreadRadius: 2.0,
+          //               )
+          //             ]),
+          //       ),
+          //       SizedBox(
+          //         height: 100,
+          //       )
+          //     ],
+          //   ),
+          // ),
           Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
@@ -312,47 +303,41 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   );
                   final currentUserId =
                       authInstance.currentUser!.uid == widget.uid;
-                  currentUserId
-                      ? Alarm.showNotification(
-                          flutterLocalNotificationsPlugin,
-                          'Thông báo',
-                          '${widget.userName} tham gia sự kiện',
-                          widget.event_id,
-                        )
-                      : Alarm.showNotification(
-                          flutterLocalNotificationsPlugin,
-                          'Thông báo',
-                          'Vui lòng đợi chủ xị',
-                          widget.event_id,
-                        );
+                  // currentUserId
+                  //     ? AlarmNotifier.showNotification(
+                  //         flutterLocalNotificationsPlugin,
+                  //         'Thông báo',
+                  //         '${widget.userName} tham gia sự kiện',
+                  //         widget.event_id,
+                  //       )
+                  //     : AlarmNotifier.showNotification(
+                  //         flutterLocalNotificationsPlugin,
+                  //         'Thông báo',
+                  //         'Vui lòng đợi chủ xị',
+                  //         widget.event_id,
+                  //       );
                   setState(() {
-                    isInvited =
-                        false; // Sau khi mời, chuyển thành trạng thái 'Uninvite'
+                    isInvited = false;
                   });
                 } else if (isInvited == false) {
-                  // Người dùng đã được mời nhưng chưa được chấp nhận, thực hiện Uninvite
                   await ClouMethods().invitedEvents(
                     FirebaseAuth.instance.currentUser!.uid,
                     widget.event_id,
                     'isPending',
                   );
                   setState(() {
-                    isInvited =
-                        null; // Sau khi Uninvite, chuyển về trạng thái 'Invite'
+                    isInvited = null;
                   });
                 } else if (isInvited == true) {
-                  // Nếu người dùng đã được chấp nhận và muốn huỷ tham gia
                   bool shouldExit = await showExitConfirmationDialog(context);
                   if (shouldExit) {
-                    // Thực hiện huỷ tham gia trong Firebase
                     await ClouMethods().invitedEvents(
                       FirebaseAuth.instance.currentUser!.uid,
                       widget.event_id,
-                      'isAccepted', // Xóa người dùng khỏi danh sách được chấp nhận
+                      'isAccepted',
                     );
                     setState(() {
-                      isInvited =
-                          null; // Sau khi huỷ, quay về trạng thái 'Invite'
+                      isInvited = null;
                     });
                   }
                 }
@@ -392,7 +377,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                       ),
                       width: MediaQuery.of(context).size.width,
                       margin:
-                          EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                       decoration: BoxDecoration(
                           color:
                               isInvited == true ? Colors.green : Colors.black,

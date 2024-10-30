@@ -28,8 +28,9 @@ class Details extends StatelessWidget {
   Widget build(BuildContext context) {
     var isMe = authInstance.currentUser!.uid == uid;
     return Container(
-      height: MediaQuery.of(context).size.height * 0.55,
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 80),
+      height: MediaQuery.of(context).size.height * 0.60,
+      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+      // child: SingleChildScrollView(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,48 +46,48 @@ class Details extends StatelessWidget {
                     Container(
                       child: Text(
                         titleEvent ?? 'Event Name',
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.w600),
                       ),
                     ),
                     Container(
-                      // color: Colors.red,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      margin: EdgeInsets.symmetric(vertical: 22),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.location_on),
+                          Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(Icons.location_on),
+                                Container(
+                                  child: Text(
+                                      style: TextStyle(fontSize: 20),
+                                      (location != "" && location != null)
+                                          ? location
+                                          : 'Đang cập nhật'),
+                                ),
+                              ]),
                           Container(
-                            child: Text((location != "" && location != null)
-                                ? location
-                                : 'Đang cập nhật'),
+                            margin: EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              children: [
+                                Icon(Icons.date_range),
+                                Container(
+                                  child: Text(
+                                      style: TextStyle(fontSize: 20),
+                                      "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
+                                          'Start Date'),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.date_range),
-                                  Container(
-                                    child: Text(
-                                        "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
-                                            'Start Date'),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Row(
-                                children: [
-                                  Icon(Icons.timer_outlined),
-                                  Container(
-                                    child: Text(
-                                        "${DateFormat('HH:mm').format(startDate.toDate()) ?? 'Start Time'}" ??
-                                            'Start Date'),
-                                  ),
-                                ],
+                              Icon(Icons.timer_outlined),
+                              Container(
+                                child: Text(
+                                    "${DateFormat('HH:mm').format(startDate.toDate()) ?? 'Start Time'}" ??
+                                        'Start Date'),
                               ),
                             ],
                           ),
@@ -161,7 +162,7 @@ class Details extends StatelessWidget {
               ],
             ),
             Container(
-              margin: EdgeInsets.only(top: 20),
+              margin: EdgeInsets.only(top: 20, bottom: 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -176,10 +177,11 @@ class Details extends StatelessWidget {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
+      // ),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(

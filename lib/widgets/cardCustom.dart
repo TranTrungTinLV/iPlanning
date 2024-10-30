@@ -24,7 +24,7 @@ class CardCustom extends StatelessWidget {
     print(isMe);
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
-      height: MediaQuery.of(context).size.height * 0.4,
+      // height: MediaQuery.of(context).size.height * 0.4,
       margin: const EdgeInsets.only(right: 10.0),
       child: Card(
         color: Colors.white,
@@ -33,8 +33,6 @@ class CardCustom extends StatelessWidget {
         child: Stack(
           children: [
             Column(
-              // mainAxisAlignment:
-              //     MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
@@ -45,7 +43,7 @@ class CardCustom extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                           opacity: 0.8,
-                          fit: BoxFit.cover ,
+                          fit: BoxFit.cover,
                           repeat: ImageRepeat.noRepeat,
                           image: NetworkImage(event.eventImage != null
                               ? event.eventImage![0]
@@ -53,7 +51,8 @@ class CardCustom extends StatelessWidget {
                           filterQuality: FilterQuality.high)),
                 ),
                 Container(
-                  margin: const EdgeInsets.all(10),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,6 +136,9 @@ class CardCustom extends StatelessWidget {
                           ),
                           Text("By ${event.username}"),
                         ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
                       ),
                     ],
                   ),

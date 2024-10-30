@@ -1,26 +1,35 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/main.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/services/noti.dart';
 
-class NotificationScreen extends StatefulWidget {
+class NotificationScreen extends ConsumerStatefulWidget {
   NotificationScreen({super.key, required this.getPicture});
 
   final Function() getPicture;
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    final alarmNotifier = ref.read(alarmNotifierProvider);
+    alarmNotifier.initialization((payload) {
+      // Xử lý khi nhấn vào thông báo
+      print("Notification clicked with payload: $payload");
+    });
   }
 
   @override
@@ -51,7 +60,42 @@ class _NotificationScreenState extends State<NotificationScreen> {
               return Center(
                   child: Text('Failed to load events: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text('No Events Available'));
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 250,
+                      width: 250,
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white,
+                              blurRadius: 10.0,
+                              spreadRadius: 2.0,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                'assets/notification.png',
+                              ))),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Center(
+                      child: Text(
+                        'No Notifications',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
 
             final eventDocs = snapshot.data!.docs.where((eventDoc) {

@@ -10,7 +10,7 @@ class UserModel {
   String? newAvatars;
   List<EventsPostModel>? eventPostModel;
   List<String>? wishList;
-
+  
   UserModel({
     this.wishList,
     required this.uid,

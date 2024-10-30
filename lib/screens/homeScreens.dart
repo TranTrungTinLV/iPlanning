@@ -69,25 +69,6 @@ class _HomescreensState extends State<Homescreens> {
     _getDataPicture();
     _startEventCountdown();
     _initializeData();
-    Alarm.initialization(
-      flutterLocalNotificationsPlugin,
-      (payload) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (ctx) => Eventdetailscreen(
-                    uid: event!.uid,
-                    titleEvent: event!.event_name,
-                    userName: event!.username,
-                    location: event!.location,
-                    startDate: event!.eventDateStart,
-                    avartar: event!.profilePic,
-                    discription:
-                        event!.description ?? 'không có nội dung ở đây',
-                    backgroundIMG: event!.eventImage![0],
-                    event_id: event!.event_id)));
-      },
-    );
   }
 
   Future<void> _initializeData() async {
@@ -138,21 +119,21 @@ class _HomescreensState extends State<Homescreens> {
       print("lastNotifiedEventId $lastNotifiedEventId");
       if (latestEventId != null && latestEventId != lastNotifiedEventId) {
         final currentUserId = authInstance.currentUser!.uid == events.first.uid;
-        if (currentUserId) {
-          Alarm.showNotification(
-            flutterLocalNotificationsPlugin,
-            '${events.first.event_name} đã được đăng!',
-            '${events.first.event_name} đã được đăng!',
-            events.first.event_id,
-          );
-        } else {
-          Alarm.showNotification(
-            flutterLocalNotificationsPlugin,
-            'Bài viết mới',
-            'Sự kiện "${events.first.event_name}" đã được đăng!',
-            events.first.event_id,
-          );
-        }
+        // if (currentUserId) {
+        //   AlarmNotifier.showNotification(
+        //     flutterLocalNotificationsPlugin,
+        //     '${events.first.event_name} đã được đăng!',
+        //     '${events.first.event_name} đã được đăng!',
+        //     events.first.event_id,
+        //   );
+        // } else {
+        //   AlarmNotifier.showNotification(
+        //     flutterLocalNotificationsPlugin,
+        //     'Bài viết mới',
+        //     'Sự kiện "${events.first.event_name}" đã được đăng!',
+        //     events.first.event_id,
+        //   );
+        // }
         await prefs.setString('lastNotifiedEventId', latestEventId);
       }
       setState(() {
@@ -206,11 +187,11 @@ class _HomescreensState extends State<Homescreens> {
       final timeUntilEvent = eventStartTime.difference(now).inMinutes;
 
       if (timeUntilEvent > 0 && timeUntilEvent <= 10) {
-        Alarm.showNotification(
-            flutterLocalNotificationsPlugin,
-            'Sự kiện sắp bắt đầu!',
-            'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
-            upcomingEvent.first.event_id);
+        // AlarmNotifier.showNotification(
+        //     flutterLocalNotificationsPlugin,
+        //     'Sự kiện sắp bắt đầu!',
+        //     'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
+        //     upcomingEvent.first.event_id);
       }
     } else {
       print("No upcoming events within the next 10 minutes.");

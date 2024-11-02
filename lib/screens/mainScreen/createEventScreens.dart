@@ -321,6 +321,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   if (_index > 0)
                     Expanded(
                       child: ElevatedButton(
+                        
+                        style: ElevatedButton.styleFrom(
+                          
+                        ),
                         onPressed: details.onStepCancel,
                         child: const Text('Back'),
                       ),
@@ -331,11 +335,16 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   if (_index > 0)
                     Expanded(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff3D56F0)),
                         // onPressed: details.onStepCancel,
                         onPressed: () {
                           uploadEvent();
                         },
-                        child: const Text('Done'),
+                        child: const Text(
+                          'Done',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                 ],
@@ -376,6 +385,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               SizedBox(
                                 height: 10,
                               ),
+
                               TextFieldCustom(
                                 controller: eventName,
                                 onChanged: (value) {

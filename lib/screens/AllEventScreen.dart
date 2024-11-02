@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
@@ -30,10 +31,9 @@ class _AllEventScreenState extends State<AllEventScreen> {
         centerTitle: true,
       ),
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: StreamBuilder<QuerySnapshot>(
-          stream:
-              FirebaseFirestore.instance.collection('eventPosts').snapshots(),
+          stream: firestoreInstance.collection('eventPosts').snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

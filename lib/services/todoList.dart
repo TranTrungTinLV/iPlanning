@@ -66,7 +66,7 @@ class TodoListMethod {
       String todoId, String budgetId) async {
     try {
       DocumentReference budgetRef =
-          FirebaseFirestore.instance.collection('budgets').doc(budgetId);
+          firestoreInstance.collection('budgets').doc(budgetId);
       //
       await budgetRef.update(
         {
@@ -82,7 +82,7 @@ class TodoListMethod {
 
   Future<void> updateBudgetEventIds(String todoId, String eventId) async {
     try {
-      DocumentReference event = FirebaseFirestore.instance
+      DocumentReference event = firestoreInstance
           .collection('eventPosts')
           .doc(eventId); //Đọc theo id của events để cập nhật budget
 

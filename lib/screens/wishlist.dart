@@ -29,14 +29,14 @@ class _WishListScreenState extends State<WishListScreen> {
       // widget.isLoadingInvite = true;
     });
 
-    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+    DocumentSnapshot eventSnapshot = await firestoreInstance
         .collection('eventPosts')
         .doc(widget.event_id)
         .get();
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
       setState(() {
         isInvited = (eventSnapshot.data() as dynamic)['isPending']
-                ?.contains(FirebaseAuth.instance.currentUser!.uid) ??
+                ?.contains(authInstance.currentUser!.uid) ??
             false;
       });
     } else {
@@ -47,17 +47,16 @@ class _WishListScreenState extends State<WishListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference eventPosts =
-        FirebaseFirestore.instance.collection('eventPosts');
+    CollectionReference eventPosts = firestoreInstance.collection('eventPosts');
 
     return Scaffold(
         appBar: AppBar(
           title: Text('Your Wishlist'),
         ),
         body: StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
+            stream: firestoreInstance
                 .collection("users")
-                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .doc(authInstance.currentUser!.uid)
                 .snapshots(),
             builder: (ctx, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {

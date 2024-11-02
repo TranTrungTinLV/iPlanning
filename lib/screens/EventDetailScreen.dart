@@ -9,8 +9,9 @@ import 'package:intl/intl.dart';
 
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/guestList.dart';
 import 'package:iplanning/screens/notification.dart';
-import 'package:iplanning/screens/profileScreen.dart';
+import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/services/cloud.dart';
 import 'package:iplanning/services/noti.dart';
@@ -65,7 +66,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
+    QuerySnapshot snapshot = await firestoreInstance
         .collection('budgets')
         .where('event_id', isEqualTo: eventId)
         .limit(1)
@@ -90,23 +91,22 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
       widget.isLoadingInvite = true;
     });
 
-    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+    DocumentSnapshot eventSnapshot = await firestoreInstance
         .collection('eventPosts')
         .doc(widget.event_id)
         .get();
 
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
       var eventData = eventSnapshot.data() as Map<String, dynamic>;
-      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      String currentUserId = authInstance.currentUser!.uid;
 
       setState(() {
-        // Kiểm tra nếu người dùng đã được chấp nhận
         if (eventData['isAccepted']?.contains(currentUserId) ?? false) {
-          isInvited = true; // Đã được chấp nhận
+          isInvited = true;
         } else if (eventData['isPending']?.contains(currentUserId) ?? false) {
-          isInvited = false; // Đã mời nhưng chưa được chấp nhận
+          isInvited = false;
         } else {
-          isInvited = null; // Chưa được mời
+          isInvited = null;
         }
         widget.isLoadingInvite = false;
       });
@@ -128,9 +128,9 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
   }
 
   void _checkWishList() async {
-    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+    DocumentSnapshot userSnapshot = await firestoreInstance
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(authInstance.currentUser!.uid)
         .get();
     if (userSnapshot.exists && userSnapshot.data() != null) {
       setState(() {
@@ -153,8 +153,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                 actions: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context)
-                          .pop(false); // Người dùng không muốn hủy tham gia
+                      Navigator.of(context).pop(false);
                     },
                     child: Container(
                         decoration: BoxDecoration(
@@ -193,22 +192,23 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(widget.backgroundIMG) ??
-                          AssetImage('assets/event.png'),
-                      repeat: ImageRepeat.repeatX,
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
-                    ),
-                    gradient: LinearGradient(
-                        colors: [Colors.black45, Colors.black45]))),
+              height: MediaQuery.of(context).size.height * 0.5,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(widget.backgroundIMG) ??
+                      AssetImage('assets/event.png'),
+                  repeat: ImageRepeat.repeatX,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+                gradient:
+                    LinearGradient(colors: [Colors.black45, Colors.black45]),
+              ),
+            ),
           ),
           // !Detail
           Align(
             alignment: Alignment.bottomCenter,
-
             child: Details(
               ammount: ammount ?? 0,
               userName: widget.userName,
@@ -247,49 +247,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                 }
               },
             ),
-            // ),
           ),
-          // Align(
-          //   alignment: Alignment.center,
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Container(
-          //         margin: EdgeInsets.symmetric(horizontal: 25, vertical: 100),
-          //         height: 100,
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           children: [
-          //             Icon(
-          //               Icons.phone,
-          //               size: 40,
-          //             ),
-          //             SizedBox(
-          //               width: 50,
-          //             ),
-          //             Icon(
-          //               Icons.directions,
-          //               size: 40,
-          //             )
-          //           ],
-          //         ),
-          //         decoration: BoxDecoration(
-          //             color: Colors.white,
-          //             borderRadius: BorderRadius.circular(20),
-          //             boxShadow: [
-          //               BoxShadow(
-          //                 color: Colors.black.withOpacity(0.2),
-          //                 blurRadius: 10.0,
-          //                 spreadRadius: 2.0,
-          //               )
-          //             ]),
-          //       ),
-          //       SizedBox(
-          //         height: 100,
-          //       )
-          //     ],
-          //   ),
-          // ),
           Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
@@ -297,7 +255,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                 if (isInvited == null) {
                   // Người dùng chưa được mời, thực hiện mời
                   await ClouMethods().invitedEvents(
-                    FirebaseAuth.instance.currentUser!.uid,
+                    authInstance.currentUser!.uid,
                     widget.event_id,
                     'isPending',
                   );
@@ -321,7 +279,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   });
                 } else if (isInvited == false) {
                   await ClouMethods().invitedEvents(
-                    FirebaseAuth.instance.currentUser!.uid,
+                    authInstance.currentUser!.uid,
                     widget.event_id,
                     'isPending',
                   );
@@ -332,7 +290,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                   bool shouldExit = await showExitConfirmationDialog(context);
                   if (shouldExit) {
                     await ClouMethods().invitedEvents(
-                      FirebaseAuth.instance.currentUser!.uid,
+                      authInstance.currentUser!.uid,
                       widget.event_id,
                       'isAccepted',
                     );
@@ -361,118 +319,178 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                 ? Text(
                                     'Đang tham gia',
                                     style: TextStyle(
-                                        fontSize: 20, color: Colors.white),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white),
                                   )
                                 : isInvited == false
                                     ? Text(
                                         'Uninvite',
                                         style: TextStyle(
-                                            fontSize: 20, color: Colors.white),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
                                       )
                                     : Text(
                                         'Invite',
                                         style: TextStyle(
-                                            fontSize: 20, color: Colors.white),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
                                       ),
                       ),
                       width: MediaQuery.of(context).size.width,
                       margin:
                           EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                       decoration: BoxDecoration(
-                          color:
-                              isInvited == true ? Colors.green : Colors.black,
+                          color: isInvited == true
+                              ? Colors.green
+                              : Color(0xff3D56F0),
                           borderRadius: BorderRadius.circular(20)),
                     ),
             ),
           ),
           Align(
             alignment: Alignment.topCenter,
-            child: Container(
-              decoration: BoxDecoration(color: Colors.black.withOpacity(0.15)),
-              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 25),
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration:
-                              const BoxDecoration(shape: BoxShape.circle),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white10,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  decoration:
+                      BoxDecoration(color: Colors.black.withOpacity(0.15)),
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration:
+                                  const BoxDecoration(shape: BoxShape.circle),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(18),
+                                child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white10,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            const Icon(Icons.arrow_back,
+                                color: Colors.white, size: 24),
+                          ],
                         ),
-                        const Icon(Icons.arrow_back,
-                            color: Colors.white, size: 24),
-                      ],
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  IconButton(
-                    icon: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration:
-                              const BoxDecoration(shape: BoxShape.circle),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white10,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: 30, sigmaY: 30),
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white10,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                authInstance.currentUser!.uid == widget.uid
+                                    ? PopupMenuButton<String>(
+                                        icon: Icon(
+                                          Icons.more_vert,
+                                          color: Colors.white,
+                                        ),
+                                        itemBuilder: (BuildContext ctx) => [
+                                              const PopupMenuItem<String>(
+                                                  value: 'GuestList',
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(Icons.person),
+                                                      Text('Guest List'),
+                                                    ],
+                                                  )),
+                                              const PopupMenuItem<String>(
+                                                  value: 'ShareFriend',
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(Icons.share),
+                                                      Text('Share'),
+                                                    ],
+                                                  )),
+                                            ],
+                                        onSelected: (String result) {
+                                          if (result == 'GuestList') {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (ctx) => GuestList(
+                                                        eventId:
+                                                            widget.event_id,
+                                                      )),
+                                            );
+                                          } else {
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (ctx) =>
+                                            //           GuestList()),
+                                            // );
+                                          }
+                                        })
+                                    : IconButton(
+                                        onPressed: () async {
+                                          await ClouMethods().wishlistUser(
+                                              authInstance.currentUser!.uid,
+                                              widget.event_id);
+                                          setState(() {
+                                            isLoadingWishList =
+                                                !isLoadingWishList;
+                                          });
+                                        },
+                                        icon: Icon(Icons.bookmark,
+                                            color: isLoadingWishList
+                                                ? Colors.red
+                                                : Colors.white,
+                                            size: 24),
+                                      ),
+                              ],
                             ),
+                            onPressed: () {},
                           ),
-                        ),
-                        authInstance.currentUser!.uid == widget.uid
-                            ? IconButton(
-                                onPressed: () async {},
-                                icon: Icon(Icons.more_horiz,
-                                    color: Colors.white, size: 24),
-                              )
-                            : IconButton(
-                                onPressed: () async {
-                                  await ClouMethods().wishlistUser(
-                                      authInstance.currentUser!.uid,
-                                      widget.event_id);
-                                  setState(() {
-                                    isLoadingWishList = !isLoadingWishList;
-                                  });
-                                },
-                                icon: Icon(Icons.bookmark,
-                                    color: isLoadingWishList
-                                        ? Colors.red
-                                        : Colors.white,
-                                    size: 24),
-                              )
-                      ],
-                    ),
-                    onPressed: () {},
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

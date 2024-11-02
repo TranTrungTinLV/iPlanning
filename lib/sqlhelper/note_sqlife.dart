@@ -86,7 +86,7 @@
 //       String note_id, String budgetId) async {
 //     try {
 //       DocumentReference budgetRef =
-//           FirebaseFirestore.instance.collection('budgets').doc(budgetId);
+//           firestoreInstance.collection('budgets').doc(budgetId);
 //       //
 //       await budgetRef.update(
 //         {

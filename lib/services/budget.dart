@@ -51,7 +51,7 @@ class BudgetMethod {
 
   Future<void> updateBudgetEventIds(String budget_id, String eventId) async {
     try {
-      DocumentReference budgetRef = FirebaseFirestore.instance
+      DocumentReference budgetRef = firestoreInstance
           .collection('eventPosts')
           .doc(eventId); //Đọc theo id của events để cập nhật budget
 

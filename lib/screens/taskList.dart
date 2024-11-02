@@ -110,7 +110,7 @@ class _TaskListState extends State<TaskList> {
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   )),
                   decoration: BoxDecoration(
-                      color: Color(0xffF0534F),
+                      color: Color(0xff3D56F0),
                       borderRadius: BorderRadius.circular(10.0)),
                 ),
               ),

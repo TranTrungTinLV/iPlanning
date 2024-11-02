@@ -23,6 +23,7 @@ class EventsPostModel {
   String? eventType;
   List<String>? isPending;
   List<String>? isRejected;
+  List<String>? isRequestInvite;
   List<String>? isAccepted;
   Map<String, InvitationStatus>? invitationStatuses;
 
@@ -37,6 +38,7 @@ class EventsPostModel {
       this.eventType,
       this.isPending,
       this.isRejected,
+      this.isRequestInvite,
       this.isAccepted,
       this.invitationStatuses,
       required this.eventImage,
@@ -72,6 +74,9 @@ class EventsPostModel {
           json['isPending'] != null ? List<String>.from(json['isPending']) : [],
       isRejected: json['isRejected'] != null
           ? List<String>.from(json['isRejected'])
+          : null,
+      isRequestInvite: json['isRequestInvite'] != null
+          ? List<String>.from(json['isRequestInvite'])
           : null,
       isAccepted: json['isAccepted'] != null
           ? List<String>.from(json['isAccepted'])
@@ -111,6 +116,7 @@ class EventsPostModel {
       'eventType': eventType,
       'isPending': isPending,
       'isRejected': isRejected,
+      'isRequestInvite': isRequestInvite,
       'isAccepted': isAccepted,
       'invitationStatuses': invitationStatuses?.map(
           (key, value) => MapEntry(key, value.toString().split('.').last)),

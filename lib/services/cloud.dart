@@ -15,7 +15,7 @@ import 'package:uuid/uuid.dart';
 class ClouMethods {
   CollectionReference postEvents = firestoreInstance.collection('eventPosts');
   final User? user = authInstance.currentUser;
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference users = firestoreInstance.collection('users');
   uploadPost({
     required String event_name,
     required Timestamp eventDateEnd,
@@ -83,69 +83,92 @@ class ClouMethods {
 
   invitedEvents(String uid, String eventId, String isStatus) async {
     try {
-      DocumentSnapshot eventSnapshot = await postEvents.doc(eventId).get();
+      await firestoreInstance.runTransaction((transaction) async {
+        DocumentSnapshot eventSnapshot =
+            await transaction.get(postEvents.doc(eventId));
 
-      if (eventSnapshot.exists && eventSnapshot.data() != null) {
-        List inviting = (eventSnapshot.data()! as dynamic)['isPending'] ?? [];
-        List acceptList =
-            (eventSnapshot.data()! as dynamic)['isAccepted'] ?? [];
-        List rejectList =
-            (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
+        if (eventSnapshot.exists && eventSnapshot.data() != null) {
+          List inviting = (eventSnapshot.data()! as dynamic)['isPending'] ?? [];
+          List acceptList =
+              (eventSnapshot.data()! as dynamic)['isAccepted'] ?? [];
+          List rejectList =
+              (eventSnapshot.data()! as dynamic)['isRejected'] ?? [];
 
-        // Check UID
-        if (inviting.contains(uid)) {
+          List requestList =
+              (eventSnapshot.data()! as dynamic)['isRequestInvite'] ?? [];
+
           if (isStatus == 'isPending') {
-            if (inviting.contains(uid)) {
-              await postEvents.doc(eventId).update({
-                'isPending': FieldValue.arrayRemove([uid]),
-              });
-            } else {
-              await postEvents.doc(eventId).update({
+            if (!inviting.contains(uid) &&
+                !acceptList.contains(uid) &&
+                !rejectList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
                 'isPending': FieldValue.arrayUnion([uid]),
               });
+              print("Added to isPending: $uid");
+            } else if (inviting.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isPending': FieldValue.arrayRemove([uid]),
+              });
+              print("Removed from isPending: $uid");
+            }
+          } else if (isStatus == 'isRequestInvite') {
+            if (!inviting.contains(uid) &&
+                !requestList.contains(uid) &&
+                !acceptList.contains(uid) &&
+                !rejectList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isRequestInvite': FieldValue.arrayUnion([uid]),
+              });
+              print("Added to isRequestInvite: $uid");
+            } else if (requestList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isRequestInvite': FieldValue.arrayRemove([uid]),
+              });
+              print("Removed from isPending: $uid");
+            }
+          } else if (isStatus == 'isAccepted') {
+            if (inviting.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isPending': FieldValue.arrayRemove([uid]),
+                'isAccepted': FieldValue.arrayUnion([uid]),
+              });
+              print("Moved from isPending to isAccepted: $uid");
+            } else if (acceptList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isAccepted': FieldValue.arrayRemove([uid]),
+              });
+              print("Removed from isAccepted: $uid");
+            }
+          } else if (isStatus == 'isRejected') {
+            if (acceptList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isAccepted': FieldValue.arrayRemove([uid]),
+                'isRejected': FieldValue.arrayUnion([uid]),
+              });
+              print("Moved from isAccepted to isRejected: $uid");
+            } else if (rejectList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isRejected': FieldValue.arrayRemove([uid]),
+              });
+              print("Removed from isRejected: $uid");
             }
           }
-          if (isStatus == 'isAccepted') {
-            await postEvents.doc(eventId).update({
-              'isPending': FieldValue.arrayRemove([uid]),
-              'isAccepted': FieldValue.arrayUnion([uid]),
-            });
-          } else if (isStatus == 'isRejected') {
-            await postEvents.doc(eventId).update({
-              'isPending': FieldValue.arrayRemove([uid]),
-              'isRejected': FieldValue.arrayUnion([uid]),
-            });
-          }
-        } else if (isStatus == 'isAccepted' && acceptList.contains(uid)) {
-          await postEvents.doc(eventId).update({
-            'isAccepted': FieldValue.arrayRemove([uid]),
-          });
-        } else if (isStatus == 'isRejected' && rejectList.contains(uid)) {
-          await postEvents.doc(eventId).update({
-            'isRejected': FieldValue.arrayRemove([uid]),
-          });
+          // Các điều kiện khác không thay đổi
         } else {
-          await postEvents.doc(eventId).update({
-            isStatus: FieldValue.arrayUnion([uid]),
-          });
+          print("Event document does not exist or data is null.");
         }
-      } else {
-        print("Event document does not exist or data is null.");
-      }
+      });
     } catch (e) {
       print("Error in invitedEvents: $e");
     }
-    // return res;
   }
 
   // ! add WishList
   wishlistUser(String uid, String eventId) async {
     try {
       // Lấy thông tin sự kiện
-      DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
-          .collection('eventPosts')
-          .doc(eventId)
-          .get();
+      DocumentSnapshot eventSnapshot =
+          await firestoreInstance.collection('eventPosts').doc(eventId).get();
 
       // Lấy thông tin người dùng
       DocumentSnapshot userSnapshot = await users.doc(uid).get();

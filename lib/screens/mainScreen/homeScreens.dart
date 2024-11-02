@@ -1,9 +1,6 @@
 import 'dart:async';
-
-import 'dart:math';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:iplanning/consts/firebase_const.dart';
@@ -12,13 +9,14 @@ import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/AllEventScreen.dart';
 import 'package:iplanning/screens/EventDetailScreen.dart';
-import 'package:iplanning/screens/LoginScreen.dart';
-import 'package:iplanning/screens/createEventScreens.dart';
+import 'package:iplanning/screens/mainScreen/LoginScreen.dart';
+import 'package:iplanning/screens/mainScreen/createEventScreens.dart';
 import 'package:iplanning/screens/listEventUser.dart';
-import 'package:iplanning/screens/profileScreen.dart';
+import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
-import 'package:iplanning/services/noti.dart';
+import 'package:iplanning/widgets/InvitewithFriends.dart';
+import 'package:iplanning/widgets/buildDrawTile.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
 import 'package:iplanning/services/auth.dart';
@@ -103,7 +101,7 @@ class _HomescreensState extends State<Homescreens> {
     setState(() {
       _isLoading = true;
     });
-    FirebaseFirestore.instance
+    firestoreInstance
         .collection('eventPosts')
         .orderBy('createAt', descending: true)
         .snapshots()
@@ -157,20 +155,16 @@ class _HomescreensState extends State<Homescreens> {
   }
 
   Future<void> _checkForUpcomingEvents() async {
-    print('Checking for upcoming events...');
     if (_eventPosts == null || _eventPosts!.isEmpty) {
-      print('No events found');
       return;
     }
 
     if (_eventPosts == null || _eventPosts!.isEmpty) {
-      print('No events found');
       return;
     }
 
     _eventPosts!.forEach((event) {
       final eventStartTime = event.eventDateStart.toDate();
-      print("Event ${event.event_name} starts at: $eventStartTime");
     });
 
     final upcomingEvent = _eventPosts!.where((event) {
@@ -232,21 +226,21 @@ class _HomescreensState extends State<Homescreens> {
   }
 
   void _checkInviteStatus() async {
-    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+    DocumentSnapshot eventSnapshot = await firestoreInstance
         .collection('eventPosts')
         .doc(event!.event_id)
         .get();
 
     setState(() {
       inviting = (eventSnapshot.data() as dynamic)['isPending']
-          .contains(FirebaseAuth.instance.currentUser!.uid);
+          .contains(authInstance.currentUser!.uid);
     });
   }
 
   Future<List<CategoryModel>> _loadCategories() async {
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('categoriesEvent').get();
+          await firestoreInstance.collection('categoriesEvent').get();
 
       List<CategoryModel> categoryModel = querySnapshot.docs.map((doc) {
         return CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
@@ -272,7 +266,7 @@ class _HomescreensState extends State<Homescreens> {
       _isLoading = true;
     });
 
-    DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+    DocumentSnapshot eventSnapshot = await firestoreInstance
         .collection('eventPosts')
         .doc(event != null ? event!.event_id : '')
         .get();
@@ -280,14 +274,11 @@ class _HomescreensState extends State<Homescreens> {
       List<dynamic> acceptedUser =
           (eventSnapshot.data() as dynamic)['isAccepted'] ?? [];
 
-      print("acceptedUser: $acceptedUser");
       List<String> avatars = [];
 
       for (String userIds in acceptedUser) {
-        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userIds)
-            .get();
+        DocumentSnapshot userSnapshot =
+            await firestoreInstance.collection('users').doc(userIds).get();
 
         if (userSnapshot.exists && userSnapshot.data() != null) {
           String? avatarUrl = (userSnapshot.data() as dynamic)['newAvatars'] ??
@@ -295,8 +286,6 @@ class _HomescreensState extends State<Homescreens> {
           if (avatarUrl != null) {
             avatars.add(avatarUrl);
           }
-          print(
-              "newAvatars: ${(userSnapshot.data() as dynamic)['newAvatars']}");
         }
       }
 
@@ -363,7 +352,7 @@ class _HomescreensState extends State<Homescreens> {
                                       radius: 30.0,
                                       backgroundColor: Colors.grey,
                                       child: Icon(Icons.person,
-                                          color: Colors.white), // Default icon
+                                          color: Colors.white),
                                     ),
                               const SizedBox(
                                 width: 20.0,
@@ -388,31 +377,11 @@ class _HomescreensState extends State<Homescreens> {
                           ),
                         ),
                       )),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.event_sharp,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Create Events',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ]),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.event_sharp,
+                    title: 'Create Events',
                     onTap: () async {
-                      _scaffoldKey.currentState?.closeDrawer();
                       final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -427,60 +396,22 @@ class _HomescreensState extends State<Homescreens> {
                         _loadCategories();
                       }
                     },
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.event_sharp,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'My Events',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ]),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.event_sharp,
+                    title: 'My Events',
                     onTap: () {
-                      _scaffoldKey.currentState?.closeDrawer();
-
                       Navigator.push(context,
                           MaterialPageRoute(builder: (ctx) => ListEvent()));
                     },
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.bookmark,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'My Wishlist',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ]),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.bookmark,
+                    title: 'My Wishlist',
                     onTap: () {
                       Navigator.push(
                           context,
@@ -489,33 +420,13 @@ class _HomescreensState extends State<Homescreens> {
                                     event_id: event!.event_id,
                                   )));
                     },
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.person,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Profile',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ]),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.person,
+                    title: 'My Profile',
                     onTap: () {
-                      _scaffoldKey.currentState?.closeDrawer();
-
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -528,93 +439,34 @@ class _HomescreensState extends State<Homescreens> {
                                     userData: _userData!,
                                   )));
                     },
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(children: [
-                        const Icon(
-                          Icons.chat_bubble,
-                          size: 30,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Gemini',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ]),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.chat_bubble,
+                    title: 'Gemini',
                     onTap: () {},
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.send,
-                            size: 30,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            'Gửi Phản Hồi',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 18,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.send,
+                    title: 'Feedback',
                     onTap: () {},
+                    scaffoldKey: _scaffoldKey,
                   ),
-                  ListTile(
-                    title: Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.logout,
-                            size: 30,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            'Đăng xuất',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 18,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  buildDrawerTile(
+                    context: context,
+                    icon: Icons.logout,
+                    title: 'Logout',
                     onTap: () {
-                      FirebaseAuth.instance.signOut();
+                      authInstance.signOut();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => Loginscreen()),
                       );
                     },
-                  )
+                    scaffoldKey: _scaffoldKey,
+                  ),
                 ],
               ),
             ),
@@ -632,7 +484,7 @@ class _HomescreensState extends State<Homescreens> {
           CustomScrollView(
             slivers: [
               SliverAppBar(
-                automaticallyImplyLeading: false, //remove icon Drawer
+                automaticallyImplyLeading: false,
                 pinned: true,
                 expandedHeight: 150.0,
                 elevation: 0,
@@ -717,154 +569,79 @@ class _HomescreensState extends State<Homescreens> {
                             ),
                           ),
                           SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: _isLoadingEvents
-                                  ? Container()
-                                  : (filteredEvents.isEmpty ||
-                                          event!.event_id == null)
-                                      ? Center(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Center(
-                                              child: Text(
-                                                'No Events Available',
-                                                style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 20.0),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: _eventPosts!.map((event) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                if (event != null &&
-                                                    event?.uid != null) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (ctx) =>
-                                                          Eventdetailscreen(
-                                                        uid: event.uid,
-                                                        titleEvent:
-                                                            event.event_name,
-                                                        userName:
-                                                            event.username,
-                                                        location:
-                                                            event.location,
-                                                        startDate: event
-                                                            .eventDateStart,
-                                                        avartar: event
-                                                                .profilePic ??
-                                                            'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                                                        discription: event
-                                                                .description ??
-                                                            'không có nội dung ở đây',
-                                                        backgroundIMG: event
-                                                            .eventImage![0],
-                                                        event_id:
-                                                            event.event_id,
-                                                      ),
-                                                    ),
-                                                  ).then((value) {
-                                                    if (value == true) {
-                                                      _loadPostEvent();
-                                                    }
-                                                  });
-                                                } else {
-                                                  // Handle the case when `event` or `event.uid` is null.
-                                                  print(
-                                                      "Event or event UID is null");
-                                                }
-                                              },
-                                              child: CardCustom(
-                                                event: event,
-                                                RandomImages: RandomImages,
-                                                uid: _userData != null
-                                                    ? _userData!.uid
-                                                    : '',
-                                                count: inviters,
-                                              ),
-                                            );
-                                          }).toList())),
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 30, horizontal: 16),
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                color: const Color(0xffD6FEFF),
-                                borderRadius: BorderRadius.circular(10)),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: ClipRRect(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Invite Your Friend',
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      const Text(
-                                        'Gửi đây 100k',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      GestureDetector(
+                            scrollDirection: Axis.horizontal,
+                            child: _isLoadingEvents
+                                ? Container()
+                                : (filteredEvents.isEmpty ||
+                                        event!.event_id == null)
+                                    ? Center(
                                         child: Container(
-                                          margin:
-                                              const EdgeInsets.only(top: 15),
-                                          decoration: BoxDecoration(
-                                              color: const Color(0xff00F8FF),
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0)),
-                                          padding: const EdgeInsets.all(10),
-                                          child: const Text(
-                                            'Invite',
-                                            style: TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.white),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: Text(
+                                              'No Events Available',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 20.0),
+                                            ),
                                           ),
                                         ),
                                       )
-                                    ],
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    widthFactor: 0.65, // Giới hạn chiều rộng
-                                    heightFactor: 0.9, // Giới hạn chiều cao
-                                    child: Transform.rotate(
-                                      angle: -pi / 6,
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.45,
-                                        // height: 200,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/logo_invite.png'),
-                                          fit: BoxFit.contain,
-                                        )),
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: _eventPosts!.map((event) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              if (event != null &&
+                                                  event?.uid != null) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (ctx) =>
+                                                        Eventdetailscreen(
+                                                      uid: event.uid,
+                                                      titleEvent:
+                                                          event.event_name,
+                                                      userName: event.username,
+                                                      location: event.location,
+                                                      startDate:
+                                                          event.eventDateStart,
+                                                      avartar: event
+                                                              .profilePic ??
+                                                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                                      discription: event
+                                                              .description ??
+                                                          'không có nội dung ở đây',
+                                                      backgroundIMG:
+                                                          event.eventImage![0],
+                                                      event_id: event.event_id,
+                                                    ),
+                                                  ),
+                                                ).then((value) {
+                                                  if (value == true) {
+                                                    _loadPostEvent();
+                                                  }
+                                                });
+                                              } else {
+                                                print(
+                                                    "Event or event UID is null");
+                                              }
+                                            },
+                                            child: CardCustom(
+                                              event: event,
+                                              RandomImages: RandomImages,
+                                              uid: _userData != null
+                                                  ? _userData!.uid
+                                                  : '',
+                                              count: inviters,
+                                            ),
+                                          );
+                                        }).toList(),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
+                          Invitewithfriends(),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             height: 100,

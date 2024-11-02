@@ -36,7 +36,6 @@ class _ListEventState extends State<ListEvent>
       appBar: AppBar(
         title: Text('My Event'),
         bottom: TabBar(
-          // isScrollable: true,
           labelStyle: TextStyle(fontSize: 18),
           controller: tabController,
           tabs: [
@@ -104,7 +103,7 @@ class _ListEventState extends State<ListEvent>
         controller: tabController,
         children: [
           StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
+              stream: firestoreInstance
                   .collection('eventPosts')
                   .where('uid', isEqualTo: authInstance.currentUser!.uid)
                   .snapshots(),
@@ -118,7 +117,6 @@ class _ListEventState extends State<ListEvent>
                   return const Center(child: Text('No Events Available'));
                 }
 
-                // Lấy danh sách event từ snapshot
                 final eventDocs = snapshot.data!.docs;
                 return ListView.builder(
                   itemCount: eventDocs.length,
@@ -211,7 +209,9 @@ class _ListEventState extends State<ListEvent>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (ctx) => GuestList()),
+                                        builder: (ctx) => GuestList(
+                                              eventId: event.event_id,
+                                            )),
                                   );
                                 }
                               },

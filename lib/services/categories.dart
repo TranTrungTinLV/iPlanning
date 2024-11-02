@@ -35,9 +35,8 @@ class CategoriesMethod {
 
   Future<void> updateCategoryEventIds(String categoryId, String eventId) async {
     try {
-      DocumentReference categoryRef = FirebaseFirestore.instance
-          .collection('categoriesEvent')
-          .doc(categoryId);
+      DocumentReference categoryRef =
+          firestoreInstance.collection('categoriesEvent').doc(categoryId);
       print(categoryId);
       await categoryRef.update({
         'event_ids': FieldValue.arrayUnion([eventId])

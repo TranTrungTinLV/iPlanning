@@ -24,7 +24,6 @@ class CardCustom extends StatelessWidget {
     print(isMe);
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
-      // height: MediaQuery.of(context).size.height * 0.4,
       margin: const EdgeInsets.only(right: 10.0),
       child: Card(
         color: Colors.white,
@@ -51,17 +50,20 @@ class CardCustom extends StatelessWidget {
                           filterQuality: FilterQuality.high)),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  margin: const EdgeInsets.only(
+                      left: 10, right: 10, top: 0, bottom: 16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(bottom: 10, left: 10),
+                        margin: EdgeInsets.only(left: 10),
                         child: Text(
-                          event.event_name,
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          "International Band Mu...",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                       Row(
@@ -117,13 +119,16 @@ class CardCustom extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.location_on_outlined,
-                            size: 20,
+                            size: 20.0,
+                          ),
+                          SizedBox(
+                            width: 4.0,
                           ),
                           Text(event.location),
                         ],
                       ),
                       SizedBox(
-                        height: 5.0,
+                        height: 10.0,
                       ),
                       Row(
                         children: [
@@ -132,7 +137,7 @@ class CardCustom extends StatelessWidget {
                             backgroundImage: NetworkImage(event.profilePic),
                           ),
                           SizedBox(
-                            width: 3,
+                            width: 4.0,
                           ),
                           Text("By ${event.username}"),
                         ],

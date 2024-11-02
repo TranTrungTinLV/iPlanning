@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
-import 'package:iplanning/widgets/button.dart';
+import 'package:iplanning/widgets/buttonAuth.dart';
 import 'package:iplanning/services/auth.dart';
 import 'package:iplanning/widgets/textForm.dart';
 
@@ -24,7 +24,7 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
     if (isValid) {
       _formKey.currentState!.save();
       try {
-        //TODO: QuerySnapshot query = await FirebaseFirestore.instance.collection('users').where("e-mail", isEqualTo: email).get(); if (query.docs.isNotEmpty) { // Email is already used... }
+        //TODO: QuerySnapshot query = await firestoreInstance.collection('users').where("e-mail", isEqualTo: email).get(); if (query.docs.isNotEmpty) { // Email is already used... }
 
         AuthStatus ForgotStatus =
             await _authService.forgotPassword(email: _enteremail);

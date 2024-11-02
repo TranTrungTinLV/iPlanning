@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:iplanning/models/note.dart';
-import 'package:iplanning/screens/transactionScreen.dart';
+import 'package:iplanning/screens/mainScreen/transactionScreen.dart';
 import 'package:iplanning/services/note.dart';
 
 import 'package:iplanning/utils/transactionType.dart';
@@ -159,12 +159,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     List<NoteModel> incomeNotes = noteModels
         .where((note) => note.transactionType == TransactionType.income)
         .toList();
-    double angle = (cumulativeValue + incomePercent / 2) * 3.6; // Tính lại góc
+    double angle = (cumulativeValue + incomePercent / 2) * 3.6;
 
-    double adjustedAngle =
-        angle + (incomePercent < 1 ? 5 : 0); // Điều chỉnh góc nhỏ
-    double positionFactor =
-        adjustedAngle > 180 ? 0.7 : 1.2; // Điều chỉnh vị trí
+    double adjustedAngle = angle + (incomePercent < 1 ? 5 : 0);
+    double positionFactor = adjustedAngle > 180 ? 0.7 : 1.2;
 
     for (NoteModel incomeNote in incomeNotes) {
       double incomePercent = (incomeNote.amount / _icome) * 100;
@@ -196,8 +194,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
         .toList();
     double angle = (cumulativeValue + expensePercent / 2) * 3.6; // Tính lại góc
 
-    double adjustedAngle =
-        angle + (expensePercent < 1 ? 5 : 0); // Điều chỉnh góc nhỏ
+    double adjustedAngle = angle + (expensePercent < 1 ? 5 : 0);
     double positionFactor =
         adjustedAngle > 180 ? 0.7 : 1.2; // Điều chỉnh vị trí
 
@@ -211,12 +208,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.black)),
-        angle: -350 -
-            (cumulativeValue + (expensePercent)) /
-                3.6 *
-                360, // Đặt annotation giữa các phần
-        positionFactor:
-            positionFactor, // Đặt vị trí của annotation ở bên ngoài biểu đồ
+        angle: -350 - (cumulativeValue + (expensePercent)) / 3.6 * 360,
+        positionFactor: positionFactor,
       ));
       cumulativeValue += expensePercent;
     }
@@ -598,6 +591,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                             child: Column(
                               children: [
                                 Card(
+                                  // !tổng quan
                                   child: (_icome != 0 || _expense != 0)
                                       ? Container(
                                           height: 150,

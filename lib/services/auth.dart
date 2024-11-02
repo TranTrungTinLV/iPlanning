@@ -10,7 +10,7 @@ import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
 
 class AuthenticationService {
-  final _firebase = FirebaseAuth.instance;
+  final _firebase = authInstance;
   final User? user = authInstance.currentUser;
 
   Future<AuthStatus> creatAccount({
@@ -55,7 +55,7 @@ class AuthenticationService {
 
         userData['avatars'] = imageUrl;
       }
-      await FirebaseFirestore.instance
+      await firestoreInstance
           .collection('users')
           .doc(userCredentials.user!.uid)
           .set(userData); // Lưu dữ liệu bao gồm avatar
@@ -88,7 +88,7 @@ class AuthenticationService {
     AuthStatus status;
     try {
       // Query Firestore to check if the email exists
-      QuerySnapshot query = await FirebaseFirestore.instance
+      QuerySnapshot query = await firestoreInstance
           .collection('users')
           .where("email", isEqualTo: email)
           .get();
@@ -129,7 +129,7 @@ class AuthenticationService {
       }
       String uid = user!.uid;
       final DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+          await firestoreInstance.collection('users').doc(uid).get();
 
       if (userDoc.exists) {
         // Sử dụng factory constructor fromJson
@@ -165,7 +165,7 @@ class AuthenticationService {
         return null;
       }
       final DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+          await firestoreInstance.collection('users').doc(uid).get();
 
       if (userDoc.exists) {
         // Sử dụng factory constructor fromJson
@@ -194,7 +194,7 @@ class AuthenticationService {
       final imageUrl = await storageRef.getDownloadURL();
       userModel.newAvatars = imageUrl;
     }
-    await FirebaseFirestore.instance
+    await firestoreInstance
         .collection('users')
         .doc(uid)
         .update(userModel.toJson());

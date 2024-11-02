@@ -10,7 +10,7 @@ class AlarmNotifier extends ChangeNotifier {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   StreamSubscription<User?>? _authSubscription;
   AlarmNotifier(this.flutterLocalNotificationsPlugin) {
-    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+    _authSubscription = authInstance.authStateChanges().listen((user) {
       if (user != null) {
         print("User logged in: ${user.uid}");
         _listenForJoinRequests();
@@ -29,12 +29,12 @@ class AlarmNotifier extends ChangeNotifier {
   }
 
   void _listenForJoinRequests() {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = authInstance.currentUser;
     if (user == null) {
       print("User is not logged in");
       return; // Ngăn hàm thực thi nếu chưa đăng nhập
     }
-    FirebaseFirestore.instance
+    firestoreInstance
         .collection("eventPosts")
         .where('uid', isEqualTo: user.uid)
         .snapshots()
@@ -44,7 +44,7 @@ class AlarmNotifier extends ChangeNotifier {
         print("Pending requests: $isPending");
         if (isPending != null && isPending.isNotEmpty) {
           for (var pendingUser in isPending) {
-            FirebaseFirestore.instance
+            firestoreInstance
                 .collection('users')
                 .doc(pendingUser)
                 .get()

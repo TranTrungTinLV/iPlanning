@@ -19,7 +19,7 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  CollectionReference users = firestoreInstance.collection('users');
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+          stream: firestoreInstance
               .collection("eventPosts")
               .where('uid', isEqualTo: authInstance.currentUser!.uid)
               .snapshots(),

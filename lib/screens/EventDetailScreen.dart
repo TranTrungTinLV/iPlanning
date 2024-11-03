@@ -354,50 +354,19 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                SizedBox(
-                  height: 10,
-                ),
                 Container(
                   decoration:
                       BoxDecoration(color: Colors.black.withOpacity(0.15)),
-                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 24),
                   width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
                     children: [
-                      IconButton(
-                        icon: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
-                                child: BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Icon(Icons.arrow_back,
-                                color: Colors.white, size: 24),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                      SizedBox(
+                        height: 10,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           IconButton(
                             icon: Stack(
@@ -422,68 +391,97 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                     ),
                                   ),
                                 ),
-                                authInstance.currentUser!.uid == widget.uid
-                                    ? PopupMenuButton<String>(
-                                        icon: Icon(
-                                          Icons.more_vert,
-                                          color: Colors.white,
-                                        ),
-                                        itemBuilder: (BuildContext ctx) => [
-                                              const PopupMenuItem<String>(
-                                                  value: 'GuestList',
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.person),
-                                                      Text('Guest List'),
-                                                    ],
-                                                  )),
-                                              const PopupMenuItem<String>(
-                                                  value: 'ShareFriend',
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons.share),
-                                                      Text('Share'),
-                                                    ],
-                                                  )),
-                                            ],
-                                        onSelected: (String result) {
-                                          if (result == 'GuestList') {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (ctx) => GuestList(
-                                                        eventId:
-                                                            widget.event_id,
-                                                      )),
-                                            );
-                                          } else {
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (ctx) =>
-                                            //           GuestList()),
-                                            // );
-                                          }
-                                        })
-                                    : IconButton(
-                                        onPressed: () async {
-                                          await ClouMethods().wishlistUser(
-                                              authInstance.currentUser!.uid,
-                                              widget.event_id);
-                                          setState(() {
-                                            isLoadingWishList =
-                                                !isLoadingWishList;
-                                          });
-                                        },
-                                        icon: Icon(Icons.bookmark,
-                                            color: isLoadingWishList
-                                                ? Colors.red
-                                                : Colors.white,
-                                            size: 24),
-                                      ),
+                                const Icon(Icons.arrow_back,
+                                    color: Colors.white, size: 24),
                               ],
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(18),
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: 30, sigmaY: 30),
+                                          child: Container(
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.white10,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    authInstance.currentUser!.uid == widget.uid
+                                        ? PopupMenuButton<String>(
+                                            icon: Icon(
+                                              Icons.more_vert,
+                                              color: Colors.white,
+                                            ),
+                                            itemBuilder: (BuildContext ctx) => [
+                                                  const PopupMenuItem<String>(
+                                                      value: 'GuestList',
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.person),
+                                                          Text('Guest List'),
+                                                        ],
+                                                      )),
+                                                  const PopupMenuItem<String>(
+                                                      value: 'ShareFriend',
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.share),
+                                                          Text('Share'),
+                                                        ],
+                                                      )),
+                                                ],
+                                            onSelected: (String result) {
+                                              if (result == 'GuestList') {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          GuestList(
+                                                            eventId:
+                                                                widget.event_id,
+                                                          )),
+                                                );
+                                              } else {}
+                                            })
+                                        : IconButton(
+                                            onPressed: () async {
+                                              await ClouMethods().wishlistUser(
+                                                  authInstance.currentUser!.uid,
+                                                  widget.event_id);
+                                              setState(() {
+                                                isLoadingWishList =
+                                                    !isLoadingWishList;
+                                              });
+                                            },
+                                            icon: Icon(Icons.bookmark,
+                                                color: isLoadingWishList
+                                                    ? Colors.red
+                                                    : Colors.white,
+                                                size: 24),
+                                          ),
+                                  ],
+                                ),
+                                onPressed: () {},
+                              ),
+                            ],
                           ),
                         ],
                       ),

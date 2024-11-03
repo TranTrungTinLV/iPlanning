@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/loading_manager.dart';
+import 'package:iplanning/utils/dialog.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/services/auth.dart';
@@ -63,12 +64,7 @@ class _EditScreenState extends State<EditScreen> {
           newAvatars: _selectedImage);
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Failed to update profile: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      showSnackBar(context: context, title: "Failed to update profile: $e");
     } finally {
       setState(() {
         _isLoading = false; // Hide loading spinner

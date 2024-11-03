@@ -10,18 +10,20 @@ class UserModel {
   String? newAvatars;
   List<EventsPostModel>? eventPostModel;
   List<String>? wishList;
-  
-  UserModel({
-    this.wishList,
-    required this.uid,
-    this.newAvatars,
-    required this.email,
-    required this.name,
-    this.eventPostModel,
-    this.country,
-    this.phone,
-    this.avatars,
-  });
+  bool isVerify;
+  bool isOnline;
+  UserModel(
+      {this.wishList,
+      required this.uid,
+      this.newAvatars,
+      required this.email,
+      required this.name,
+      this.eventPostModel,
+      this.country,
+      this.phone,
+      this.avatars,
+      this.isVerify = false,
+      this.isOnline = false});
 
   // Factory constructor từ JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,8 @@ class UserModel {
       email: json['email'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String?,
+      isVerify: json['isVerify'] ?? false,
+      isOnline: json['isOnline'] ?? false,
     );
   }
 
@@ -51,6 +55,8 @@ class UserModel {
       'avatars': avatars,
       'newAvatars': newAvatars,
       'eventPostModel': eventPostModel?.map((event) => event.toJson()).toList(),
+      'isVerify': isVerify,
+      'isOnline': isOnline
     };
   }
 

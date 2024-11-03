@@ -417,7 +417,8 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => WishListScreen(
-                                    event_id: event!.event_id,
+                                    event_id:
+                                        event != null ? event!.event_id : null,
                                   )));
                     },
                     scaffoldKey: _scaffoldKey,
@@ -573,7 +574,9 @@ class _HomescreensState extends State<Homescreens> {
                             child: _isLoadingEvents
                                 ? Container()
                                 : (filteredEvents.isEmpty ||
-                                        event!.event_id == null)
+                                        _eventPosts == null ||
+                                        _eventPosts!.isEmpty ||
+                                        event?.event_id == null)
                                     ? Center(
                                         child: Container(
                                           width:

@@ -40,3 +40,13 @@ Future<bool> showExitConfirmationDialog(BuildContext context) async {
           }) ??
       false;
 }
+
+void showSnackBar({required BuildContext context, required String title}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      // content: Text("Failed to update profile: $e"),
+      content: Text(title),
+      backgroundColor: Colors.red,
+    ),
+  );
+}

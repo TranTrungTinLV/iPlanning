@@ -19,6 +19,8 @@ enum AuthStatus {
   invalidContinueUri,
   unauthorizedContinueUri,
   unknown,
+  invalidPhoneNumber,
+  phoneNumberAlreadyExists,
 }
 
 class AuthExceptionHandler {
@@ -71,6 +73,12 @@ class AuthExceptionHandler {
         break;
       case "auth/unauthorized-continue-uri":
         status = AuthStatus.unauthorizedContinueUri;
+        break;
+      case "invalid-phone-number":
+        status = AuthStatus.invalidPhoneNumber;
+        break;
+      case "phone-number-already-exists":
+        status = AuthStatus.phoneNumberAlreadyExists;
         break;
       default:
         status = AuthStatus.unknown;
@@ -127,6 +135,12 @@ class AuthExceptionHandler {
         break;
       case AuthStatus.unauthorizedContinueUri:
         errorMessage = "The domain of the continue URL is not whitelisted.";
+        break;
+      case AuthStatus.invalidPhoneNumber:
+        errorMessage = "The phone number provided is invalid.";
+        break;
+      case AuthStatus.phoneNumberAlreadyExists:
+        errorMessage = "The phone number is already in use by another account.";
         break;
       default:
         errorMessage = "An error occurred. Please try again later.";

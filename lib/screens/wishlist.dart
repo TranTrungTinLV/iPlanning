@@ -9,7 +9,7 @@ class WishListScreen extends StatefulWidget {
     super.key,
     required this.event_id,
   });
-  final String event_id;
+  final String? event_id;
   @override
   State<WishListScreen> createState() => _WishListScreenState();
 }
@@ -73,9 +73,7 @@ class _WishListScreenState extends State<WishListScreen> {
               } else if (snapshot.hasError) {
                 return Center(
                     child: Text('Failed to load wishlist: ${snapshot.error}'));
-              } else if (!snapshot.hasData ||
-                  !snapshot.data!.exists ||
-                  widget.event_id == null) {
+              } else if (!snapshot.hasData || !snapshot.data!.exists) {
                 return const Center(child: Text('No Wishlist Available'));
               }
 

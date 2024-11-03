@@ -48,17 +48,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Center(
         child: Column(
           children: [
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: CircleAvatar(
-                radius: 60.0,
-                backgroundImage: widget.avatarEdit != null
-                    ? NetworkImage(widget.avatarEdit as String)
-                    : NetworkImage(
-                        'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
-
-              ),
-            ),
+            widget.avatarEdit != null
+                ? Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: CircleAvatar(
+                      radius: 60.0,
+                      backgroundImage:
+                          NetworkImage(widget.avatarEdit as String),
+                    ),
+                  )
+                : const CircleAvatar(
+                    radius: 60.0,
+                    backgroundColor: Colors.grey,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                  ),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 20),
               child: Text(
@@ -74,8 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             builder: (context) => EditScreen(
                                   enteremail: widget.enteredemail,
                                   fisrtName: widget.username,
-                                  avatarEdit: widget.avatarEdit ??
-                                      'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                  avatarEdit: widget.avatarEdit,
                                   phoneNumber: widget.phoneNumber,
                                   country: widget.country,
                                   userData: widget.userData,

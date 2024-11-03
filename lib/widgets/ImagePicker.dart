@@ -28,14 +28,14 @@ class _ImageUserPickerState extends State<ImageUserPicker> {
     return GestureDetector(
       onTap: _pickImage,
       child: CircleAvatar(
-          foregroundImage:
-              pickImageFile != null ? FileImage(pickImageFile!) : null,
-          radius: 40,
-          backgroundColor: Colors.grey,
-          child: const Icon(
-            Icons.camera_alt,
-            color: Colors.white,
-          )),
+        foregroundImage:
+            pickImageFile != null ? FileImage(pickImageFile!) : null,
+        radius: 40,
+        backgroundColor: Colors.grey,
+        child: pickImageFile == null
+            ? const Icon(Icons.camera_alt, size: 50, color: Colors.white)
+            : null, // If an image is selected, no icon is shown
+      ),
     );
   }
 }

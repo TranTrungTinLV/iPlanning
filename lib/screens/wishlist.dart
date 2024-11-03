@@ -41,7 +41,6 @@ class _WishListScreenState extends State<WishListScreen> {
       });
     } else {
       print("Event document does not exist or data is null.");
-      // widget.isLoadingInvite = false;
     }
   }
 

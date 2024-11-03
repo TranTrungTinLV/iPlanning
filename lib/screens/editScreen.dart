@@ -108,30 +108,26 @@ class _EditScreenState extends State<EditScreen> {
                     },
                   ),
                 ),
-                IgnorePointer(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 40.0),
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black54,
-                        image: DecorationImage(
-                          opacity: 0.7,
-                          image: widget.avatarEdit != null
-                              ? NetworkImage(widget.avatarEdit!)
-                              : const NetworkImage(
-                                  'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
-                          fit: BoxFit.cover,
-                        )),
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 50,
-                    ),
-                  ),
-                ),
+                _selectedImage == null && widget.avatarEdit != null
+                    ? IgnorePointer(
+                        child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 40.0),
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black54,
+                          image: DecorationImage(
+                            image: NetworkImage(widget.avatarEdit!),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ))
+                    : const SizedBox.shrink(),
               ]),
+              SizedBox(
+                height: 20.0,
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(

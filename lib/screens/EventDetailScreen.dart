@@ -216,9 +216,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
               titleEvent: widget.titleEvent,
               location: widget.location,
               startDate: widget.startDate,
-              avartar: (widget.avartar != "" && widget.avartar != null)
-                  ? widget.avartar
-                  : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+              avartar: widget.avartar,
               discription: widget.discription,
               onTap: () {
                 if (userProfile != null) {
@@ -228,10 +226,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                       builder: (ctx) => ProfileScreen(
                         enteredemail: userProfile!.email,
                         username: userProfile!.name,
-                        avatarEdit: (widget.avartar != "" &&
-                                widget.avartar != null)
-                            ? widget.avartar
-                            : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                        avatarEdit: widget.avartar,
                         userData: userProfile!,
                       ),
                     ),

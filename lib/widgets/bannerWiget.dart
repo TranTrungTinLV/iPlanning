@@ -1,8 +1,5 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:iplanning/screens/mainScreen/LoginScreen.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class Bannerwiget extends StatefulWidget {
   const Bannerwiget({super.key, required this.child});

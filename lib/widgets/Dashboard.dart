@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:iplanning/screens/map1.dart';
 import 'package:iplanning/screens/notification.dart';
 
 class TopBar extends StatefulWidget {
@@ -27,19 +28,42 @@ class _TopBarState extends State<TopBar> {
           icon: const Icon(Icons.dashboard, size: 30, color: Colors.white),
           onPressed: widget.drawer,
         ),
-        const Column(
+        Column(
           children: [
             Text(
               'Current Location',
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
             ),
-            Text(
-              'Ho Chi Minh, VN',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Color(0xffF4F4FE),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Map1Screen(),
+                    ));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Ho Chi Minh, VN',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xffF4F4FE),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_downward,
+                      size: 12,
+                      color: Colors.white,
+                    )
+                  ],
+                ),
               ),
             ),
           ],

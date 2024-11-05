@@ -170,12 +170,14 @@ class _EditScreenState extends State<EditScreen> {
                     widget.phoneNumber != null
                         ? TextFieldCustom(
                             controller: _phoneController,
-                            title: widget.phoneNumber!,
+                            title: 'Phone Number',
+                            labelText: 'phoneNumber',
                             keyboardType: TextInputType.number,
                           )
                         : TextFieldCustom(
                             controller: _phoneController,
                             title: 'Phone Number',
+                            labelText: 'phoneNumber',
                             keyboardType: TextInputType.number,
                           ) //phone number
                   ],

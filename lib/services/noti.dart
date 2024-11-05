@@ -13,7 +13,7 @@ class AlarmNotifier extends ChangeNotifier {
     _authSubscription = authInstance.authStateChanges().listen((user) {
       if (user != null) {
         print("User logged in: ${user.uid}");
-        _listenForJoinRequests();
+        _checkVerify();
       } else {
         print("User is not logged in");
       }
@@ -25,6 +25,19 @@ class AlarmNotifier extends ChangeNotifier {
     void dispose() {
       _authSubscription?.cancel(); // Cancels the subscription when not needed
       super.dispose();
+    }
+  }
+
+  Future<void> _checkVerify() async {
+    final user = authInstance.currentUser;
+    if (user == null) return;
+    final userDoc =
+        await firestoreInstance.collection('users').doc(user.uid).get();
+    if (userDoc.exists) {
+      final isVerify = userDoc.data()?['isVerify'] ?? false;
+      if (isVerify == true) {
+        _listenForJoinRequests();
+      }
     }
   }
 

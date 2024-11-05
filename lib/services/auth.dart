@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,8 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
-import 'package:iplanning/screens/otpScreen.dart';
+import 'package:iplanning/screens/mainScreen/homeScreens.dart';
+
 import 'package:iplanning/utils/authExceptionHandler.dart';
+import 'package:iplanning/utils/dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 class AuthenticationService {
   final _firebase = authInstance;
@@ -126,13 +131,13 @@ class AuthenticationService {
 
   Future<UserModel?> getUserData() async {
     try {
-      if (user == null) {
-        // Handle trường hợp user chưa đăng nhập
-        return null;
-      }
-      String uid = user!.uid;
-      final DocumentSnapshot userDoc =
-          await firestoreInstance.collection('users').doc(uid).get();
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) return null;
+
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
 
       if (userDoc.exists) {
         // Sử dụng factory constructor fromJson
@@ -203,62 +208,59 @@ class AuthenticationService {
         .update(userModel.toJson());
   }
 
-  Future<AuthStatus> verifyPhone(
-      BuildContext context, String phoneNumber) async {
-    AuthStatus status;
+  Future<void> sendOtpWithVoiceCall(String phoneNumber, String otp) async {
+    const String apiUrl = 'https://api.stringee.com/v1/call2/callout';
+    const String jwtToken =
+        'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLmZUelhrY0VaYnlOSENWYVRqM2JIZW5JOFFaQjhVZDFMLTE3MzA3MDY3NjEiLCJpc3MiOiJTSy4wLmZUelhrY0VaYnlOSENWYVRqM2JIZW5JOFFaQjhVZDFMIiwiZXhwIjoxNzMzMjk4NzYxLCJyZXN0X2FwaSI6dHJ1ZX0.Is4Wd8p4WuPAnhvi7awWKtVoMVuPQjUDCnPZrrmgBqg'; // Thay bằng JWT của bạn
 
-    try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationFailed: (e) {
-          throw Exception(e.message);
-        },
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          try {
-            await FirebaseAuth.instance.signInWithCredential(credential);
-            Fluttertoast.showToast(
-                msg: "Phone number automatically verified!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0);
-            // Điều hướng đến trang chính sau khi đăng nhập thành công
-            Navigator.pushReplacementNamed(context, '/home');
-            status = AuthStatus.successful;
-          } catch (e) {
-            Fluttertoast.showToast(
-                msg: "Auto verification failed: $e",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.BOTTOM,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
-            status = AuthStatus.operationNotAllowed;
-          }
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          Fluttertoast.showToast(
-              msg: "OTP sent to $phoneNumber",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.blueAccent,
-              textColor: Colors.white,
-              fontSize: 16.0);
+    final Map<String, dynamic> payload = {
+      "from": {
+        "type": "external",
+        "number": "842871010380",
+        "alias": "Iplanning"
+      },
+      "to": [
+        {"type": "external", "number": phoneNumber, "alias": phoneNumber}
+      ],
+      "actions": [
+        {"action": "talk", "text": "Mã otp của bạn là $otp"}
+      ],
+    };
 
-          Navigator.pushNamed(
-            context,
-            Otpscreen.routeName,
-            arguments: verificationId,
-          );
-          status = AuthStatus.successful;
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
-      status = AuthStatus.successful;
-    } on FirebaseAuthException catch (e) {
-      status = AuthExceptionHandler.handleAuthException(e);
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-STRINGEE-AUTH': jwtToken,
+      },
+      body: jsonEncode(payload),
+    );
+
+    if (response.statusCode == 200) {
+      print('Cuộc gọi OTP đã được thực hiện thành công.');
+    } else {
+      print('Lỗi khi thực hiện cuộc gọi OTP: ${response.body}');
     }
-    return status;
+  }
+
+  Future<bool> verifyOtp(
+      String inputOtp, String sentOtp, String phoneNumber) async {
+    if (inputOtp == sentOtp) {
+      User? currentUser = _firebase.currentUser;
+      if (currentUser != null) {
+        try {
+          await firestoreInstance
+              .collection('users')
+              .doc(currentUser.uid)
+              .update({'isVerify': true, 'phone': phoneNumber});
+          print('Cập nhật isVerify thành công cho user ${currentUser.uid}');
+          return true;
+        } catch (e) {
+          print('Lỗi khi cập nhật isVerify: $e');
+          return false;
+        }
+      }
+    }
+    return false;
   }
 }

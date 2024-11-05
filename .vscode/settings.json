@@ -4,6 +4,8 @@
     "Eventdetailscreen",
     "Forgotpassword",
     "Homescreens",
+    "Loginscreen",
     "Upcomingwidget"
-  ]
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic"
 }

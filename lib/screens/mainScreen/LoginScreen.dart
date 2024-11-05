@@ -6,9 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/mainScreen/homeScreens.dart';
 import 'package:iplanning/screens/forgotpassword.dart';
 import 'package:iplanning/screens/loading_manager.dart';
+import 'package:iplanning/screens/phoneScreen.dart';
+
 import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/bannerWiget.dart';
@@ -67,18 +70,37 @@ class _LoginscreenState extends State<Loginscreen> {
   }
 
   Future<void> _handleLogin() async {
+    print("Đăng nhập");
     AuthStatus signInStatus = await _authService.login(
       email: _enteremail,
       password: _enterpassword,
     );
+
     if (signInStatus == AuthStatus.successful) {
-      _navigateToHome();
-    }
-    if (signInStatus != AuthStatus.successful) {
+      print(
+          "Người dùng đã đăng nhập: ${FirebaseAuth.instance.currentUser?.uid}");
+      UserModel? userModel = await _authService.getUserData();
+      if (userModel != null) {
+        print(
+            'Dữ liệu người dùng: ${userModel.toJson()}'); // Kiểm tra toàn bộ dữ liệu người dùng
+
+        if (userModel.isVerify == false) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PhoneScreen(
+                      phoneNumber: userModel.phone,
+                    )),
+            (route) => false,
+          );
+        } else {
+          _navigateToHome();
+        }
+      }
+    } else {
       _showErrorSnackBar(
         AuthExceptionHandler.generateErrorMessage(signInStatus),
       );
-      return;
     }
   }
 
@@ -89,7 +111,27 @@ class _LoginscreenState extends State<Loginscreen> {
       name: _enterusername,
     );
     if (signUpStatus == AuthStatus.successful) {
-      _navigateToHome();
+      print(
+          "Người dùng đã đăng nhập: ${FirebaseAuth.instance.currentUser?.uid}");
+      UserModel? userModel = await _authService.getUserData();
+
+      if (userModel != null) {
+        print(
+            'Dữ liệu người dùng: ${userModel.toJson()}'); // Kiểm tra toàn bộ dữ liệu người dùng
+
+        if (userModel.isVerify == false) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PhoneScreen(
+                      phoneNumber: userModel.phone ?? null,
+                    )),
+            (route) => false,
+          );
+        } else {
+          _navigateToHome();
+        }
+      }
     } else {
       _showErrorSnackBar(
         AuthExceptionHandler.generateErrorMessage(signUpStatus),

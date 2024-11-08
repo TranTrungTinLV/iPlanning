@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/utils/dialog.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:location/location.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,16 +13,29 @@ import 'package:geocoding/geocoding.dart' as geo;
 import 'package:http/http.dart' as http;
 
 class Map1Screen extends StatefulWidget {
-  const Map1Screen({super.key});
+  Map1Screen({super.key, required this.location});
+  final String? location;
 
   @override
   State<Map1Screen> createState() => _Map1ScreenState();
 }
 
 class _Map1ScreenState extends State<Map1Screen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.location != null && widget.location!.isNotEmpty) {
+      _setLocationFromAddress(widget.location!);
+    } else {
+      moveCurrent();
+    }
+  }
+
   final MapController _mapController = MapController();
   LatLng? _myLocation;
   String? currentLocation;
+  String? living;
   Future<LocationData?> _getCurrentLocation() async {
     Location location = new Location();
     bool _serviceEnabled;
@@ -65,6 +81,9 @@ class _Map1ScreenState extends State<Map1Screen> {
         final city = address['city'];
         final country = address['country'];
         print('Tên đường: $road, Thành phố: $city, Quốc gia: $country');
+        setState(() {
+          living = '$road, $country';
+        });
       } else {
         print('Lỗi khi lấy dữ liệu địa chỉ');
       }
@@ -73,7 +92,38 @@ class _Map1ScreenState extends State<Map1Screen> {
     }
   }
 
-  // move to current
+  Future<void> saveAddressFireStore() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && living != null) {
+      try {
+        await firestoreInstance.collection('users').doc(currentUser.uid).update(
+          {
+            'country': living,
+          },
+        );
+        Navigator.pop(context, living);
+      } catch (e) {}
+    }
+  }
+
+  Future<void> _setLocationFromAddress(String address) async {
+    try {
+      List<geo.Location> myExistslocations =
+          await geo.locationFromAddress(widget.location!);
+      if (myExistslocations.isNotEmpty) {
+        double latitude = myExistslocations.first.latitude;
+        double longitude = myExistslocations.first.longitude;
+        setState(() {
+          _myLocation = LatLng(latitude, longitude);
+        });
+        _mapController.move(_myLocation!, 13.0);
+      }
+    } catch (e) {
+      print("Không thể lấy vị trí từ địa chỉ: $e");
+      moveCurrent(); // Gọi moveCurrent nếu không thể tìm thấy toạ độ từ địa chỉ
+    }
+  }
+
   void moveCurrent() async {
     print("location");
     try {
@@ -81,6 +131,7 @@ class _Map1ScreenState extends State<Map1Screen> {
       if (positionData != null) {
         LatLng currentPosition =
             LatLng(positionData.latitude!, positionData.longitude!);
+
         await getAddressFromLatLng(
             positionData.latitude, positionData.longitude);
         _mapController.move(currentPosition, 17.0);
@@ -88,7 +139,6 @@ class _Map1ScreenState extends State<Map1Screen> {
           _myLocation = currentPosition;
 
           print(_myLocation);
-          print("Tên đường $currentLocation");
         });
 
         print("Vị trí hiện tại: $_myLocation");
@@ -157,8 +207,17 @@ class _Map1ScreenState extends State<Map1Screen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                        onTap: () async {
+                          if (widget.location == null ||
+                              widget.location!.isEmpty) {
+                            bool? shouldExit =
+                                await showExitConfirmationDialog(context);
+                            if (shouldExit) {
+                              Navigator.pop(context);
+                            }
+                          } else {
+                            Navigator.pop(context);
+                          }
                         },
                         child: Container(
                           child: Icon(
@@ -180,7 +239,25 @@ class _Map1ScreenState extends State<Map1Screen> {
                           filled: true,
                           fillColor: Colors.white30,
                         ),
-                      ))
+                      )),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: saveAddressFireStore,
+                        child: Container(
+                          height: 50,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              color: Color(0xff3D56F0),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                              child: Text(
+                            "Cập nhật",
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          )),
+                        ),
+                      )
                     ],
                   ),
                 ],

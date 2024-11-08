@@ -26,7 +26,10 @@ class Details extends StatelessWidget {
   final void Function() onTap;
   @override
   Widget build(BuildContext context) {
-    var isMe = authInstance.currentUser!.uid == uid;
+    final isMe = authInstance.currentUser!.uid == uid;
+    final _formatterAmount =
+        NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.60,
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
@@ -106,7 +109,7 @@ class Details extends StatelessWidget {
                                 color: Colors.orange,
                                 borderRadius: BorderRadius.circular(10)),
                             child: Text(
-                              "${ammount != null && ammount != 0.0 ? ammount.toString() : "Free"}",
+                              "${ammount != null && ammount != 0.0 ? _formatterAmount.format(ammount).toString() : "Free"}",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 10),
                             )),

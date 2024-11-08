@@ -5,25 +5,34 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:iplanning/firebase_options.dart';
+import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/splashScreen.dart';
 import 'package:iplanning/services/categories.dart';
 import 'package:iplanning/services/noti.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final alarmNotifierProvider = ChangeNotifierProvider<AlarmNotifier>((ref) {
   final notifier = AlarmNotifier(flutterLocalNotificationsPlugin);
 
   // Khởi tạo thông báo và lắng nghe ngay từ khi ứng dụng chạy
   notifier.initialization((payload) {
-    print("Notification clicked with payload: $payload");
+    navigatorKey.currentState?.push(MaterialPageRoute(
+      builder: (_) => NotificationScreen(
+        getPicture: () {},
+      ),
+    ));
+    return notifier;
   });
 
   return notifier;
 });
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -43,6 +52,11 @@ void main() async {
     },
   );
 
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.requestNotificationsPermission();
+
   await CategoriesMethod().uploadDefaultCategories();
 
   runApp(
@@ -60,10 +74,10 @@ class iPlanApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.watch(
-            alarmNotifierProvider); // Đảm bảo AlarmNotifier hoạt động ngay khi ứng dụng khởi động
-        return const MaterialApp(
+        ref.watch(alarmNotifierProvider);
+        return MaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
           home: SplashScreen(),
         );
       },

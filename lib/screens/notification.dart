@@ -25,11 +25,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    final alarmNotifier = ref.read(alarmNotifierProvider);
-    alarmNotifier.initialization((payload) {
-      // Xử lý khi nhấn vào thông báo
-      print("Notification clicked with payload: $payload");
-    });
   }
 
   @override

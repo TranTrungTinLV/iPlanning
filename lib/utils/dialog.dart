@@ -11,6 +11,7 @@ Future<bool> showExitConfirmationDialog(BuildContext context) async {
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop(true);
+                    
                   },
                   child: Container(
                       decoration: BoxDecoration(

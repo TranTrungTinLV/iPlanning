@@ -9,9 +9,11 @@ class TopBar extends StatefulWidget {
       {super.key,
       required this.drawer,
       this.eventId,
-      required this.getPicture});
+      required this.getPicture,
+      required this.location});
   final void Function() getPicture;
   final void Function() drawer;
+  String location;
   String? eventId;
   @override
   State<TopBar> createState() => _TopBarState();
@@ -36,34 +38,53 @@ class _TopBarState extends State<TopBar> {
                   TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Map1Screen(),
+                      builder: (context) => Map1Screen(
+                        location: widget.location,
+                      ),
                     ));
+                if (result != null && result is String) {
+                  setState(() {
+                    widget.location = result;
+                  });
+                }
               },
               child: Container(
-                width: MediaQuery.of(context).size.width / 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Ho Chi Minh, VN',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xffF4F4FE),
+                width: MediaQuery.of(context).size.width / 2,
+                child: (widget.location != null)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            textAlign: TextAlign.center,
+                            widget.location,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xffF4F4FE),
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_downward,
+                            size: 12,
+                            color: Colors.white,
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Vui Lòng chọn',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
                       ),
-                    ),
-                    Icon(
-                      Icons.arrow_downward,
-                      size: 12,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
               ),
             ),
           ],

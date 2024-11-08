@@ -15,6 +15,7 @@ import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/noti.dart';
 import 'package:iplanning/widgets/InvitewithFriends.dart';
 import 'package:iplanning/widgets/buildDrawTile.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
@@ -32,7 +33,7 @@ class Homescreens extends StatefulWidget {
 
 class _HomescreensState extends State<Homescreens> {
   List RandomImages = [];
-
+  late AlarmNotifier _alarmNotifier;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -53,6 +54,8 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   void initState() {
+    _alarmNotifier = AlarmNotifier(FlutterLocalNotificationsPlugin());
+    _reqPermissionNotification();
     // TODO: implement initState
     super.initState();
     _loadData().then((value) {
@@ -67,6 +70,10 @@ class _HomescreensState extends State<Homescreens> {
     _getDataPicture();
     _startEventCountdown();
     _initializeData();
+  }
+
+  Future<void> _reqPermissionNotification() async {
+    await _alarmNotifier.requestNotificationsPermission();
   }
 
   Future<void> _initializeData() async {
@@ -500,6 +507,7 @@ class _HomescreensState extends State<Homescreens> {
                         drawer: () {
                           _scaffoldKey.currentState?.openDrawer();
                         },
+                        location: _userData?.country ?? '',
                         eventId: event != null ? event!.event_id : '',
                         getPicture: _getDataPicture,
                       ));

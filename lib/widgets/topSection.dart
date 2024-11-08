@@ -7,10 +7,12 @@ class TopSection extends StatefulWidget {
       {super.key,
       required this.drawer,
       required this.eventId,
-      required this.getPicture});
+      required this.getPicture,
+      required this.location});
   final void Function() drawer;
   final void Function() getPicture;
   final String eventId;
+  final String location;
   @override
   State<TopSection> createState() => _TopSectionState();
 }
@@ -26,6 +28,7 @@ class _TopSectionState extends State<TopSection> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TopBar(
+              location: widget.location,
               drawer: widget.drawer,
               eventId: widget.eventId,
               getPicture: widget.getPicture,

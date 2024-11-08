@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
@@ -209,14 +210,14 @@ class AuthenticationService {
   }
 
   Future<void> sendOtpWithVoiceCall(String phoneNumber, String otp) async {
-    const String apiUrl = 'https://api.stringee.com/v1/call2/callout';
-    const String jwtToken =
-        'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLmZUelhrY0VaYnlOSENWYVRqM2JIZW5JOFFaQjhVZDFMLTE3MzA3MDY3NjEiLCJpc3MiOiJTSy4wLmZUelhrY0VaYnlOSENWYVRqM2JIZW5JOFFaQjhVZDFMIiwiZXhwIjoxNzMzMjk4NzYxLCJyZXN0X2FwaSI6dHJ1ZX0.Is4Wd8p4WuPAnhvi7awWKtVoMVuPQjUDCnPZrrmgBqg'; // Thay bằng JWT của bạn
+    String apiUrl = "${dotenv.env['API_STRINGGEE']}";
+    String jwtToken =
+        '${dotenv.env['STRINGEE_TOKEN']}'; // Thay bằng JWT của bạn
 
     final Map<String, dynamic> payload = {
       "from": {
         "type": "external",
-        "number": "842871010380",
+        "number": "${dotenv.env['PHONE_FROM']}",
         "alias": "Iplanning"
       },
       "to": [

@@ -117,4 +117,18 @@ class AlarmNotifier extends ChangeNotifier {
     await flutterLocalNotificationsPlugin
         .show(0, title, body, notificationDetails, payload: eventId);
   }
+
+  Future<void> requestNotificationsPermission() async {
+    final androidGuard =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    bool? permissionGranted =
+        await androidGuard?.requestNotificationsPermission();
+    if (permissionGranted != true) {
+      print("Notification permission not granted.");
+      // return;
+    } else {
+      print("Notification permission granted.");
+    }
+  }
 }

@@ -7,16 +7,18 @@ class ButtonAuth extends StatelessWidget {
     required this.backgroundColour,
     required this.textColour,
     required this.onTap,
+    this.iconColor,
     this.icon,
     required this.title,
     this.title2,
     required this.isCheck,
   });
   final Color colour;
+  final Color? iconColor;
   final Color backgroundColour;
   final Color textColour;
   final void Function() onTap;
-  final IconData? icon;
+  final dynamic icon;
   final String title;
   final String? title2;
   final bool isCheck;
@@ -45,24 +47,50 @@ class ButtonAuth extends StatelessWidget {
             if (icon != null)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Icon(
-                  icon,
-                  size: 25,
-                  color: textColour,
-                ),
+                child: _buildIcon(),
               ),
-            Text(
-              isCheck ? title2! : title,
-              style: TextStyle(
-                color: textColour,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-              ),
-            ),
+            icon != null
+                ? Expanded(
+                    child: Text(
+                      isCheck ? title2! : title,
+                      style: TextStyle(
+                        color: textColour,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  )
+                : Text(
+                    isCheck ? title2! : title,
+                    style: TextStyle(
+                      color: textColour,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0,
+                    ),
+                  ),
             if (icon != null) const SizedBox(width: 20), // Space for symmetry
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildIcon() {
+    if (icon is String) {
+      return Image.network(
+        icon,
+        fit: BoxFit.cover,
+        width: 35,
+        height: 30,
+      );
+    } else if (icon is IconData) {
+      return Icon(
+        icon,
+        size: 30,
+        color: iconColor,
+      );
+    } else {
+      return Container();
+    }
   }
 }

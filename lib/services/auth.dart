@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -92,20 +93,28 @@ class AuthenticationService {
   }
 
   Future<AuthStatus> forgotPassword({
-    required String email,
+    required String phoneNumber,
+    required String code,
   }) async {
     AuthStatus status;
     try {
-      // Query Firestore to check if the email exists
       QuerySnapshot query = await firestoreInstance
           .collection('users')
-          .where("email", isEqualTo: email)
+          .where("phone", isEqualTo: phoneNumber)
+          .limit(1)
           .get();
 
       if (query.docs.isNotEmpty) {
-        await _firebase.sendPasswordResetEmail(email: email);
+        String uid = query.docs.first.id;
+        // User user = await _firebase.currentUser!;
+        // await user.updatePassword(newPassword);
+
+        String name = query.docs.first["name"];
+        print("Tên người dùng ${name}");
+
+        await sendOtpWithVoiceCall(phoneNumber, code);
         Fluttertoast.showToast(
-            msg: "Please reset link sent! Check your email",
+            msg: "Vui lòng đợi cuộc gọi",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -116,7 +125,7 @@ class AuthenticationService {
       } else {
         // If the email does not exist, show an error message
         Fluttertoast.showToast(
-            msg: "Email not found. Please register an account.",
+            msg: "Không tìm thấy số điện thoại của bạn",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red,

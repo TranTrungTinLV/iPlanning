@@ -212,6 +212,11 @@ class _HomescreensState extends State<Homescreens> {
     });
   }
 
+  List<EventsPostModel> _filterEventsWithLocation(
+      List<EventsPostModel> events) {
+    return events.where((event) => event.location!.isNotEmpty).toList();
+  }
+
 // !filter category
   Future<List<EventsPostModel>> _loadEventsForCategory(
       String categoryId) async {
@@ -309,15 +314,20 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     List<EventsPostModel> filteredEvents = _selectedCategoryId != null
-        ? (_eventPosts ?? []).where((event) {
-            return _categoriesModel!
-                .firstWhere(
-                    (category) => category.category_id == _selectedCategoryId)
-                .event_ids!
-                .contains(event.event_id);
-          }).toList()
-        : _eventPosts ?? [];
+        ? _filterEventsWithLocation(
+            (_eventPosts ?? []).where((event) {
+              return _categoriesModel!
+                  .firstWhere(
+                      (category) => category.category_id == _selectedCategoryId)
+                  .event_ids!
+                  .contains(event.event_id);
+            }).toList(),
+          )
+        : _filterEventsWithLocation(_eventPosts ?? []);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -353,13 +363,12 @@ class _HomescreensState extends State<Homescreens> {
                                   ? CircleAvatar(
                                       radius: 30.0,
                                       backgroundImage: NetworkImage(
-                                          _userData!.displayAvatar as String),
+                                          _userData!.displayAvatar!),
                                     )
-                                  : const CircleAvatar(
+                                  : CircleAvatar(
                                       radius: 30.0,
-                                      backgroundColor: Colors.grey,
-                                      child: Icon(Icons.person,
-                                          color: Colors.white),
+                                      backgroundImage: NetworkImage(
+                                          'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                                     ),
                               const SizedBox(
                                 width: 20.0,
@@ -368,15 +377,27 @@ class _HomescreensState extends State<Homescreens> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _userData!.name,
-                                    style: const TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w500),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    child: Text(
+                                      _userData!.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.05, // Responsive font size
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ),
                                   Text(
                                     _userData!.email,
-                                    style: const TextStyle(fontSize: 10),
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.03),
                                   ),
                                 ],
                               )
@@ -387,7 +408,7 @@ class _HomescreensState extends State<Homescreens> {
                   buildDrawerTile(
                     context: context,
                     icon: Icons.event_sharp,
-                    title: 'Create Events',
+                    title: 'Tạo Kế Hoạch',
                     onTap: () async {
                       final result = await Navigator.push(
                           context,
@@ -408,7 +429,7 @@ class _HomescreensState extends State<Homescreens> {
                   buildDrawerTile(
                     context: context,
                     icon: Icons.event_sharp,
-                    title: 'My Events',
+                    title: 'Kế hoạch của tôi',
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (ctx) => ListEvent()));
@@ -418,7 +439,7 @@ class _HomescreensState extends State<Homescreens> {
                   buildDrawerTile(
                     context: context,
                     icon: Icons.bookmark,
-                    title: 'My Wishlist',
+                    title: 'Mục yêu thích',
                     onTap: () {
                       Navigator.push(
                           context,
@@ -433,7 +454,7 @@ class _HomescreensState extends State<Homescreens> {
                   buildDrawerTile(
                     context: context,
                     icon: Icons.person,
-                    title: 'My Profile',
+                    title: 'Cá nhân',
                     onTap: () {
                       Navigator.push(
                           context,
@@ -459,7 +480,7 @@ class _HomescreensState extends State<Homescreens> {
                   buildDrawerTile(
                     context: context,
                     icon: Icons.send,
-                    title: 'Feedback',
+                    title: 'Phản hồi',
                     onTap: () {},
                     scaffoldKey: _scaffoldKey,
                   ),
@@ -481,12 +502,12 @@ class _HomescreensState extends State<Homescreens> {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 color: Color(0xff4A43EC),
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(50))),
-            height: MediaQuery.of(context).size.height < 600
-                ? MediaQuery.of(context).size.height * 0.24
+            height: MediaQuery.of(context).size.height < 700
+                ? MediaQuery.of(context).size.height * 0.35
                 : MediaQuery.of(context).size.height * 0.27,
           ),
           CustomScrollView(
@@ -494,7 +515,9 @@ class _HomescreensState extends State<Homescreens> {
               SliverAppBar(
                 automaticallyImplyLeading: false,
                 pinned: true,
-                expandedHeight: 150.0,
+                expandedHeight: MediaQuery.of(context).size.height < 700
+                    ? MediaQuery.of(context).size.height * 0.24
+                    : MediaQuery.of(context).size.height * 0.19,
                 elevation: 0,
                 backgroundColor: Color(0xff4A43EC),
                 flexibleSpace: LayoutBuilder(builder: (context, constraints) {
@@ -510,6 +533,7 @@ class _HomescreensState extends State<Homescreens> {
                         location: _userData?.country ?? '',
                         eventId: event != null ? event!.event_id : '',
                         getPicture: _getDataPicture,
+                        onFilter: () {},
                       ));
                 }),
               ),
@@ -518,7 +542,9 @@ class _HomescreensState extends State<Homescreens> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: 80,
+                      height: screenHeight < 700
+                          ? screenHeight * 0.13
+                          : screenHeight * 0.09,
                       decoration: BoxDecoration(
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
@@ -544,17 +570,22 @@ class _HomescreensState extends State<Homescreens> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 23, horizontal: 24),
+                            margin: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.02,
+                              horizontal: screenWidth * 0.05,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
                                   margin: const EdgeInsets.only(bottom: 10.0),
-                                  child: const Text(
-                                    'Upcoming Events',
-                                    style: TextStyle(fontSize: 24.0),
+                                  child: Text(
+                                    'Khám phá kế hoạch',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
                                   ),
                                 ),
                                 GestureDetector(
@@ -568,9 +599,13 @@ class _HomescreensState extends State<Homescreens> {
                                   },
                                   child: Container(
                                     margin: const EdgeInsets.only(bottom: 10.0),
-                                    child: const Text(
-                                      'See alls.',
-                                      style: TextStyle(fontSize: 14.0),
+                                    child: Text(
+                                      'Xem tất cả',
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.035),
                                     ),
                                   ),
                                 ),
@@ -616,7 +651,7 @@ class _HomescreensState extends State<Homescreens> {
                                                       titleEvent:
                                                           event.event_name,
                                                       userName: event.username,
-                                                      location: event.location,
+                                                      location: event.location!,
                                                       startDate:
                                                           event.eventDateStart,
                                                       avartar: event
@@ -646,17 +681,17 @@ class _HomescreensState extends State<Homescreens> {
                                               uid: _userData != null
                                                   ? _userData!.uid
                                                   : '',
-                                              count: inviters,
+                                              count: event.invitersCount,
                                             ),
                                           );
                                         }).toList(),
                                       ),
                           ),
                           Invitewithfriends(),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 100,
-                          ),
+                          // SizedBox(
+                          //   width: MediaQuery.of(context).size.width,
+                          //   height: 100,
+                          // ),
                         ],
                       ),
                     ),

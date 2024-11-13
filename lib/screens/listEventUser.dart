@@ -32,11 +32,13 @@ class _ListEventState extends State<ListEvent>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Event'),
+        title: Text('Kế hoạch của tôi'),
         bottom: TabBar(
-          labelStyle: TextStyle(fontSize: 18),
+          // labelStyle: TextStyle(fontSize: screenWidth * 0.04),
           controller: tabController,
           tabs: [
             Tab(
@@ -46,9 +48,10 @@ class _ListEventState extends State<ListEvent>
                     Text(
                       'All event',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: screenWidth * 0.035),
                     ),
-                    Text('(100)')
+                    Text('(100)',
+                        style: TextStyle(fontSize: screenWidth * 0.03)),
                   ],
                 ),
               ),
@@ -95,7 +98,10 @@ class _ListEventState extends State<ListEvent>
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.filter_list_alt)),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.filter_list_alt, size: screenWidth * 0.06),
+          ),
         ],
         centerTitle: true,
       ),
@@ -126,21 +132,22 @@ class _ListEventState extends State<ListEvent>
                         eventDoc.data() as Map<String, dynamic>);
 
                     return Container(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 10),
+                      height: screenHeight * 0.15,
+                      margin: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.015,
+                          horizontal: screenWidth * 0.025),
                       child: Card(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
-                              height: 92,
-                              width: 79,
-                              margin: const EdgeInsets.only(left: 8),
+                              height: screenHeight * 0.12,
+                              width: screenWidth * 0.2,
+                              margin: EdgeInsets.only(left: screenWidth * 0.02),
                               decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(screenWidth * 0.025)),
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image: NetworkImage(
@@ -153,21 +160,23 @@ class _ListEventState extends State<ListEvent>
                             ),
                             Expanded(
                               child: Container(
-                                margin:
-                                    const EdgeInsets.only(left: 20, top: 30),
+                                margin: EdgeInsets.only(
+                                    left: screenWidth * 0.04,
+                                    top: screenHeight * 0.02),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       "${event.eventDateStart.toDate().day}-${event.eventDateStart.toDate().month}-${event.eventDateStart.toDate().year} ${event.eventDateStart.toDate().hour}:${event.eventDateStart.toDate().minute}",
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.grey),
+                                          fontSize: screenWidth * 0.035,
+                                          color: Colors.grey),
                                     ),
-                                    const SizedBox(height: 5),
+                                    SizedBox(height: screenHeight * 0.005),
                                     Text(
                                       event.event_name,
-                                      style: const TextStyle(
-                                          fontSize: 18,
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.045,
                                           fontWeight: FontWeight.w600),
                                     ),
                                   ],

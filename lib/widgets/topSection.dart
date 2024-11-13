@@ -8,11 +8,14 @@ class TopSection extends StatefulWidget {
       required this.drawer,
       required this.eventId,
       required this.getPicture,
-      required this.location});
+      required this.location,
+      required this.onFilter});
   final void Function() drawer;
   final void Function() getPicture;
   final String eventId;
   final String location;
+  final void Function() onFilter;
+
   @override
   State<TopSection> createState() => _TopSectionState();
 }
@@ -20,24 +23,27 @@ class TopSection extends StatefulWidget {
 class _TopSectionState extends State<TopSection> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        padding: const EdgeInsets.only(top: 50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TopBar(
-              location: widget.location,
-              drawer: widget.drawer,
-              eventId: widget.eventId,
-              getPicture: widget.getPicture,
-            ),
-            const SizedBox(height: 20),
-            const SearchAndFilterRow(),
-          ],
-        ),
+    return
+        // SingleChildScrollView(
+        Container(
+      margin: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.only(top: 50),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TopBar(
+            location: widget.location,
+            drawer: widget.drawer,
+            eventId: widget.eventId,
+            getPicture: widget.getPicture,
+          ),
+          const SizedBox(height: 10),
+          SearchAndFilterRow(
+            onFilter: widget.onFilter,
+          ),
+        ],
       ),
     );
+    // );
   }
 }

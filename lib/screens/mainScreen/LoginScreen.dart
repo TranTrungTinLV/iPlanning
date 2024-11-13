@@ -8,10 +8,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/mainScreen/homeScreens.dart';
-import 'package:iplanning/screens/forgotpassword.dart';
+import 'package:iplanning/screens/forgotpasswordScreen.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/phoneScreen.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/bannerWiget.dart';
@@ -255,7 +255,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                 isLogin: _isLogin,
                                 valueUser: _enterpassword,
                                 icon: Icons.password,
-                                title: 'password',
+                                title: 'mật khẩu',
                                 obscureText: true,
                                 validator: (value) {
                                   if (value == null) {
@@ -314,7 +314,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                               ),
                                               GestureDetector(
                                                 child: const Text(
-                                                  'Remember Me',
+                                                  'Ghi nhớ',
                                                   style: TextStyle(
                                                       color: Color(0xff120D26),
                                                       fontSize: 14.0),
@@ -331,7 +331,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                                           const ForgotpasswordScreen()));
                                             },
                                             child: const Text(
-                                              'Remember Me',
+                                              'Quên mật khẩu?',
                                               style: TextStyle(
                                                   color: Color(0xff120D26),
                                                   fontSize: 14.0),
@@ -369,15 +369,18 @@ class _LoginscreenState extends State<Loginscreen> {
                             height: 42,
                           ),
                           Column(
+                            // mainAxisAlignment: MainAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ButtonAuth(
                                 colour: const Color(0xffEDE5E5),
                                 backgroundColour: Colors.white,
                                 textColour: Colors.black,
                                 onTap: () {},
-                                icon: Icons.person,
-                                title: 'Login with Google',
-                                title2: 'Register with Google',
+                                icon:
+                                    'http://pngimg.com/uploads/google/google_PNG19635.png',
+                                title: 'Đăng nhập với Google',
+                                title2: 'Đăng ký với Google',
                                 isCheck: _isLogin,
                               ),
                               const SizedBox(
@@ -388,10 +391,11 @@ class _LoginscreenState extends State<Loginscreen> {
                                 backgroundColour: Colors.white,
                                 textColour: Colors.black,
                                 onTap: () {},
-                                icon: Icons.person,
-                                title: 'Login with Facebook',
-                                title2: 'Register with Facebook',
+                                icon: FontAwesomeIcons.facebook,
+                                title: 'Đăng nhập với Facebook',
+                                title2: 'Đăng ký với Facebook',
                                 isCheck: _isLogin,
+                                iconColor: Color(0xff035B81),
                               ),
                               const SizedBox(
                                 height: 28,

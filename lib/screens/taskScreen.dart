@@ -56,7 +56,7 @@ class _TaskScreenState extends State<TaskScreen> {
           )
         ],
         title: Text(
-          'Task',
+          'Danh sách công việc',
           style: TextStyle(fontSize: 24),
         ),
         centerTitle: true,
@@ -69,7 +69,7 @@ class _TaskScreenState extends State<TaskScreen> {
                   height: 150.0,
                   child: Center(
                       child: Text(
-                    "Hiện chưa có nhiệm vụ nào",
+                    "Hiện chưa có danh sách công việc nào",
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                   )),
                 )

@@ -20,11 +20,13 @@ class CardCustom extends StatelessWidget {
   final int count;
   @override
   Widget build(BuildContext context) {
-    var isMe = authInstance.currentUser!.uid == uid;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isMe = authInstance.currentUser!.uid == uid;
     print(isMe);
     return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      margin: const EdgeInsets.only(right: 10.0),
+      width: screenWidth * 0.7,
+      margin: EdgeInsets.only(right: 10.0),
       child: Card(
         color: Colors.white,
         clipBehavior: Clip.hardEdge,
@@ -35,8 +37,8 @@ class CardCustom extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: const EdgeInsets.all(10),
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  margin: EdgeInsets.all(screenWidth * 0.03),
+                  height: screenHeight * 0.2,
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
@@ -59,32 +61,32 @@ class CardCustom extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(left: 10),
                         child: Text(
-                          "International Band Mu...",
+                          event.event_name,
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const SizedBox(
-                            width: 30,
+                          SizedBox(
+                            width: screenWidth * 0.06,
                           ),
                           Row(
                             children: [
                               for (int i = 0; i < RandomImages.length; i++)
                                 Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 0),
+                                  margin: EdgeInsets.symmetric(vertical: 0),
                                   child: Align(
                                       widthFactor: 0.5,
                                       child: CircleAvatar(
-                                        // radius: 50,
                                         backgroundColor: Colors.white,
                                         child: CircleAvatar(
-                                          radius: 60,
+                                          radius: screenWidth * 0.06,
                                           backgroundImage: NetworkImage(
                                             RandomImages[i],
                                           ),
@@ -98,9 +100,11 @@ class CardCustom extends StatelessWidget {
                             child: count <= 0
                                 ? Container()
                                 : Text(
-                                    '${count.toString()} Going',
+                                    '${count.toString()} tham gia',
                                     style: TextStyle(
-                                        color: Color(0xff3F38DD), fontSize: 15),
+                                      color: Color(0xff3F38DD),
+                                      fontSize: screenWidth * 0.04,
+                                    ),
                                   ),
                           ),
                           const SizedBox()
@@ -115,35 +119,49 @@ class CardCustom extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 20.0,
-                          ),
-                          SizedBox(
-                            width: 4.0,
-                          ),
-                          Text(event.location),
-                        ],
-                      ),
+                      event.location!.isNotEmpty
+                          ? Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  size: screenWidth * 0.05,
+                                ),
+                                SizedBox(
+                                  width: screenWidth * 0.01,
+                                ),
+                                Text(
+                                  event.location ?? '',
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.035,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            )
+                          : Container(),
                       SizedBox(
                         height: 10.0,
                       ),
                       Row(
                         children: [
                           CircleAvatar(
-                            radius: 10.0,
-                            backgroundImage: NetworkImage(event.profilePic),
+                            radius: screenWidth * 0.03,
+                            backgroundImage: NetworkImage(event
+                                    .profilePic.isNotEmpty
+                                ? event.profilePic
+                                : 'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                           ),
-                          SizedBox(
-                            width: 4.0,
+                          SizedBox(width: screenWidth * 0.01),
+                          Text(
+                            "By ${event.username}",
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.035,
+                            ),
                           ),
-                          Text("By ${event.username}"),
                         ],
                       ),
                       SizedBox(
-                        height: 20.0,
+                        height: screenHeight * 0.02,
                       ),
                     ],
                   ),

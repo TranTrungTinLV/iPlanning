@@ -8,8 +8,6 @@ import 'package:iplanning/utils/dialog.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/services/auth.dart';
-
-// ignore: must_be_immutable
 class EditScreen extends StatefulWidget {
   UserModel userData;
   EditScreen(
@@ -67,7 +65,7 @@ class _EditScreenState extends State<EditScreen> {
       showSnackBar(context: context, title: "Failed to update profile: $e");
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading spinner
+        _isLoading = false;
       });
     }
   }
@@ -119,6 +117,8 @@ class _EditScreenState extends State<EditScreen> {
                           color: Colors.black54,
                           image: DecorationImage(
                             image: NetworkImage(widget.avatarEdit!),
+                            // filterQuality: FilterQuality.high,
+                            repeat: ImageRepeat.noRepeat,
                             fit: BoxFit.cover,
                           ),
                         ),

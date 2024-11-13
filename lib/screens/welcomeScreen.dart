@@ -29,7 +29,8 @@ class _WelcomescreenState extends State<Welcomescreen> {
               child: const Column(
                 children: [
                   Text(
-                    'Welcome to iPlanning',
+                    'Chào mừng đến với iPlanning',
+                    textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
                   ),
@@ -37,7 +38,7 @@ class _WelcomescreenState extends State<Welcomescreen> {
                     height: 17.0,
                   ),
                   Text(
-                    'Create an account with us and experience seamless event planning.',
+                    'Trải nghiệm lập kế hoạch ở đây thôi nào',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),

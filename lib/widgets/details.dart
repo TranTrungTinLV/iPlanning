@@ -48,7 +48,7 @@ class Details extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        titleEvent ?? 'Event Name',
+                        titleEvent ?? '',
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.w600),
                       ),
@@ -58,18 +58,20 @@ class Details extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.location_on),
-                                Container(
-                                  child: Text(
-                                      style: TextStyle(fontSize: 20),
-                                      (location != "" && location != null)
-                                          ? location
-                                          : 'Đang cập nhật'),
-                                ),
-                              ]),
+                          (location.isNotEmpty)
+                              ? Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.location_on),
+                                    Container(
+                                      child: Text(
+                                        style: TextStyle(fontSize: 20),
+                                        location,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Row(),
                           Container(
                             margin: EdgeInsets.symmetric(vertical: 16),
                             child: Row(
@@ -129,14 +131,15 @@ class Details extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    print("Hello");
                     onTap();
                   },
                   child: Row(
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: NetworkImage(avartar),
+                        backgroundImage: NetworkImage(avartar.isNotEmpty
+                            ? avartar
+                            : 'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                       ),
                       SizedBox(
                         width: 20,

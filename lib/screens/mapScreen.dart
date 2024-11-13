@@ -28,6 +28,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("location hiện tại: ${widget.location}");
     _getCoordinatesFromLocation();
   }
 

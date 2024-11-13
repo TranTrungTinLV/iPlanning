@@ -7,19 +7,24 @@ Widget buildDrawerTile({
   required VoidCallback onTap,
   required GlobalKey<ScaffoldState> scaffoldKey,
 }) {
+  final screenWidth = MediaQuery.of(context).size.width;
   return ListTile(
     title: Container(
-      padding: const EdgeInsets.only(left: 20),
+      padding: EdgeInsets.only(left: screenWidth * 0.05),
       child: Row(
         children: [
-          Icon(icon, size: 30),
-          const SizedBox(width: 20),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 18,
-                ),
+          Icon(icon, size: screenWidth * 0.07),
+          SizedBox(width: screenWidth * 0.05),
+          Expanded(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 14,
+                  ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

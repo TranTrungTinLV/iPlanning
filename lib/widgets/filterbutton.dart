@@ -2,9 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class FilterButton extends StatelessWidget {
-  const FilterButton({super.key});
+class FilterButton extends StatefulWidget {
+  FilterButton({super.key, required this.onFilter});
+  final void Function() onFilter;
+  @override
+  State<FilterButton> createState() => _FilterButtonState();
+}
 
+class _FilterButtonState extends State<FilterButton> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -13,9 +18,7 @@ class FilterButton extends StatelessWidget {
         Container(
           height: 32,
           width: 75,
-          // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: const BoxDecoration(
-              // color: Colors.white.wi,
               borderRadius: BorderRadius.all(Radius.circular(50))),
           child: ClipRect(
             child: BackdropFilter(
@@ -24,7 +27,6 @@ class FilterButton extends StatelessWidget {
                 height: 32,
                 width: 75,
                 decoration: const BoxDecoration(
-                  // color: Colors.white10,
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
               ),
@@ -32,9 +34,7 @@ class FilterButton extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            print('filter');
-          },
+          onTap: widget.onFilter,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: const Row(
@@ -50,7 +50,7 @@ class FilterButton extends StatelessWidget {
                   width: 3,
                 ),
                 Text(
-                  'Filter',
+                  'Lọc',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,

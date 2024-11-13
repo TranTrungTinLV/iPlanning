@@ -36,7 +36,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   List<Uint8List>? fileImage = [];
   TextEditingController description = TextEditingController();
   TextEditingController eventName = TextEditingController();
-  TextEditingController location = TextEditingController(text: "");
+  TextEditingController location = TextEditingController();
   TextEditingController eventType = TextEditingController();
   CategoryModel? _selectedCategories;
   bool isLoading = false;
@@ -208,7 +208,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
               }
             },
           ),
-          title: const Text('Customizing'),
+          title: const Text('Kế Hoạch Mới'),
         ),
         body: Stepper(
           currentStep: _index,
@@ -321,10 +321,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                   if (_index > 0)
                     Expanded(
                       child: ElevatedButton(
-                        
-                        style: ElevatedButton.styleFrom(
-                          
-                        ),
+                        style: ElevatedButton.styleFrom(),
                         onPressed: details.onStepCancel,
                         child: const Text('Back'),
                       ),
@@ -356,7 +353,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             Step(
               state: _index > 0 ? StepState.complete : StepState.indexed,
               isActive: _index >= 0,
-              title: Text('Create Event'),
+              title: Text('Tạo kế hoạch'),
               content: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: Form(
@@ -391,7 +388,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                 onChanged: (value) {
                                   validateForm();
                                 },
-                                title: 'Event Name',
+                                title: 'Tên Kế Hoạch',
                                 radius: 10.0,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
@@ -415,7 +412,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   margin: EdgeInsets.symmetric(vertical: 20),
                                   child: TextFieldCustom(
                                     controller: eventType,
-                                    title: 'Event Type',
+                                    title: 'Chủ đề',
                                     radius: 10.0,
                                   )),
                               Container(
@@ -436,7 +433,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                             MediaQuery.of(context).size.width *
                                                 0.4,
                                         child: Text(
-                                          "Start Date",
+                                          "Ngày bắt đầu",
                                           textAlign: TextAlign.start,
                                         ),
                                       ),
@@ -446,7 +443,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                   .width *
                                               0.4,
                                           child: Text(
-                                            "End Date",
+                                            "Ngày kết thúc",
                                             textAlign: TextAlign.start,
                                           )),
                                     ],
@@ -482,7 +479,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                 ),
                                                 Container(
                                                   child: Text(_startDate == null
-                                                      ? 'Select Start Date'
+                                                      ? 'Chọn ngày bắt đầu'
                                                       : '${_startDate!.toDate().toLocal()}'
                                                           .split(' ')[0]),
                                                 ),
@@ -521,7 +518,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                               ),
                                               Container(
                                                   child: Text(_endDate == null
-                                                      ? 'Select End Date'
+                                                      ? 'Chọn ngày kết thúc'
                                                       : '${_endDate!.toDate().toLocal()}'
                                                           .split(' ')[0])),
                                             ],
@@ -629,7 +626,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                               ),
                                               Container(
                                                   child: Text(_startDate == null
-                                                      ? 'Select Start Time'
+                                                      ? 'Thời gian bắt đầu'
                                                       : '${_startDate!.toDate().hour}:${_startDate!.toDate().minute}'))
                                             ],
                                           ),
@@ -663,7 +660,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                               ),
                                               Container(
                                                   child: Text(_endDate == null
-                                                      ? 'Select End Time'
+                                                      ? 'Thời gian kết thúc'
                                                       : '${_endDate!.toDate().hour}:${_endDate!.toDate().minute}')),
                                             ],
                                           ),
@@ -689,9 +686,18 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               SizedBox(
                                 height: 20,
                               ),
+                              Container(
+                                child: Text(
+                                  'Nội dung',
+                                  style: TextStyle(fontSize: 25),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
                               TextFieldCustom(
                                 controller: description,
-                                title: 'Events description',
+                                title: 'Nội dung kế hoạch',
                                 minLine: 3,
                                 radius: 10.0,
                                 maxLine: 10,
@@ -711,7 +717,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               ),
                               Container(
                                 child: Text(
-                                  'Location',
+                                  'Địa điểm (nếu có)',
                                   style: TextStyle(fontSize: 25),
                                 ),
                               ),
@@ -721,17 +727,17 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               TextFieldCustom(
                                 keyboardType: TextInputType.streetAddress,
                                 controller: location,
-                                onChanged: (value) => validateForm(),
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'Vui lòng nhập địa chỉ';
-                                  }
-                                  return null;
-                                },
+                                // onChanged: (value) => validateForm(),
+                                // validator: (value) {
+                                //   if (value == null || value.trim().isEmpty) {
+                                //     return 'Vui lòng nhập địa chỉ';
+                                //   }
+                                //   return null;
+                                // },
                                 onSaved: (value) {
-                                  location.text = value!;
+                                  location.text = value ?? '';
                                 },
-                                title: 'Location',
+                                title: 'Địa điểm',
                                 radius: 10,
                               ),
                               SizedBox(
@@ -766,7 +772,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
               ),
             ),
             Step(
-              title: Text('Next Preview'),
+              title: Text('Xem trước'),
               isActive: _index >= 1,
               content: Container(
                 // child: Text('detail'),
@@ -874,10 +880,12 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                       height: 20,
                     ),
                     if (_index >= 1)
-                      MapScreen(
-                        location: location.text,
-                        categories: _selectedCategories!.name,
-                      ),
+                      (location.text.isNotEmpty)
+                          ? MapScreen(
+                              location: location.text,
+                              categories: _selectedCategories!.name,
+                            )
+                          : Container(),
                     SizedBox(
                       height: 30,
                     ),

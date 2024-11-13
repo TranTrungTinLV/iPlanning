@@ -13,7 +13,7 @@ class EventsPostModel {
   Timestamp eventDateEnd;
   String uid;
   bool isPost;
-  String location;
+  String? location;
   String profilePic;
   Timestamp createAt;
   List<String>? todoList;
@@ -29,6 +29,10 @@ class EventsPostModel {
 
   List<UserModel> users;
   String? budget;
+
+  int get invitersCount {
+    return isAccepted?.length ?? 0;
+  }
 
   EventsPostModel(
       {required this.event_name,
@@ -50,7 +54,7 @@ class EventsPostModel {
       required this.eventDateEnd,
       required this.eventDateStart,
       required this.uid,
-      required this.location,
+      this.location,
       required this.createAt,
       this.description});
 
@@ -96,7 +100,7 @@ class EventsPostModel {
       eventDateStart: json['eventDateStart'] as Timestamp,
       eventDateEnd: json['eventDateEnd'] as Timestamp,
       uid: json['uid'] as String,
-      location: json['location'] as String,
+      location: json['location'] as String?,
       createAt: json['createAt'] as Timestamp, // Chuyển đổi từ chuỗi ISO 8601
       users: (json['users'] as List)
           .map((userJson) => UserModel.fromJson(userJson))

@@ -27,7 +27,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("All Events"),
+        title: Text("Tất cả kế hoạch"),
         centerTitle: true,
       ),
       body: Container(
@@ -62,7 +62,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
                                     uid: event.uid,
                                     titleEvent: event.event_name,
                                     userName: event.username,
-                                    location: event.location,
+                                    location: event.location!,
                                     startDate: event.eventDateStart,
                                     avartar: event.profilePic,
                                     discription: event.description!,
@@ -97,6 +97,10 @@ class _AllEventScreenState extends State<AllEventScreen> {
                               margin: EdgeInsets.all(8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: (event.location != null &&
+                                        event.location!.isNotEmpty)
+                                    ? MainAxisAlignment.center
+                                    : MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     "${event.eventDateStart.toDate().day}-${event.eventDateStart.toDate().month}-${event.eventDateStart.toDate().year} ${event.eventDateStart.toDate().hour}:${event.eventDateStart.toDate().minute}",
@@ -109,24 +113,27 @@ class _AllEventScreenState extends State<AllEventScreen> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.location_on,
-                                          size: 14,
-                                          color: Colors.grey.shade700),
-                                      SizedBox(
-                                        width: 6.0,
-                                      ),
-                                      Text(
-                                        event.location,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.grey.shade700),
-                                      ),
-                                    ],
-                                  ),
+                                  (event.location != null &&
+                                          event.location!.isNotEmpty)
+                                      ? Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.location_on,
+                                                size: 14,
+                                                color: Colors.grey.shade700),
+                                            SizedBox(
+                                              width: 6.0,
+                                            ),
+                                            Text(
+                                              event.location!,
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.grey.shade700),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(),
                                 ],
                               ),
                             ),

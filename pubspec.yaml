@@ -61,6 +61,7 @@ dependencies:
   otp_autofill: ^4.1.0
   sms_autofill: ^2.4.0
   flutter_dotenv: ^5.2.1
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:

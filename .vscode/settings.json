@@ -7,5 +7,6 @@
     "Loginscreen",
     "Upcomingwidget"
   ],
-  "java.configuration.updateBuildConfiguration": "automatic"
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "cmake.sourceDirectory": "/Users/aldor/StudioProjects/project_khoaLuan/iplanning/linux"
 }

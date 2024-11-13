@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/widgets/filterbutton.dart';
 
 class SearchAndFilterRow extends StatelessWidget {
-  const SearchAndFilterRow({super.key});
-
+  SearchAndFilterRow({super.key, required this.onFilter});
+  final void Function() onFilter;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -19,14 +19,16 @@ class SearchAndFilterRow extends StatelessWidget {
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 15), // Căn giữa văn bản
 
-              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 23),
+              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 15),
               // filled: true,
               fillColor: Colors.transparent,
             ),
           ),
         ),
         const SizedBox(width: 20),
-        const FilterButton(),
+        FilterButton(
+          onFilter: onFilter,
+        ),
       ],
     );
   }

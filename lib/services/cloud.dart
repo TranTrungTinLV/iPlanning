@@ -26,7 +26,7 @@ class ClouMethods {
     String? eventType,
     required String username,
     required String uid, //user_id
-    required String location,
+    String? location,
     required List<Uint8List> eventImages,
     String? budget,
     required String description,
@@ -140,12 +140,12 @@ class ClouMethods {
               print("Removed from isAccepted: $uid");
             }
           } else if (isStatus == 'isRejected') {
-            if (acceptList.contains(uid)) {
+            if (inviting.contains(uid)) {
               transaction.update(postEvents.doc(eventId), {
-                'isAccepted': FieldValue.arrayRemove([uid]),
+                'isPending': FieldValue.arrayRemove([uid]),
                 'isRejected': FieldValue.arrayUnion([uid]),
               });
-              print("Moved from isAccepted to isRejected: $uid");
+              print("Moved from isPending to isRejected: $uid");
             } else if (rejectList.contains(uid)) {
               transaction.update(postEvents.doc(eventId), {
                 'isRejected': FieldValue.arrayRemove([uid]),
@@ -153,7 +153,6 @@ class ClouMethods {
               print("Removed from isRejected: $uid");
             }
           }
-          // Các điều kiện khác không thay đổi
         } else {
           print("Event document does not exist or data is null.");
         }

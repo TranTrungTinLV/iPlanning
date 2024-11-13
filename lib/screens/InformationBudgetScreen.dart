@@ -248,6 +248,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: Text("Information Budget"),
@@ -260,8 +262,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
       ),
       body: Container(
         margin: EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 10,
+          horizontal: screenWidth * 0.05,
+          vertical: screenHeight * 0.01,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -674,9 +676,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 100,
-                                ),
+                                // SizedBox(
+                                //   height: 100,
+                                // ),
                               ],
                             ),
                           ),
@@ -762,9 +764,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 100,
-                                ),
+                                // SizedBox(
+                                //   height: 100,
+                                // ),
                               ],
                             ),
                           ),
@@ -856,9 +858,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 100,
-                                ),
+                                // SizedBox(
+                                //   height: 100,
+                                // ),
                               ],
                             ),
                           ),

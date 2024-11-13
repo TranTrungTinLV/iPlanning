@@ -152,6 +152,8 @@ class _Map1ScreenState extends State<Map1Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         children: [
@@ -164,8 +166,8 @@ class _Map1ScreenState extends State<Map1Screen> {
                 MarkerLayer(
                   markers: [
                     Marker(
-                      height: 100,
-                      width: 100,
+                      width: screenWidth * 0.1,
+                      height: screenHeight * 0.1,
                       point: _myLocation!,
                       child: Container(
                         child: Column(
@@ -191,17 +193,18 @@ class _Map1ScreenState extends State<Map1Screen> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.05,
+                vertical: screenHeight * 0.02,
+              ),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.2),
               ),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.15,
+              width: screenWidth,
+              height: screenHeight * 0.18,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(height: screenHeight * 0.04),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -222,20 +225,20 @@ class _Map1ScreenState extends State<Map1Screen> {
                         child: Container(
                           child: Icon(
                             Icons.arrow_circle_left_rounded,
-                            size: 40,
+                            size: screenWidth * 0.13,
                             color: Colors.white,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      SizedBox(width: screenWidth * 0.02),
                       Expanded(
                           child: TextField(
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: screenWidth * 0.04),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.025),
+                          ),
                           filled: true,
                           fillColor: Colors.white30,
                         ),
@@ -267,7 +270,10 @@ class _Map1ScreenState extends State<Map1Screen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 50, horizontal: 25),
+              margin: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.05,
+                horizontal: screenWidth * 0.05,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -275,8 +281,8 @@ class _Map1ScreenState extends State<Map1Screen> {
                   GestureDetector(
                     onTap: moveCurrent,
                     child: Container(
-                      height: 50,
-                      width: 50,
+                      height: screenWidth * 0.12,
+                      width: screenWidth * 0.12,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
@@ -296,14 +302,14 @@ class _Map1ScreenState extends State<Map1Screen> {
                               color: _myLocation != null
                                   ? Colors.black
                                   : Colors.red,
-                              size: 40,
+                              size: screenWidth * 0.08,
                             ),
                           ),
                           Align(
                               child: _myLocation != null
                                   ? Container(
-                                      height: 15,
-                                      width: 15,
+                                      height: screenWidth * 0.03,
+                                      width: screenWidth * 0.03,
                                       decoration: BoxDecoration(
                                           color: Colors.black,
                                           shape: BoxShape.circle),
@@ -312,7 +318,7 @@ class _Map1ScreenState extends State<Map1Screen> {
                                       '?',
                                       style: TextStyle(
                                           color: Colors.red,
-                                          fontSize: 15,
+                                          fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w600),
                                     ))
                         ],

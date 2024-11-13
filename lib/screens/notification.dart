@@ -29,6 +29,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -63,8 +66,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 250,
-                      width: 250,
+                      height: screenHeight * 0.25,
+                      width: screenWidth * 0.5,
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -80,12 +83,12 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                               ))),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: screenHeight * 0.04,
                     ),
                     Center(
                       child: Text(
                         'No Notifications',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: screenWidth * 0.05),
                       ),
                     ),
                   ],
@@ -98,16 +101,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               return isPending != null && isPending.isNotEmpty;
             }).toList();
             if (eventDocs.isEmpty) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 250,
-                      width: 250,
+                      height: screenHeight * 0.25,
+                      width: screenWidth * 0.5,
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -123,12 +124,12 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                               ))),
                     ),
                     SizedBox(
-                      height: 40,
+                      height: screenHeight * 0.04,
                     ),
                     Center(
                       child: Text(
                         'No Notifications',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: screenWidth * 0.05),
                       ),
                     ),
                   ],
@@ -164,14 +165,16 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
                               return Container(
                                 margin: EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 20),
+                                    horizontal: screenWidth * 0.03,
+                                    vertical: screenHeight * 0.015),
                                 child: Card(
                                   color: Colors.white.withOpacity(0.8),
                                   child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 10),
-                                    padding: EdgeInsetsDirectional.symmetric(
-                                        horizontal: 10),
+                                    // margin: const EdgeInsets.symmetric(
+                                    //     vertical: 12, horizontal: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: screenHeight * 0.015,
+                                        horizontal: screenWidth * 0.03),
                                     child: Column(
                                       children: [
                                         Row(
@@ -181,11 +184,11 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             CircleAvatar(
-                                              radius: 20,
+                                              radius: screenWidth * 0.06,
                                               backgroundColor: Colors.red,
                                             ),
                                             SizedBox(
-                                              width: 15,
+                                              width: screenWidth * 0.04,
                                             ),
                                             Column(
                                               crossAxisAlignment:
@@ -195,29 +198,32 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                               children: [
                                                 Container(
                                                   child: Text(
-                                                    "${userDoc['name']} invite to",
-                                                    style:
-                                                        TextStyle(fontSize: 20),
+                                                    "${userDoc['name']} muốn tham gia",
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            screenWidth * 0.04),
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  height: 10,
-                                                ),
+                                                    height:
+                                                        screenHeight * 0.01),
                                                 Row(
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () async {
                                                         await ClouMethods()
                                                             .invitedEvents(
-                                                                userDoc['uid'],
+                                                                uid,
                                                                 eventId,
                                                                 'isRejected');
                                                         await widget
                                                             .getPicture();
                                                       },
                                                       child: Container(
-                                                        width: 100,
-                                                        height: 40,
+                                                        width:
+                                                            screenWidth * 0.25,
+                                                        height:
+                                                            screenHeight * 0.06,
                                                         child: Center(
                                                             child:
                                                                 Text('Reject')),
@@ -244,7 +250,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      width: 13,
+                                                      width: screenWidth * 0.03,
                                                     ),
                                                     GestureDetector(
                                                       onTap: () async {
@@ -256,8 +262,10 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                         );
                                                       },
                                                       child: Container(
-                                                        width: 100,
-                                                        height: 40,
+                                                        width:
+                                                            screenWidth * 0.25,
+                                                        height:
+                                                            screenHeight * 0.06,
                                                         child: Center(
                                                             child: Text(
                                                           'Accept',
@@ -294,7 +302,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                             Container(
                                               child: Text(
                                                 'Just Now',
-                                                style: TextStyle(fontSize: 13),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        screenWidth * 0.03),
                                               ),
                                             )
                                           ],

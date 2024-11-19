@@ -5,8 +5,8 @@ import 'package:iplanning/screens/InformationBudgetScreen.dart';
 import 'package:iplanning/models/Budget.dart';
 
 import 'package:iplanning/screens/budgetList.dart';
-import 'package:iplanning/services/budget.dart';
-import 'package:iplanning/services/note.dart';
+import 'package:iplanning/services/budget.service.dart';
+import 'package:iplanning/services/note.service.dart';
 import 'package:iplanning/utils/transactionType.dart';
 
 class Budgetscreen extends StatefulWidget {

@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/Budget.dart';
-import 'package:iplanning/models/events_model.dart';
 import 'package:uuid/uuid.dart';
 
 class BudgetMethod {
   CollectionReference budgetEvents = firestoreInstance.collection('budgets');
   CollectionReference eventPost = firestoreInstance.collection('eventPosts');
+  CollectionReference todoList = firestoreInstance.collection('todos');
+  CollectionReference noteBudget = firestoreInstance.collection('notes');
 
   addBudget({
     required String budget_name,
@@ -25,6 +26,7 @@ class BudgetMethod {
         paidAmount: estimate_amount,
       );
       await budgetEvents.doc(budgetId).set(budgetModel.toJson());
+      await findTaskOnBudget(budgetId, event_id);
       await updateBudgetEventIds(budgetId, event_id);
       res = "success";
     } catch (e) {
@@ -51,18 +53,36 @@ class BudgetMethod {
 
   Future<void> updateBudgetEventIds(String budget_id, String eventId) async {
     try {
-      DocumentReference budgetRef = firestoreInstance
-          .collection('eventPosts')
-          .doc(eventId); //Đọc theo id của events để cập nhật budget
+      DocumentReference budgetRef =
+          firestoreInstance.collection('eventPosts').doc(eventId);
 
-      // Instead of adding to an array, update the field with a single String
       await budgetRef.update({
-        'budget': budget_id, // Directly set the event_id as a String
+        'budget': budget_id,
       });
 
       print("Updated event_ids with: $eventId");
     } catch (e) {
       print('Error updating event_ids: $e');
     }
+  }
+
+  Future<void> findTaskOnBudget(String budget_id, String event_ids) async {
+    try {
+      QuerySnapshot tasks = await todoList
+          .where('event_ids', isEqualTo: event_ids)
+          .where('note_id') // Chỉ tìm những task chưa có budget
+          .get();
+      for (final task in tasks.docs) {
+        String todoId = task.id;
+
+        DocumentSnapshot noteSnapshot = await noteBudget.doc(todoId).get();
+        if (noteSnapshot.exists) {
+          await noteBudget.doc(todoId).update({'budget_id': budget_id});
+        }
+        await noteBudget.doc(todoId).update({'budget_id': budget_id});
+        await todoList.doc(todoId).update({'note_id': budget_id});
+        print("Successfully assigned budget to tasks for event $event_ids.");
+      }
+    } catch (e) {}
   }
 }

@@ -6,12 +6,15 @@ class TodoModel {
   String todoId;
   double amount;
   String details;
-
+  String? imgTask;
+  String? description;
   String? note_id;
   String event_ids;
   TodoModel({
     required this.event_ids,
     required this.amount,
+    this.description,
+    this.imgTask,
     required this.title,
     required this.completed,
     required this.details,
@@ -24,6 +27,8 @@ class TodoModel {
       completed: TodoStatus.values.firstWhere(
         (e) => e.toString() == json['completed'], // Convert string to enum
       ),
+      imgTask: json['imgTask'] as String?,
+      description: json['description'] as String?,
       details: json['details'] as String,
       note_id: json['note_id'] as String?,
       todoId: json['todoId'] as String,
@@ -37,6 +42,8 @@ class TodoModel {
         'details': details,
         'note_id': note_id,
         'todoId': todoId,
+        'imgTask': imgTask,
+        'description': description,
         'amount': amount,
         'event_ids': event_ids,
       };

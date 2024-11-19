@@ -7,7 +7,7 @@ import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/mapScreen.dart';
 
-import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/utils/dialog.dart';
 
 import 'package:iplanning/widgets/TextCustomFeild.dart';

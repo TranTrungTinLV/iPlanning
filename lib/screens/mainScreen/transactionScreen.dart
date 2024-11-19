@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iplanning/services/note.dart';
-import 'package:iplanning/sqlhelper/note_sqlife.dart';
+import 'package:iplanning/services/note.service.dart';
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
@@ -42,7 +41,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
           transactionType: _transactionType!,
           event_ids: widget.event_ids);
       if (res == 'success') {
-        // Sử dụng popUntil để quay về HomeScreen
         Navigator.pop(context, true);
       }
     } catch (e) {}

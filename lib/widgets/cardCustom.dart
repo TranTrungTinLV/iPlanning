@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/events_model.dart';
-import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/cloud.service.dart';
 
 class CardCustom extends StatelessWidget {
   const CardCustom({

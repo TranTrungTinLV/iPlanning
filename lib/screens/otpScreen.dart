@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/mainScreen/homeScreens.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;

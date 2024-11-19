@@ -1,21 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
-import 'package:iplanning/screens/mainScreen/homeScreens.dart';
 
 import 'package:iplanning/utils/authExceptionHandler.dart';
-import 'package:iplanning/utils/dialog.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 
 class AuthenticationService {
   final _firebase = authInstance;

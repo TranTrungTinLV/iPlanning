@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/screens/mainScreen/LoginScreen.dart';
 import 'package:iplanning/screens/otpScreen.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class PhoneScreen extends StatefulWidget {

@@ -9,7 +9,7 @@ import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/mainScreen/homeScreens.dart';
 import 'package:iplanning/screens/phoneScreen.dart';
 import 'package:iplanning/screens/welcomeScreen.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/bannerWiget.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 

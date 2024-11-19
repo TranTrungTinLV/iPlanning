@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/editScreen.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 
 class ProfileScreen extends StatefulWidget {
   UserModel userData;

@@ -4,9 +4,9 @@ import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/screens/budgetScreen.dart';
 import 'package:iplanning/screens/guestList.dart';
-import 'package:iplanning/screens/taskList.dart';
+import 'package:iplanning/widgets/taskList.dart';
 import 'package:iplanning/screens/taskScreen.dart';
-import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/widgets/popUpCustom.dart';
 import 'package:popover/popover.dart';
 
@@ -38,7 +38,6 @@ class _ListEventState extends State<ListEvent>
       appBar: AppBar(
         title: Text('Kế hoạch của tôi'),
         bottom: TabBar(
-          // labelStyle: TextStyle(fontSize: screenWidth * 0.04),
           controller: tabController,
           tabs: [
             Tab(
@@ -179,6 +178,15 @@ class _ListEventState extends State<ListEvent>
                                           fontSize: screenWidth * 0.045,
                                           fontWeight: FontWeight.w600),
                                     ),
+                                    SizedBox(height: screenHeight * 0.002),
+                                    event.location != null
+                                        ? Text(
+                                            event.location!,
+                                            style: TextStyle(
+                                                fontSize: screenWidth * 0.035,
+                                                fontWeight: FontWeight.w300),
+                                          )
+                                        : Container(),
                                   ],
                                 ),
                               ),

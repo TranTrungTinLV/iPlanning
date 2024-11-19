@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
-import 'package:iplanning/models/events_model.dart';
 import 'package:uuid/uuid.dart';
 
 class CategoriesMethod {

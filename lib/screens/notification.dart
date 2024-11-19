@@ -7,8 +7,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/main.dart';
-import 'package:iplanning/services/cloud.dart';
-import 'package:iplanning/services/noti.dart';
+import 'package:iplanning/services/cloud.service.dart';
+import 'package:iplanning/services/noti.service.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
   NotificationScreen({super.key, required this.getPicture});

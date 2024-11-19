@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/mainScreen/transactionScreen.dart';
-import 'package:iplanning/services/note.dart';
+import 'package:iplanning/services/note.service.dart';
 
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
@@ -60,7 +60,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)
         .fold(0.0, (acc, element) => acc + element);
-    print("Thu: $expense");
+    print("Chi: $expense");
 
     double total = (widget.estimateAmount + icome) - expense;
     setState(() {
@@ -676,9 +676,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ),
                                   ),
                                 ),
-                                // SizedBox(
-                                //   height: 100,
-                                // ),
                               ],
                             ),
                           ),
@@ -733,7 +730,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                 SizedBox(
                                   height: 20,
                                 ),
-                                // !Icome
                                 Center(
                                   child: Container(
                                     height: 300,
@@ -858,9 +854,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     ),
                                   ),
                                 ),
-                                // SizedBox(
-                                //   height: 100,
-                                // ),
                               ],
                             ),
                           ),

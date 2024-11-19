@@ -1,15 +1,12 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
-import 'package:iplanning/models/Budget.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:iplanning/models/events_model.dart';
-import 'package:iplanning/services/categories.dart';
-import 'package:iplanning/services/storage.dart';
+import 'package:iplanning/services/categories.service.dart';
+import 'package:iplanning/services/storage.service.dart';
 import 'package:uuid/uuid.dart';
 
 class ClouMethods {

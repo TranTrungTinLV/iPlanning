@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
-import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/utils/dialog.dart';
 import 'package:iplanning/widgets/GuestListItems.dart';
 

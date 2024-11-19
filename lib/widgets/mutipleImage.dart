@@ -22,9 +22,9 @@ class _MutipleImageState extends State<MutipleImage> {
     widget.images.add(url);
   }
 
-  void removeImage(Uint8List url) {
-    widget.images.remove(url);
-  }
+  // void removeImage(Uint8List url) {
+  //   widget.images.remove(url);
+  // }
 
   Future<void> _pickImage() async {
     final pickedImage = await ImagePicker().pickImage(

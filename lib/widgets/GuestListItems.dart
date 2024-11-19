@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/user_models.dart';
-import 'package:iplanning/services/cloud.dart';
+import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/utils/dialog.dart';
 
 class Guestlistitems extends StatefulWidget {

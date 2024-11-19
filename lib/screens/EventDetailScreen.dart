@@ -12,9 +12,9 @@ import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/screens/guestList.dart';
 import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
-import 'package:iplanning/services/auth.dart';
-import 'package:iplanning/services/cloud.dart';
-import 'package:iplanning/services/noti.dart';
+import 'package:iplanning/services/auth.service.dart';
+import 'package:iplanning/services/cloud.service.dart';
+import 'package:iplanning/services/noti.service.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends StatefulWidget {

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iplanning/firebase_options.dart';
 import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/splashScreen.dart';
-import 'package:iplanning/services/categories.dart';
-import 'package:iplanning/services/noti.dart';
+import 'package:iplanning/services/categories.service.dart';
+import 'package:iplanning/services/noti.service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

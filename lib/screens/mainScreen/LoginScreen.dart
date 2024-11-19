@@ -16,7 +16,7 @@ import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/bannerWiget.dart';
 import 'package:iplanning/widgets/buttonAuth.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/textForm.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 

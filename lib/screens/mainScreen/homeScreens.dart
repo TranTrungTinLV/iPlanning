@@ -14,13 +14,13 @@ import 'package:iplanning/screens/mainScreen/createEventScreens.dart';
 import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
-import 'package:iplanning/services/cloud.dart';
-import 'package:iplanning/services/noti.dart';
+import 'package:iplanning/services/cloud.service.dart';
+import 'package:iplanning/services/noti.service.dart';
 import 'package:iplanning/widgets/InvitewithFriends.dart';
 import 'package:iplanning/widgets/buildDrawTile.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/topSection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -546,7 +546,6 @@ class _HomescreensState extends State<Homescreens> {
                           ? screenHeight * 0.13
                           : screenHeight * 0.09,
                       decoration: BoxDecoration(
-                          // color: Colors.white,
                           borderRadius: BorderRadius.circular(40)),
                       // !CategoriesSection
                       child: CategoriesSection(

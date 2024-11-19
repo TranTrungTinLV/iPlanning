@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
 import 'package:iplanning/widgets/buttonAuth.dart';
-import 'package:iplanning/services/auth.dart';
+import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/textForm.dart';
 
 class ForgotpasswordScreen extends StatefulWidget {

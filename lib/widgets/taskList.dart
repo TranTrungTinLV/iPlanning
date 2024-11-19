@@ -62,7 +62,6 @@ class _TaskListState extends State<TaskList> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Form(
@@ -87,7 +86,6 @@ class _TaskListState extends State<TaskList> {
                   controller: enterNote,
                   title: 'Thêm ghi chú',
                   labelText: 'Thêm ghi chú',
-                  
                   radius: 10.0,
                 ),
                 SizedBox(
@@ -131,12 +129,6 @@ class _TaskListState extends State<TaskList> {
             ),
           ),
         ),
-        // Align(
-        //   alignment: Alignment.bottomCenter,
-
-        //     )
-        //   ],
-        // ),
       ),
     );
   }

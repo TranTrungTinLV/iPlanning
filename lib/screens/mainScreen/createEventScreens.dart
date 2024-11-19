@@ -195,6 +195,9 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return LoadingManager(
       isLoading: isLoading,
       child: Scaffold(
@@ -355,7 +358,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
               isActive: _index >= 0,
               title: Text('Tạo kế hoạch'),
               content: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.6,
                 child: Form(
                   key: _formKey,
                   autovalidateMode: isFormValid
@@ -389,6 +392,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   validateForm();
                                 },
                                 title: 'Tên Kế Hoạch',
+                                hintStyle:
+                                    TextStyle(fontSize: screenWidth * 0.035),
                                 radius: 10.0,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
@@ -474,14 +479,22 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 Container(
-                                                  child: Icon(Icons
-                                                      .calendar_month_outlined),
+                                                  child: Icon(
+                                                      Icons
+                                                          .calendar_month_outlined,
+                                                      size:
+                                                          screenWidth * 0.035),
                                                 ),
                                                 Container(
-                                                  child: Text(_startDate == null
-                                                      ? 'Chọn ngày bắt đầu'
-                                                      : '${_startDate!.toDate().toLocal()}'
-                                                          .split(' ')[0]),
+                                                  child: Text(
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.035),
+                                                      _startDate == null
+                                                          ? 'Chọn ngày bắt đầu'
+                                                          : '${_startDate!.toDate().toLocal()}'
+                                                              .split(' ')[0]),
                                                 ),
                                               ],
                                             ),
@@ -506,21 +519,28 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                         child: Container(
                                           width: 150,
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
+                                              horizontal: 8),
                                           height: 50,
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Container(
-                                                child: Icon(Icons
-                                                    .calendar_month_outlined),
+                                                child: Icon(
+                                                    Icons
+                                                        .calendar_month_outlined,
+                                                    size: screenWidth * 0.035),
                                               ),
                                               Container(
-                                                  child: Text(_endDate == null
-                                                      ? 'Chọn ngày kết thúc'
-                                                      : '${_endDate!.toDate().toLocal()}'
-                                                          .split(' ')[0])),
+                                                  child: Text(
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.035),
+                                                      _endDate == null
+                                                          ? 'Chọn ngày kết thúc'
+                                                          : '${_endDate!.toDate().toLocal()}'
+                                                              .split(' ')[0])),
                                             ],
                                           ),
                                           decoration: BoxDecoration(
@@ -608,7 +628,6 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                       Expanded(
                                           child: GestureDetector(
                                         onTap: () {
-                                          print('start time');
                                           _presentTimerPicker(isTime: true);
                                         },
                                         child: Container(
@@ -621,13 +640,20 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Container(
-                                                child:
-                                                    Icon(Icons.timer_outlined),
+                                                child: Icon(
+                                                  Icons.timer_outlined,
+                                                  size: screenWidth * 0.035,
+                                                ),
                                               ),
                                               Container(
-                                                  child: Text(_startDate == null
-                                                      ? 'Thời gian bắt đầu'
-                                                      : '${_startDate!.toDate().hour}:${_startDate!.toDate().minute}'))
+                                                  child: Text(
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.035),
+                                                      _startDate == null
+                                                          ? 'Thời gian bắt đầu'
+                                                          : '${_startDate!.toDate().hour}:${_startDate!.toDate().minute}'))
                                             ],
                                           ),
                                           decoration: BoxDecoration(
@@ -655,13 +681,20 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                 MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Container(
-                                                child:
-                                                    Icon(Icons.timer_outlined),
+                                                child: Icon(
+                                                  Icons.timer_outlined,
+                                                  size: screenWidth * 0.035,
+                                                ),
                                               ),
                                               Container(
-                                                  child: Text(_endDate == null
-                                                      ? 'Thời gian kết thúc'
-                                                      : '${_endDate!.toDate().hour}:${_endDate!.toDate().minute}')),
+                                                  child: Text(
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                                  0.035),
+                                                      _endDate == null
+                                                          ? 'Thời gian kết thúc'
+                                                          : '${_endDate!.toDate().hour}:${_endDate!.toDate().minute}')),
                                             ],
                                           ),
                                           decoration: BoxDecoration(

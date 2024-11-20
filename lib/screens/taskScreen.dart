@@ -305,6 +305,7 @@ class _TaskScreenState extends State<TaskScreen> {
                           itemBuilder: (context, index) {
                             final todo = todoModels[index];
                             return InkWell(
+                              borderRadius: BorderRadius.circular(15),
                               onTap: () {
                                 _taskNameController = TextEditingController(
                                     text: todoModels[index].title);

@@ -40,60 +40,114 @@ class _ListEventState extends State<ListEvent>
         bottom: TabBar(
           controller: tabController,
           tabs: [
-            Tab(
-              child: Container(
-                child: Column(
-                  children: [
-                    Text(
-                      'All event',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: screenWidth * 0.035),
+            StreamBuilder<QuerySnapshot>(
+                stream: firestoreInstance
+                    .collection('eventPosts')
+                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  int eventCount = 0;
+                  if (snapshot.hasData) {
+                    eventCount = snapshot.data!.docs.length;
+                  }
+                  return Tab(
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Text(
+                            'All event',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: screenWidth * 0.035),
+                          ),
+                          Text('${eventCount}',
+                              style: TextStyle(fontSize: screenWidth * 0.03)),
+                        ],
+                      ),
                     ),
-                    Text('(100)',
-                        style: TextStyle(fontSize: screenWidth * 0.03)),
-                  ],
-                ),
-              ),
-            ),
-            Tab(
-              child: Container(
-                  child: Column(
-                children: [
-                  Text(
-                    'Yes',
-                    style: TextStyle(fontSize: 15),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text('(102)')
-                ],
-              )),
-            ),
-            Tab(
-              child: Container(
-                  child: Column(
-                children: [
-                  Text(
-                    'No',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text('(102)')
-                ],
-              )),
-            ),
-            Tab(
-              child: Container(
-                  child: Column(
-                children: [
-                  Text(
-                    'Not Yet',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text('(102)')
-                ],
-              )),
-            ),
+                  );
+                }),
+            StreamBuilder<QuerySnapshot>(
+                stream: firestoreInstance
+                    .collection('eventPosts')
+                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  final accepted = snapshot.data!.docs
+                      .where((eventDoc) {
+                        final List<dynamic>? isAccepted =
+                            eventDoc['isAccepted'];
+                        return isAccepted != null && isAccepted.isNotEmpty;
+                      })
+                      .toList()
+                      .length;
+                  return Tab(
+                    child: Container(
+                        child: Column(
+                      children: [
+                        Text(
+                          'Yes',
+                          style: TextStyle(fontSize: screenWidth * 0.035),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text('${accepted}',
+                            style: TextStyle(fontSize: screenWidth * 0.03))
+                      ],
+                    )),
+                  );
+                }),
+            StreamBuilder<QuerySnapshot>(
+                stream: firestoreInstance
+                    .collection('eventPosts')
+                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  final rejected = snapshot.data!.docs
+                      .where((eventDoc) {
+                        final List<dynamic>? isRejected =
+                            eventDoc['isRejected'];
+                        return isRejected != null && isRejected.isNotEmpty;
+                      })
+                      .toList()
+                      .length;
+                  return Tab(
+                    child: Container(
+                        child: Column(
+                      children: [
+                        Text('No',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: screenWidth * 0.035)),
+                        Text('$rejected',
+                            style: TextStyle(fontSize: screenWidth * 0.03))
+                      ],
+                    )),
+                  );
+                }),
+            StreamBuilder<QuerySnapshot>(
+                stream: firestoreInstance
+                    .collection('eventPosts')
+                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  final pending = snapshot.data!.docs
+                      .where((eventDoc) {
+                        final List<dynamic>? isPending = eventDoc['isPending'];
+                        return isPending != null && isPending.isNotEmpty;
+                      })
+                      .toList()
+                      .length;
+                  return Tab(
+                    child: Container(
+                        child: Column(
+                      children: [
+                        Text('Not Yet',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: screenWidth * 0.035)),
+                        Text('$pending',
+                            style: TextStyle(fontSize: screenWidth * 0.03))
+                      ],
+                    )),
+                  );
+                }),
           ],
         ),
         actions: [

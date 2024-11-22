@@ -356,7 +356,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
             Step(
               state: _index > 0 ? StepState.complete : StepState.indexed,
               isActive: _index >= 0,
-              title: Text('Tạo kế hoạch'),
+              title: Text(
+                'Tạo kế hoạch',
+                style: TextStyle(fontSize: screenWidth * 0.035),
+              ),
               content: Container(
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: Form(
@@ -431,7 +434,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                 children: [
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
                                       Container(
                                         width:
@@ -440,17 +443,21 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                         child: Text(
                                           "Ngày bắt đầu",
                                           textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.03),
                                         ),
                                       ),
                                       Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
+                                          // width: MediaQuery.of(context)
+                                          //         .size
+                                          //         .width *
+                                          //     0.25,
                                           child: Text(
-                                            "Ngày kết thúc",
-                                            textAlign: TextAlign.start,
-                                          )),
+                                        "Ngày kết thúc",
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.03),
+                                      )),
                                     ],
                                   ),
                                   SizedBox(
@@ -482,15 +489,16 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                   child: Icon(
                                                       Icons
                                                           .calendar_month_outlined,
-                                                      size:
-                                                          screenWidth * 0.035),
+                                                      size: screenWidth * 0.03),
                                                 ),
                                                 Container(
                                                   child: Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                           fontSize:
                                                               screenWidth *
-                                                                  0.035),
+                                                                  0.02),
                                                       _startDate == null
                                                           ? 'Chọn ngày bắt đầu'
                                                           : '${_startDate!.toDate().toLocal()}'
@@ -536,7 +544,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                       style: TextStyle(
                                                           fontSize:
                                                               screenWidth *
-                                                                  0.035),
+                                                                  0.02),
                                                       _endDate == null
                                                           ? 'Chọn ngày kết thúc'
                                                           : '${_endDate!.toDate().toLocal()}'
@@ -561,28 +569,34 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                               if (!_isDateValid)
                                 Container(
                                   width: MediaQuery.of(context).size.width,
-                                  child: const Text(
+                                  child: Text(
                                     'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
                                     textAlign: TextAlign.end,
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: screenWidth * 0.025),
                                   ),
                                 ),
                               if (!_isStartDateSelected)
                                 Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: const Text(
+                                  width: screenWidth,
+                                  child: Text(
                                     'Vui lòng chọn ngày bắt đầu',
                                     textAlign: TextAlign.end,
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: screenWidth * 0.025),
                                   ),
                                 ),
                               if (!_isEndDateSelected)
                                 Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: const Text(
+                                  width: screenWidth,
+                                  child: Text(
                                     'Vui lòng chọn ngày kết thúc',
                                     textAlign: TextAlign.end,
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: screenWidth * 0.025),
                                   ),
                                 ),
                               SizedBox(
@@ -601,18 +615,19 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                             MediaQuery.of(context).size.width *
                                                 0.4,
                                         child: Text(
-                                          "Start Time",
+                                          "Thời gian bắt đầu",
                                           textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.03),
                                         ),
                                       ),
                                       Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
+                                          width: screenWidth * 0.4,
                                           child: Text(
-                                            "End Time",
+                                            "Thời gian kết thúc",
                                             textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                                fontSize: screenWidth * 0.03),
                                           )),
                                     ],
                                   ),
@@ -650,7 +665,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                       style: TextStyle(
                                                           fontSize:
                                                               screenWidth *
-                                                                  0.035),
+                                                                  0.02),
                                                       _startDate == null
                                                           ? 'Thời gian bắt đầu'
                                                           : '${_startDate!.toDate().hour}:${_startDate!.toDate().minute}'))
@@ -691,7 +706,7 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                                       style: TextStyle(
                                                           fontSize:
                                                               screenWidth *
-                                                                  0.035),
+                                                                  0.02),
                                                       _endDate == null
                                                           ? 'Thời gian kết thúc'
                                                           : '${_endDate!.toDate().hour}:${_endDate!.toDate().minute}')),
@@ -783,7 +798,8 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   Container(
                                     child: Text(
                                       "Bạn muốn đăng bài viết này không?",
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.03),
                                     ),
                                   ),
                                   Checkbox(
@@ -805,7 +821,10 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
               ),
             ),
             Step(
-              title: Text('Xem trước'),
+              title: Text(
+                'Xem trước',
+                style: TextStyle(fontSize: screenWidth * 0.035),
+              ),
               isActive: _index >= 1,
               content: Container(
                 // child: Text('detail'),

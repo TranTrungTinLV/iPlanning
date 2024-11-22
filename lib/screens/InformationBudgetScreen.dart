@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/mainScreen/transactionScreen.dart';
 import 'package:iplanning/services/note.service.dart';
-
 import 'package:iplanning/utils/transactionType.dart';
 import 'package:iplanning/widgets/budgetItems.dart';
-
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:intl/intl.dart';
 
@@ -271,55 +268,62 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Budget Name",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+                "Tên chi phí tổng",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.048,
+                    fontWeight: FontWeight.w600),
               ),
               Text(
                 widget.budgetName,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
               Text(
-                "Note ",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
-              ),
-              Text(
-                widget.budgetId,
-                style: TextStyle(fontSize: 18),
-              ),
-              Text(
-                "Estimate Amount ",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+                "Ước tính",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.048,
+                    fontWeight: FontWeight.w600),
               ),
               Text(
                 "${formatterAmount.format(widget.estimateAmount).replaceAll('.', ',')}",
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
               Text(
-                "Icome ",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+                "Thu vào ",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.048,
+                    fontWeight: FontWeight.w600),
               ),
               Text(
                 "${formatterAmount.format(_icome).replaceAll('.', ',')}",
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
               Text(
-                "Expense ",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+                "Chi ra ",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.048,
+                    fontWeight: FontWeight.w600),
               ),
               Text(
                 "${formatterAmount.format(_expense).replaceAll('.', ',')}",
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
               Text(
-                "Remaining ",
-                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+                "Còn lại ",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.048,
+                    fontWeight: FontWeight.w600),
               ),
               Text(
                 "${formatterAmount.format(totals).replaceAll('.', ',')}",
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
               SizedBox(
-                height: 50,
+                height: MediaQuery.of(context).size.height * 0.08,
               ),
               GestureDetector(
                 onTap: () {
@@ -466,9 +470,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                   children: [
                     Container(
                       child: Text(
-                        "Payments",
+                        "Giao dịch",
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: screenWidth * 0.048,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

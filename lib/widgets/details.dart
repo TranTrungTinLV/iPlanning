@@ -33,7 +33,6 @@ class Details extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.60,
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
-      // child: SingleChildScrollView(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +49,8 @@ class Details extends StatelessWidget {
                       child: Text(
                         titleEvent ?? '',
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.w600),
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                     Container(
@@ -63,9 +63,20 @@ class Details extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Icon(Icons.location_on),
+                                    SizedBox(
+                                      width: 10.0,
+                                    ),
                                     Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
                                       child: Text(
-                                        style: TextStyle(fontSize: 20),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.04),
                                         location,
                                       ),
                                     ),
@@ -77,9 +88,16 @@ class Details extends StatelessWidget {
                             child: Row(
                               children: [
                                 Icon(Icons.date_range),
+                                SizedBox(
+                                  width: 10,
+                                ),
                                 Container(
                                   child: Text(
-                                      style: TextStyle(fontSize: 20),
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03),
                                       "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
                                           'Start Date'),
                                 ),
@@ -89,10 +107,15 @@ class Details extends StatelessWidget {
                           Row(
                             children: [
                               Icon(Icons.timer_outlined),
+                              SizedBox(width: 10.0),
                               Container(
                                 child: Text(
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.03),
                                     "${DateFormat('HH:mm').format(startDate.toDate()) ?? 'Start Time'}" ??
-                                        'Start Date'),
+                                        'Start Time'),
                               ),
                             ],
                           ),
@@ -105,7 +128,6 @@ class Details extends StatelessWidget {
                     ? Container()
                     : GestureDetector(
                         child: Container(
-                            width: 80,
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 color: Colors.orange,
@@ -113,7 +135,9 @@ class Details extends StatelessWidget {
                             child: Text(
                               "${ammount != null && ammount != 0.0 ? _formatterAmount.format(ammount).toString() : "Free"}",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10),
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03),
                             )),
                       )
               ],
@@ -151,11 +175,18 @@ class Details extends StatelessWidget {
                             child: Text(
                               userName ?? 'User name',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 20),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03),
                             ),
                           ),
                           Container(
-                            child: Text(isMe ? 'Me' : 'hosting'),
+                            child: Text(
+                              isMe ? 'Me' : 'hosting',
+                              style: TextStyle(
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      0.025),
+                            ),
                           ),
                         ],
                       ),
@@ -174,12 +205,15 @@ class Details extends StatelessWidget {
                 children: [
                   Text(
                     'Desctiption',
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: MediaQuery.of(context).size.width * 0.035),
                   ),
                   Text(
                     discription ??
                         'Ultricies arcu venenatis in lorem faucibus lobortis at. East odio varius nisl congue aliquam nunc est sit pull convallis magna. Est scelerisque dignissim non nibh....',
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03),
                   )
                 ],
               ),

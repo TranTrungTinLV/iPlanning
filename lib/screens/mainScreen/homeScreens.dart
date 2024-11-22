@@ -584,7 +584,7 @@ class _HomescreensState extends State<Homescreens> {
                                     style: TextStyle(
                                         fontSize:
                                             MediaQuery.of(context).size.width *
-                                                0.05),
+                                                0.04),
                                   ),
                                 ),
                                 GestureDetector(

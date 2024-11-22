@@ -96,7 +96,7 @@ class _TaskListState extends State<TaskList> {
                     Expanded(
                       child: TextFieldCustom(
                         controller: amount,
-                        title: 'Số tiền',
+                        title: 'Chi Phí',
                         labelText: 'Số tiền',
                         radius: 10.0,
                         keyboardType: TextInputType.number,

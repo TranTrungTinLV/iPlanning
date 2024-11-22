@@ -32,7 +32,7 @@ class Invitewithfriends extends StatelessWidget {
                 Text(
                   'Invite Your Friend',
                   style: TextStyle(
-                    fontSize: screenWidth * 0.06,
+                    fontSize: screenWidth * 0.04,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

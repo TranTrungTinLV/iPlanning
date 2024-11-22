@@ -64,7 +64,7 @@ class CardCustom extends StatelessWidget {
                           event.event_name,
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18,
+                              fontSize: screenWidth * 0.048,
                               fontWeight: FontWeight.w600),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -103,7 +103,7 @@ class CardCustom extends StatelessWidget {
                                     '${count.toString()} tham gia',
                                     style: TextStyle(
                                       color: Color(0xff3F38DD),
-                                      fontSize: screenWidth * 0.04,
+                                      fontSize: screenWidth * 0.032,
                                     ),
                                   ),
                           ),
@@ -129,12 +129,16 @@ class CardCustom extends StatelessWidget {
                                 SizedBox(
                                   width: screenWidth * 0.01,
                                 ),
-                                Text(
-                                  event.location ?? '',
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.035,
+                                Container(
+                                  width: screenWidth * 0.5,
+                                  child: Text(
+                                    event.location ?? '',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.035,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             )

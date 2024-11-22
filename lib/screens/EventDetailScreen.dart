@@ -232,7 +232,6 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                     ),
                   );
                 } else {
-                  // Handle case where profile data is not yet loaded
                   Fluttertoast.showToast(
                     msg:
                         "User profile is still loading. Please try again later.",
@@ -248,7 +247,6 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
             child: GestureDetector(
               onTap: () async {
                 if (isInvited == null) {
-                  // Người dùng chưa được mời, thực hiện mời
                   await ClouMethods().invitedEvents(
                     authInstance.currentUser!.uid,
                     widget.event_id,
@@ -298,7 +296,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
               child: authInstance.currentUser!.uid == widget.uid
                   ? Container()
                   : Container(
-                      height: 60,
+                      height: MediaQuery.of(context).size.height * 0.08,
                       child: Center(
                         child: widget.isLoadingInvite
                             ? Container(
@@ -314,7 +312,9 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                 ? Text(
                                     'Đang tham gia',
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.045,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white),
                                   )
@@ -322,14 +322,20 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                     ? Text(
                                         'Uninvite',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.045,
                                             fontWeight: FontWeight.w600,
                                             color: Colors.white),
                                       )
                                     : Text(
                                         'Invite',
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.045,
                                             fontWeight: FontWeight.w600,
                                             color: Colors.white),
                                       ),
@@ -352,8 +358,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                 Container(
                   decoration:
                       BoxDecoration(color: Colors.black.withOpacity(0.15)),
-                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 24),
-                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
                   child: Column(
                     children: [
                       SizedBox(

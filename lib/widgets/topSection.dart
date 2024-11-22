@@ -27,7 +27,7 @@ class _TopSectionState extends State<TopSection> {
         // SingleChildScrollView(
         Container(
       margin: const EdgeInsets.symmetric(horizontal: 25),
-      padding: const EdgeInsets.only(top: 50),
+      padding: EdgeInsets.only(top: 35),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -37,7 +37,7 @@ class _TopSectionState extends State<TopSection> {
             eventId: widget.eventId,
             getPicture: widget.getPicture,
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           SearchAndFilterRow(
             onFilter: widget.onFilter,
           ),

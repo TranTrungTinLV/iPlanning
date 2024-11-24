@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/utils/transactionType.dart';
 
 class NoteModel {
@@ -7,12 +8,14 @@ class NoteModel {
   final TransactionType transactionType;
   final double amount;
   final String? content;
+  Timestamp createAt;
   String? todo_id;
   NoteModel({
     required this.name,
     required this.amount,
     this.content,
     this.todo_id,
+    required this.createAt,
     required this.budget_id,
     required this.note_id,
     required this.transactionType,
@@ -28,6 +31,7 @@ class NoteModel {
       budget_id: json['budget_id'] as String,
       content: json['content'] as String?,
       todo_id: json['todo_id'] as String?,
+      createAt: json['createAt'] as Timestamp,
       transactionType: TransactionType.values.firstWhere(
         (e) =>
             e.toString() == json['transactionType'], // Convert string to enum
@@ -43,6 +47,7 @@ class NoteModel {
       'budget_id': budget_id,
       'transactionType': transactionType.toString(),
       'todo_id': todo_id,
+      'createAt': createAt,
     };
   }
 }

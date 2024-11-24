@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/models/note.dart';
 import 'package:iplanning/screens/mainScreen/transactionScreen.dart';
 import 'package:iplanning/services/note.service.dart';
@@ -39,21 +40,82 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   final formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
   double incomePercent = 0.0;
   double expensePercent = 0.0;
+  String selectedFilter = "All";
+  DateTime now = DateTime.now(); // Lấy ngày hiện tại
+  List<NoteModel> filteredNotes = [];
+
   Future<void> _loadNoteModel() async {
     final notes = await NoteMethod().loadNoteModelwithBudget(widget.budgetId);
     setState(() {
       noteModels = notes;
+      _filterNotes("All");
+    });
+  }
+
+  // !Lọc dữ liệu
+  void _filterNotes(String filter) {
+    setState(() {
+      selectedFilter = filter;
+      if (filter == "Today") {
+        filteredNotes = noteModels.where((note) {
+          final noteDate = note.createAt.toDate();
+          final today = DateTime(now.year, now.month, now.day);
+          final last7Days = today.subtract(Duration(days: 7));
+
+          return noteDate.isAfter(last7Days) &&
+              noteDate.isBefore(today.add(Duration(days: 1)));
+        }).toList();
+      } else if (filter == "Last 7 Days") {
+        filteredNotes = noteModels.where((note) {
+          final noteDate = note.createAt.toDate();
+          final sevenDaysAgo = now.subtract(Duration(days: 7));
+          final yesterday = DateTime(now.year, now.month, now.day);
+          return noteDate.isAfter(sevenDaysAgo) && noteDate.isBefore(yesterday);
+        }).toList();
+      } else if (filter == "Last Month") {
+        filteredNotes = noteModels.where((note) {
+          final noteDate = note.createAt.toDate();
+          final firstDayThisMonth = DateTime(now.year, now.month, 1);
+          final firstDayLastMonth = DateTime(now.year, now.month - 1, 1);
+          final lastDayLastMonth = DateTime(now.year, now.month, 0);
+
+          print("Note Date: $noteDate");
+          print("Start Date (First Day Last Month): $firstDayLastMonth");
+          print("End Date (Last Day Last Month): $lastDayLastMonth");
+
+          return noteDate.isAfter(firstDayLastMonth) &&
+              noteDate.isBefore(lastDayLastMonth.add(Duration(days: 1)));
+        }).toList();
+
+        print(
+            "Filtered Notes (Last Month): ${filteredNotes.map((note) => note.name).toList()}");
+        print("Filtered Notes Length (Last Month): ${filteredNotes.length}");
+      } else {
+        filteredNotes = noteModels;
+      }
+
+      _total();
+      if (filteredNotes.isEmpty) {
+        Fluttertoast.showToast(
+          msg: "Không có ghi chú nào phù hợp với bộ lọc!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: MediaQuery.of(context).size.width * 0.03,
+        );
+      }
     });
   }
 
   Future<double> _total() async {
     if (noteModels.isEmpty) return 0.0;
-    double icome = noteModels
+    double icome = filteredNotes
         .where((note) => note.transactionType == TransactionType.income)
         .map((note) => note.amount)
         .fold(0.0, (acc, element) => acc + element);
     print("Thu: $icome");
-    double expense = noteModels
+    double expense = filteredNotes
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)
         .fold(0.0, (acc, element) => acc + element);
@@ -76,14 +138,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
 
     List<GaugeRange> ranges = [];
     double totalValue = _icome + _expense;
-    print(_expense);
-    print(_icome);
-    print(totalValue);
     incomePercent = cumulativeValue + (_icome / totalValue) * 100;
     expensePercent = cumulativeValue + (_expense / totalValue) * 100;
     incomePercent = 100 - expensePercent;
-    print('Income Percent: $incomePercent');
-    print('Expense Percent: $expensePercent');
     ranges.add(GaugeRange(
       startValue: cumulativeValue,
       endValue: incomePercent,
@@ -110,7 +167,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     double cumulativeValue = 0;
     List<GaugeRange> ranges = [];
     // ! Income Filter
-    List<NoteModel> incomeNotes = noteModels
+    List<NoteModel> incomeNotes = filteredNotes
         .where((note) => note.transactionType == TransactionType.income)
         .toList();
     for (NoteModel incomeNote in incomeNotes) {
@@ -132,7 +189,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     double cumulativeValue = 0;
     List<GaugeRange> ranges = [];
     // ! Expense Filter
-    List<NoteModel> expenseNotes = noteModels
+    List<NoteModel> expenseNotes = filteredNotes
         .where((note) => note.transactionType == TransactionType.expense)
         .toList();
     for (NoteModel expenseNote in expenseNotes) {
@@ -153,7 +210,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   List<GaugeAnnotation> _buildIncomeAnnotations() {
     double cumulativeValue = 0;
     List<GaugeAnnotation> annotations = [];
-    List<NoteModel> incomeNotes = noteModels
+    List<NoteModel> incomeNotes = filteredNotes
         .where((note) => note.transactionType == TransactionType.income)
         .toList();
     double angle = (cumulativeValue + incomePercent / 2) * 3.6;
@@ -170,10 +227,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.black)),
-        angle: -350 -
-            (cumulativeValue + (incomePercent)) /
-                3.6 *
-                360, // Đặt annotation giữa các phần
+        angle: -350 - (cumulativeValue + (incomePercent)) / 3.6 * 360,
         positionFactor:
             positionFactor, // Đặt vị trí của annotation ở bên ngoài biểu đồ
       ));
@@ -186,7 +240,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
   List<GaugeAnnotation> _buildExpenseAnnotations() {
     double cumulativeValue = 0;
     List<GaugeAnnotation> annotations = [];
-    List<NoteModel> expenseNotes = noteModels
+    List<NoteModel> expenseNotes = filteredNotes
         .where((note) => note.transactionType == TransactionType.expense)
         .toList();
     double angle = (cumulativeValue + expensePercent / 2) * 3.6; // Tính lại góc
@@ -224,6 +278,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     _loadNoteModel().then((_) {
       _total().then((_) {
         _buildRangePointers();
+        _filterNotes(selectedFilter);
       });
     });
   }
@@ -250,6 +305,37 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text("Information Budget"),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.filter_list),
+            onSelected: (String value) {
+              _filterNotes(value); // Áp dụng bộ lọc khi người dùng chọn
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  value: "All",
+                  child: Text("Tất cả"),
+                ),
+                PopupMenuItem(
+                  value: "Today",
+                  child: Text("Hôm nay"),
+                ),
+                PopupMenuItem(
+                  value: "Last 7 Days",
+                  child: Text("7 ngày qua"),
+                ),
+                PopupMenuItem(
+                  value: "Last Month",
+                  child: Text("1 tháng qua"),
+                ),
+              ];
+            },
+          ),
+          SizedBox(
+            width: 10,
+          )
+        ],
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
@@ -394,13 +480,13 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       child: ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemCount: noteModels
+                                        itemCount: filteredNotes
                                             .where((note) =>
                                                 note.transactionType ==
                                                 TransactionType.income)
                                             .length,
                                         itemBuilder: (context, index) {
-                                          final incomeNote = noteModels
+                                          final incomeNote = filteredNotes
                                               .where((note) =>
                                                   note.transactionType ==
                                                   TransactionType.income)
@@ -424,13 +510,13 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       child: ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemCount: noteModels
+                                        itemCount: filteredNotes
                                             .where((note) =>
                                                 note.transactionType ==
                                                 TransactionType.expense)
                                             .length,
                                         itemBuilder: (context, index) {
-                                          final expenseNote = noteModels
+                                          final expenseNote = filteredNotes
                                               .where((note) =>
                                                   note.transactionType ==
                                                   TransactionType.expense)
@@ -518,7 +604,6 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                 width: MediaQuery.of(context).size.width,
                 height: 140,
                 decoration: BoxDecoration(
-                    // color: Colors.white,
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0)),
                 child: (_icome == 0 || _expense == 0)
@@ -532,9 +617,9 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                         margin:
                             EdgeInsets.symmetric(vertical: 13, horizontal: 11),
                         child: ListView.builder(
-                          itemCount: noteModels.length,
+                          itemCount: filteredNotes.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final note = noteModels[index];
+                            final note = filteredNotes[index];
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
@@ -659,7 +744,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     height: 300,
                                     child: GridView.builder(
                                       shrinkWrap: true,
-                                      itemCount: noteModels.length,
+                                      itemCount: filteredNotes.length,
                                       physics: ScrollPhysics(),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
@@ -670,7 +755,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       ),
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final note = noteModels[index];
+                                        final note = filteredNotes[index];
                                         return budgetItems(
                                           title: note.name,
                                           isCoulors: TransactionType.income ==
@@ -695,7 +780,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                           width:
                                               MediaQuery.of(context).size.width,
                                           child: Center(
-                                              child: Text("Chưa có dữ liệu")),
+                                              child: Text(
+                                                  "Chưa có dữ liệu phần thu")),
                                         )
                                       : Container(
                                           height: 150,
@@ -739,7 +825,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     height: 300,
                                     child: GridView.builder(
                                       shrinkWrap: true,
-                                      itemCount: noteModels
+                                      itemCount: filteredNotes
                                           .where((note) =>
                                               note.transactionType ==
                                               TransactionType.income)
@@ -754,9 +840,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       ),
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final note = noteModels.where((note) =>
-                                            note.transactionType ==
-                                            TransactionType.income);
+                                        final note = filteredNotes.where(
+                                            (note) =>
+                                                note.transactionType ==
+                                                TransactionType.income);
                                         return budgetItems(
                                           title: note.first.name,
                                         );
@@ -830,7 +917,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                     height: 300,
                                     child: GridView.builder(
                                       shrinkWrap: true,
-                                      itemCount: noteModels
+                                      itemCount: filteredNotes
                                           .where((note) =>
                                               note.transactionType ==
                                               TransactionType.expense)
@@ -845,9 +932,10 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
                                       ),
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final note = noteModels.where((note) =>
-                                            note.transactionType ==
-                                            TransactionType.expense);
+                                        final note = filteredNotes.where(
+                                            (note) =>
+                                                note.transactionType ==
+                                                TransactionType.expense);
                                         return budgetItems(
                                           title: note.first.name,
                                           isCoulors:

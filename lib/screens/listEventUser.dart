@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/screens/EventDetailScreen.dart';
 import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/screens/budgetScreen.dart';
 import 'package:iplanning/screens/guestList.dart';
@@ -193,109 +194,128 @@ class _ListEventState extends State<ListEvent>
                       margin: EdgeInsets.symmetric(
                           vertical: screenHeight * 0.015,
                           horizontal: screenWidth * 0.025),
-                      child: Card(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: screenHeight * 0.12,
-                              width: screenWidth * 0.2,
-                              margin: EdgeInsets.only(left: screenWidth * 0.02),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(screenWidth * 0.025)),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                      event.eventImage != null &&
-                                              event.eventImage!.isNotEmpty
-                                          ? event.eventImage![0]
-                                          : 'https://via.placeholder.com/150'),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => Eventdetailscreen(
+                                      uid: event.uid,
+                                      titleEvent: event.event_name,
+                                      userName: event.username,
+                                      location: event.location! ?? '',
+                                      startDate: event.eventDateStart,
+                                      avartar: event.profilePic,
+                                      discription: event.description!,
+                                      backgroundIMG: event.eventImage![0],
+                                      event_id: event.event_id)));
+                        },
+                        child: Card(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: screenHeight * 0.12,
+                                width: screenWidth * 0.2,
+                                margin:
+                                    EdgeInsets.only(left: screenWidth * 0.02),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(screenWidth * 0.025)),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(event.eventImage !=
+                                                null &&
+                                            event.eventImage!.isNotEmpty
+                                        ? event.eventImage![0]
+                                        : 'https://via.placeholder.com/150'),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    left: screenWidth * 0.04,
-                                    top: screenHeight * 0.02),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${event.eventDateStart.toDate().day}-${event.eventDateStart.toDate().month}-${event.eventDateStart.toDate().year} ${event.eventDateStart.toDate().hour}:${event.eventDateStart.toDate().minute}",
-                                      style: TextStyle(
-                                          fontSize: screenWidth * 0.035,
-                                          color: Colors.grey),
-                                    ),
-                                    SizedBox(height: screenHeight * 0.005),
-                                    Text(
-                                      event.event_name,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: screenWidth * 0.045,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    SizedBox(height: screenHeight * 0.002),
-                                    event.location != null
-                                        ? Text(
-                                            event.location!,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: screenWidth * 0.03,
-                                                fontWeight: FontWeight.w300),
-                                          )
-                                        : Container(),
-                                  ],
+                              Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: screenWidth * 0.04,
+                                      top: screenHeight * 0.02),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${event.eventDateStart.toDate().day}-${event.eventDateStart.toDate().month}-${event.eventDateStart.toDate().year} ${event.eventDateStart.toDate().hour}:${event.eventDateStart.toDate().minute}",
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.035,
+                                            color: Colors.grey),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.005),
+                                      Text(
+                                        event.event_name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.045,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.002),
+                                      event.location != null
+                                          ? Text(
+                                              event.location!,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: screenWidth * 0.03,
+                                                  fontWeight: FontWeight.w300),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            PopupMenuButton<String>(
-                              icon: Icon(Icons.more_vert),
-                              itemBuilder: (BuildContext ctx) => [
-                                const PopupMenuItem<String>(
-                                    value: 'BudgetList',
-                                    child: Text('Budget List')),
-                                const PopupMenuItem<String>(
-                                    value: 'TaskList',
-                                    child: Text('Task List')),
-                                const PopupMenuItem<String>(
-                                    value: 'GuestList',
-                                    child: Text('Guest List')),
-                              ],
-                              onSelected: (String result) {
-                                if (result == 'BudgetList') {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (ctx) => Budgetscreen(
-                                              eventId: event.event_id,
-                                            )),
-                                  );
-                                } else if (result == 'TaskList') {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (ctx) => TaskScreen(
-                                              budgetId: event.budget,
-                                              event_id: event.event_id,
-                                            )),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (ctx) => GuestList(
-                                              eventId: event.event_id,
-                                            )),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
+                              PopupMenuButton<String>(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (BuildContext ctx) => [
+                                  const PopupMenuItem<String>(
+                                      value: 'BudgetList',
+                                      child: Text('Budget List')),
+                                  const PopupMenuItem<String>(
+                                      value: 'TaskList',
+                                      child: Text('Task List')),
+                                  const PopupMenuItem<String>(
+                                      value: 'GuestList',
+                                      child: Text('Guest List')),
+                                ],
+                                onSelected: (String result) {
+                                  if (result == 'BudgetList') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) => Budgetscreen(
+                                                eventId: event.event_id,
+                                              )),
+                                    );
+                                  } else if (result == 'TaskList') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) => TaskScreen(
+                                                budgetId: event.budget,
+                                                event_id: event.event_id,
+                                              )),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) => GuestList(
+                                                eventId: event.event_id,
+                                              )),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

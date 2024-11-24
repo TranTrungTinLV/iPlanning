@@ -1,9 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:iplanning/models/categoryClass.dart';
+import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/providers/event_provider.dart';
 import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/mapScreen.dart';
 
@@ -14,23 +20,28 @@ import 'package:iplanning/widgets/TextCustomFeild.dart';
 import 'package:iplanning/widgets/dropdownCategories.dart';
 import 'package:iplanning/widgets/mutipleImage.dart';
 
-class CreateEventScreens extends StatefulWidget {
+class CreateEventScreens extends ConsumerStatefulWidget {
   CreateEventScreens(
       {super.key,
       required this.list,
+      this.onEventUpdated,
       required this.uid,
       required this.username,
-      required this.avatar});
+      this.eventData,
+      required this.avatar,
+      this.event_id});
   final String uid;
   final String username;
   final String? avatar;
   final List<CategoryModel> list;
-
+  final EventsPostModel? eventData;
+  final String? event_id;
+  final VoidCallback? onEventUpdated;
   @override
-  State<CreateEventScreens> createState() => _CreateEventScreensState();
+  ConsumerState<CreateEventScreens> createState() => _CreateEventScreensState();
 }
 
-class _CreateEventScreensState extends State<CreateEventScreens> {
+class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
   Timestamp? _startDate;
   Timestamp? _endDate;
   List<Uint8List>? fileImage = [];
@@ -52,6 +63,79 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
   bool _isStartDateSelected = true;
   bool _isEndDateSelected = true;
   bool _isImage = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.eventData == null && widget.event_id != null) {
+      _loadEventData(widget.event_id!);
+    } else {
+      _setEventData(widget.eventData);
+    }
+  }
+
+// Hàm tải dữ liệu sự kiện từ Firestore
+  void _loadEventData(String eventId) async {
+    setState(() {
+      isLoading = true;
+    });
+    EventsPostModel? event = await ClouMethods().getEventDataById(eventId);
+    if (event != null) {
+      _setEventData(event);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+// Hàm thiết lập dữ liệu sự kiện vào UI
+  void _setEventData(EventsPostModel? event) {
+    if (event != null) {
+      setState(() {
+        eventName.text = event.event_name;
+        description.text = event.description ?? '';
+        location.text = event.location ?? '';
+        _startDate = event.eventDateStart;
+        _endDate = event.eventDateEnd;
+
+        _selectedCategories = widget.list.firstWhere(
+          (category) =>
+              category.category_id == event.categoryModel?.category_id,
+          orElse: () {
+            print('Không tìm thấy danh mục khớp!');
+            return CategoryModel(
+              category_id: '',
+              name: 'Không rõ',
+              event_ids: [],
+            );
+          },
+        );
+
+        print('Selected Category: ${_selectedCategories?.name}');
+
+        isChecked = event.isPost;
+        _loadImagesFromUrls(event.eventImage ?? []);
+      });
+    }
+  }
+
+  Future<void> _loadImagesFromUrls(List<String> urls) async {
+    for (String url in urls) {
+      try {
+        final response = await HttpClient().getUrl(Uri.parse(url));
+        final data = await response.close();
+        final bytes = await consolidateHttpClientResponseBytes(data);
+
+        // Update fileImage dynamically
+        setState(() {
+          fileImage = [...?fileImage, Uint8List.fromList(bytes)];
+        });
+      } catch (e) {
+        print("Error loading image from URL $url: $e");
+      }
+    }
+  }
+
   void validateForm() {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
@@ -166,23 +250,55 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
       isLoading = true;
     });
     try {
-      String res = await ClouMethods().uploadPost(
+      String res;
+
+      // Nếu có `event_id`, thực hiện cập nhật bài viết
+      if (widget.event_id != null && widget.event_id!.isNotEmpty) {
+        res = await ClouMethods().updatePost(
+          eventId: widget.event_id!,
           username: widget.username,
           profilePic: widget.avatar,
-          event_name: eventName.text,
+          event_name: eventName.text.trim(),
           eventDateEnd: _endDate!,
           eventDateStart: _startDate!,
           uid: widget.uid,
-          location: location.text,
-          eventType: eventType.text,
-          description: description.text,
+          location: location.text.trim(),
+          eventType: eventType.text.trim(),
+          description: description.text.trim(),
           eventImages: fileImage!,
           category_id: _selectedCategories!,
-          isPost: isChecked);
+          isPost: isChecked,
+        );
+      } else {
+        // Nếu không có `event_id`, tạo bài viết mới
+        res = await ClouMethods().uploadPost(
+          username: widget.username,
+          profilePic: widget.avatar,
+          event_name: eventName.text.trim(),
+          eventDateEnd: _endDate!,
+          eventDateStart: _startDate!,
+          uid: widget.uid,
+          location: location.text.trim(),
+          eventType: eventType.text.trim(),
+          description: description.text.trim(),
+          eventImages: fileImage!,
+          category_id: _selectedCategories!,
+          isPost: isChecked,
+        );
+      }
 
       if (res == 'success') {
-        // Sử dụng popUntil để quay về HomeScreen
+        Fluttertoast.showToast(
+            msg: widget.event_id != null
+                ? "Sự kiện đã được cập nhật thành công!"
+                : "Sự kiện đã được tạo thành công!");
+        // ref.read(eventStateProvider.notifier).refreshEvent(widget.event_id!);
+        if (widget.onEventUpdated != null) {
+          widget.onEventUpdated!();
+        }
         Navigator.pop(context, true);
+      } else {
+        Fluttertoast.showToast(msg: "Đã xảy ra lỗi: $res");
       }
     } catch (e) {
       print('Error: $e');
@@ -376,10 +492,12 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: MutipleImage(
-                                  images: fileImage!,
-                                ),
-                              ),
+                                  child:
+                                      // fileImage != null && fileImage!.isNotEmpty
+                                      // ?
+                                      MutipleImage(images: fileImage!)
+                                  // : Text('No images loaded'),
+                                  ),
                               if (!_isImage)
                                 Text(
                                   'Vui lòng thêm ảnh',
@@ -408,14 +526,18 @@ class _CreateEventScreensState extends State<CreateEventScreens> {
                                   eventName.text = value!;
                                 },
                               ),
-                              Dropdowncategories(
-                                list: widget.list,
-                                onCategoryChanged: (CategoryModel selected) {
-                                  setState(() {
-                                    _selectedCategories = selected;
-                                  });
-                                },
-                              ),
+                              widget.list.isEmpty
+                                  ? CircularProgressIndicator()
+                                  : Dropdowncategories(
+                                      list: widget.list,
+                                      selectedCategory: _selectedCategories,
+                                      onCategoryChanged:
+                                          (CategoryModel selected) {
+                                        setState(() {
+                                          _selectedCategories = selected;
+                                        });
+                                      },
+                                    ),
                               Container(
                                   margin: EdgeInsets.symmetric(vertical: 20),
                                   child: TextFieldCustom(

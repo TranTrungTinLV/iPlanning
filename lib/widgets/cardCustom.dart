@@ -22,8 +22,8 @@ class CardCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isMe = authInstance.currentUser!.uid == uid;
-    print(isMe);
+    // final isMe = authInstance.currentUser!.uid == uid;
+    // print(isMe);
     return Container(
       width: screenWidth * 0.7,
       margin: EdgeInsets.only(right: 10.0),

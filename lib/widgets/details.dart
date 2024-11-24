@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:intl/intl.dart';
 
-class Details extends StatelessWidget {
+class Details extends StatefulWidget {
   Details(
       {super.key,
       required this.uid,
@@ -24,15 +24,26 @@ class Details extends StatelessWidget {
   final Timestamp startDate;
   final String discription;
   final void Function() onTap;
+
+  @override
+  State<Details> createState() => _DetailsState();
+}
+
+class _DetailsState extends State<Details> {
+  bool isExpended = true;
   @override
   Widget build(BuildContext context) {
-    final isMe = authInstance.currentUser!.uid == uid;
+    final isMe = authInstance.currentUser!.uid == widget.uid;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final _formatterAmount =
         NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.60,
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.06, vertical: screenHeight * 0.03),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,19 +57,20 @@ class Details extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
+                      width: screenWidth * 0.5,
                       child: Text(
-                        titleEvent ?? '',
+                        widget.titleEvent ?? '',
                         style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.05,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: 22),
+                      margin: EdgeInsets.only(top: 18, bottom: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          (location.isNotEmpty)
+                          (widget.location.isNotEmpty)
                               ? Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -68,7 +80,7 @@ class Details extends StatelessWidget {
                                     ),
                                     Container(
                                       width: MediaQuery.of(context).size.width *
-                                          0.6,
+                                          0.5,
                                       child: Text(
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -77,7 +89,7 @@ class Details extends StatelessWidget {
                                                     .size
                                                     .width *
                                                 0.04),
-                                        location,
+                                        widget.location,
                                       ),
                                     ),
                                   ],
@@ -98,7 +110,7 @@ class Details extends StatelessWidget {
                                                   .size
                                                   .width *
                                               0.03),
-                                      "${startDate.toDate().day}-${startDate.toDate().month}-${startDate.toDate().year}" ??
+                                      "${widget.startDate.toDate().day}-${widget.startDate.toDate().month}-${widget.startDate.toDate().year}" ??
                                           'Start Date'),
                                 ),
                               ],
@@ -114,7 +126,7 @@ class Details extends StatelessWidget {
                                         fontSize:
                                             MediaQuery.of(context).size.width *
                                                 0.03),
-                                    "${DateFormat('HH:mm').format(startDate.toDate()) ?? 'Start Time'}" ??
+                                    "${DateFormat('HH:mm').format(widget.startDate.toDate()) ?? 'Start Time'}" ??
                                         'Start Time'),
                               ),
                             ],
@@ -128,12 +140,13 @@ class Details extends StatelessWidget {
                     ? Container()
                     : GestureDetector(
                         child: Container(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.circular(10)),
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             child: Text(
-                              "${ammount != null && ammount != 0.0 ? _formatterAmount.format(ammount).toString() : "Free"}",
+                              "${widget.ammount != null && widget.ammount != 0.0 ? _formatterAmount.format(widget.ammount).toString().replaceAll('.', ',') : "Free"}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize:
@@ -155,37 +168,37 @@ class Details extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    onTap();
+                    widget.onTap();
                   },
                   child: Row(
                     children: [
                       CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(avartar.isNotEmpty
-                            ? avartar
+                        radius: MediaQuery.of(context).size.width * 0.06,
+                        backgroundImage: NetworkImage(widget.avartar.isNotEmpty
+                            ? widget.avartar
                             : 'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                       ),
                       SizedBox(
-                        width: 20,
+                        width: MediaQuery.of(context).size.width * 0.03,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             child: Text(
-                              userName ?? 'User name',
+                              widget.userName ?? 'User name',
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.03),
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      0.035),
                             ),
                           ),
                           Container(
                             child: Text(
                               isMe ? 'Me' : 'hosting',
                               style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width *
-                                      0.025),
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03),
                             ),
                           ),
                         ],
@@ -204,16 +217,55 @@ class Details extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Desctiption',
+                    'Mô tả',
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: MediaQuery.of(context).size.width * 0.035),
                   ),
-                  Text(
-                    discription ??
-                        'Ultricies arcu venenatis in lorem faucibus lobortis at. East odio varius nisl congue aliquam nunc est sit pull convallis magna. Est scelerisque dignissim non nibh....',
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.03),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        maxLines: widget.discription.length > 50
+                            ? isExpended
+                                ? 2
+                                : null
+                            : 2,
+                        overflow: widget.discription.length > 50
+                            ? isExpended
+                                ? TextOverflow.ellipsis
+                                : TextOverflow.visible
+                            : TextOverflow.visible,
+                        textAlign: TextAlign.justify,
+                        widget.discription ?? '',
+                        style: TextStyle(
+                            height: 1.5,
+                            fontSize: MediaQuery.of(context).size.width * 0.03),
+                      ),
+                      if (widget.discription.length > 50)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isExpended = !isExpended;
+                            });
+                          },
+                          child: Container(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Xem thêm",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              Icon(isExpended
+                                  ? Icons.arrow_drop_down
+                                  : Icons.arrow_drop_up)
+                            ],
+                          )),
+                        )
+                    ],
                   )
                 ],
               ),

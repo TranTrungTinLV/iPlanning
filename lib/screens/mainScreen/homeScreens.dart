@@ -318,16 +318,14 @@ class _HomescreensState extends State<Homescreens> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     List<EventsPostModel> filteredEvents = _selectedCategoryId != null
-        ? _filterEventsWithLocation(
-            (_eventPosts ?? []).where((event) {
-              return _categoriesModel!
-                  .firstWhere(
-                      (category) => category.category_id == _selectedCategoryId)
-                  .event_ids!
-                  .contains(event.event_id);
-            }).toList(),
-          )
-        : _filterEventsWithLocation(_eventPosts ?? []);
+        ? _eventPosts!.where((event) {
+            return _categoriesModel!
+                .firstWhere(
+                    (category) => category.category_id == _selectedCategoryId)
+                .event_ids!
+                .contains(event.event_id);
+          }).toList()
+        : _eventPosts ?? [];
 
     return Scaffold(
       key: _scaffoldKey,
@@ -414,6 +412,7 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => CreateEventScreens(
+                                
                                     uid: _userData!.uid,
                                     avatar: _userData!.displayAvatar,
                                     username: _userData!.name,

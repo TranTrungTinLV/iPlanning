@@ -66,7 +66,7 @@ class EventsPostModel {
       event_name: json['event_name'] as String,
       categoryModel: json['category'] != null
           ? CategoryModel.fromJson(
-              json['category']) // Kiểm tra nếu category tồn tại
+              json['category_id']) // Kiểm tra nếu category tồn tại
           : null,
       todoList:
           json['todoList'] != null ? List<String>.from(json['todoList']) : [],

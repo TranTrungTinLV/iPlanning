@@ -19,6 +19,8 @@ class _GuestListState extends State<GuestList> {
   Map<String, String?> inviteStatus = {};
   bool isLoading = true;
   List<UserModel> userList = [];
+  String searchInput = '';
+
   @override
   void initState() {
     // TODO: implement initState
@@ -72,6 +74,11 @@ class _GuestListState extends State<GuestList> {
 
   @override
   Widget build(BuildContext context) {
+    // Lọc tìm kiếm
+    List<UserModel> filteredUsers = userList.where((user) {
+      return user.name.toLowerCase().contains(searchInput
+          .toLowerCase()); // So sánh không phân biệt chữ hoa/chữ thường
+    }).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Guest List'),
@@ -89,19 +96,50 @@ class _GuestListState extends State<GuestList> {
           ? Center(child: CircularProgressIndicator())
           : Container(
               margin: EdgeInsets.symmetric(vertical: 20),
-              child: ListView.builder(
-                  itemCount: userList.length,
-                  itemBuilder: (context, index) {
-                    return Guestlistitems(
-                        onStatusChanged: (userId, status) {
-                          setState(() {
-                            inviteStatus[userId] = status;
-                          });
-                        },
-                        inviteStatus: inviteStatus,
-                        users: userList[index],
-                        eventId: widget.eventId);
-                  }),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 24),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchInput = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          labelText: 'Tìm người dùng'),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: filteredUsers.isEmpty
+                        ? Center(
+                            child: Text(
+                              'Không tìm thấy người dùng',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: filteredUsers.length,
+                            itemBuilder: (context, index) {
+                              return Guestlistitems(
+                                  onStatusChanged: (userId, status) {
+                                    setState(() {
+                                      inviteStatus[userId] = status;
+                                    });
+                                  },
+                                  inviteStatus: inviteStatus,
+                                  users: filteredUsers[index],
+                                  eventId: widget.eventId);
+                            }),
+                  ),
+                ],
+              ),
             ),
     );
   }

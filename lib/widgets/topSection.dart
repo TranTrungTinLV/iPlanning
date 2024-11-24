@@ -37,10 +37,10 @@ class _TopSectionState extends State<TopSection> {
             eventId: widget.eventId,
             getPicture: widget.getPicture,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          SearchAndFilterRow(
-            onFilter: widget.onFilter,
-          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+          // SearchAndFilterRow(
+          //   onFilter: widget.onFilter,
+          // ),
         ],
       ),
     );

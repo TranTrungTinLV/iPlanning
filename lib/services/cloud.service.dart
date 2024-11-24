@@ -65,6 +65,79 @@ class ClouMethods {
     return res;
   }
 
+  Future<String> updatePost({
+    required String eventId,
+    required String event_name,
+    required Timestamp eventDateEnd,
+    required Timestamp eventDateStart,
+    String? profilePic,
+    bool? isPost,
+    required CategoryModel category_id,
+    String? eventType,
+    required String username,
+    required String uid,
+    String? location,
+    required List<Uint8List> eventImages,
+    required String description,
+  }) async {
+    String res = 'Some error occurred';
+
+    try {
+      // Upload lại hình ảnh nếu có thay đổi
+      List<String> updatedImages = await uploadImageToStorage(
+        eventImages,
+        'eventPosts/$eventId',
+        true,
+      );
+
+      // Cập nhật dữ liệu bài viết trong Firestore
+      await firestoreInstance.collection('eventPosts').doc(eventId).update({
+        'event_name': event_name,
+        'eventDateEnd': eventDateEnd,
+        'eventDateStart': eventDateStart,
+        'profilePic': profilePic,
+        'isPost': isPost,
+        'category_id': category_id.category_id,
+        'eventType': eventType,
+        'username': username,
+        'uid': uid,
+        'location': location,
+        'description': description,
+        'eventImage': updatedImages,
+        'updatedAt': Timestamp.now(),
+      });
+
+      // Cập nhật danh sách sự kiện trong danh mục nếu cần
+      await CategoriesMethod()
+          .updateCategoryEventIds(category_id.category_id, eventId);
+
+      res = "success";
+    } catch (e) {
+      print("Error updating post: $e");
+      res = e.toString();
+    }
+
+    return res;
+  }
+
+  Future<EventsPostModel?> getEventDataById(String eventId) async {
+    try {
+      // Explicitly cast the DocumentSnapshot to the expected type
+      final snapshot = await postEvents.doc(eventId).get()
+          as DocumentSnapshot<Map<String, dynamic>>;
+
+      if (snapshot.exists && snapshot.data() != null) {
+        return EventsPostModel.fromJson(snapshot.data()!);
+      } else {
+        print("Không tìm thấy dữ liệu sự kiện với ID: $eventId");
+        return null;
+      }
+    } catch (e) {
+      print("Lỗi khi lấy dữ liệu sự kiện: $e");
+      return null;
+    }
+  }
+
   Future<List<EventsPostModel>> getAllEventPosts() async {
     try {
       QuerySnapshot snapshot = await postEvents.get();

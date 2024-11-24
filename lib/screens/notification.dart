@@ -7,6 +7,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/main.dart';
+import 'package:iplanning/models/events_model.dart';
+import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/services/noti.service.dart';
 
@@ -118,13 +120,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                 itemCount: combinedNotifications.length,
                 itemBuilder: (context, index) {
                   final doc = combinedNotifications[index];
-
-                  final isHosting = doc['uid'] == authUid;
+                  final eventData = doc.data() as Map<String, dynamic>;
+                  final eventPost = EventsPostModel.fromJson(eventData);
+                  final isHosting = eventPost.uid == authUid;
                   print("Hosting docs: ${hostingDocs.length}");
                   print("Invited docs: ${invitedDocs.length}");
 
                   if (isHosting) {
-                    final isPending = doc['isPending'] as List<dynamic>? ?? [];
+                    final isPending =
+                        eventPost.isPending as List<dynamic>? ?? [];
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: isPending.map((uid) {
@@ -144,6 +148,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                             }
 
                             final userDoc = userSnapshot.data!;
+                            final userData =
+                                userDoc.data() as Map<String, dynamic>;
+                            final userModel = UserModel.fromJson(userData);
                             print("User data for $uid: ${userDoc.data()}");
                             return Container(
                               margin: EdgeInsets.symmetric(
@@ -160,15 +167,40 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                     children: [
                                       Row(
                                         children: [
-                                          const CircleAvatar(
+                                          CircleAvatar(
                                             backgroundColor: Colors.blue,
-                                            child: Icon(Icons.person),
+                                            backgroundImage: NetworkImage(userModel
+                                                    .displayAvatar ??
+                                                'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                                           ),
                                           SizedBox(
                                             width: 14,
                                           ),
-                                          Text(
-                                              "${userDoc['name']} muốn tham gia: ${doc['event_name']}"),
+                                          Container(
+                                            width: screenWidth * 0.5,
+                                            margin: EdgeInsets.only(
+                                                top: 5, bottom: 10.0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        screenWidth * 0.04,
+                                                    color: Color(0xff060518)),
+                                                children: [
+                                                  TextSpan(
+                                                    text: "${userModel.name} ",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  TextSpan(
+                                                    text:
+                                                        "muốn tham gia ${eventPost.event_name}",
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       Row(
@@ -271,15 +303,36 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                             children: [
                               Row(
                                 children: [
-                                  const CircleAvatar(
+                                  CircleAvatar(
                                     backgroundColor: Colors.green,
-                                    child: Icon(Icons.event),
+                                    backgroundImage: NetworkImage(eventPost
+                                            .profilePic ??
+                                        'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                                   ),
                                   SizedBox(
                                     width: 14,
                                   ),
-                                  Text(
-                                      "${doc['username']} mời bạn tham gia ${doc['event_name']}"),
+                                  Container(
+                                    width: screenWidth * 0.5,
+                                    margin: EdgeInsets.only(bottom: 10, top: 5),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: "${eventPost.username}",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500)),
+                                          TextSpan(
+                                            text:
+                                                " mời bạn tham gia ${eventPost.event_name}",
+                                          )
+                                        ],
+                                        style: TextStyle(
+                                            fontSize: screenWidth * 0.04,
+                                            color: Color(0xff060518)),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                               Row(

@@ -44,6 +44,7 @@ class NoteMethod {
           transactionType: transactionType,
           content: content,
           todo_id: todoId,
+          createAt: Timestamp.now(),
           note_id: noteId);
       await noteBudget.doc(noteId).set(noteModel.toJson());
       await updateNoteModelwithBudgetIds(noteId, budget_id);

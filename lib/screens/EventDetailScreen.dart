@@ -4,12 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:iplanning/consts/firebase_const.dart';
+import 'package:iplanning/models/categoryClass.dart';
+import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/providers/event_provider.dart';
 import 'package:iplanning/screens/guestList.dart';
+import 'package:iplanning/screens/mainScreen/createEventScreens.dart';
 import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/services/auth.service.dart';
@@ -17,7 +22,7 @@ import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/services/noti.service.dart';
 import 'package:iplanning/widgets/details.dart';
 
-class Eventdetailscreen extends StatefulWidget {
+class Eventdetailscreen extends ConsumerStatefulWidget {
   Eventdetailscreen({
     Key? key,
     required this.uid,
@@ -43,16 +48,17 @@ class Eventdetailscreen extends StatefulWidget {
   bool isLoadingInvite = true;
 
   @override
-  State<Eventdetailscreen> createState() => _EventdetailscreenState();
+  ConsumerState<Eventdetailscreen> createState() => _EventdetailscreenState();
 }
 
-class _EventdetailscreenState extends State<Eventdetailscreen> {
+class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
   bool? isInvited = false;
   bool isLoadingWishList = false;
   final _formatterAmount = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
   UserModel? userProfile;
   final _authService = AuthenticationService();
   double? ammount;
+  String? _selectedCategoryName;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   @override
@@ -63,6 +69,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
     _checkWishList();
     _loadUserData();
     getBudgetFromEventPOST(widget.event_id);
+    ref.read(eventStateProvider.notifier).refreshEvent(widget.event_id);
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
@@ -84,6 +91,22 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
       print('No budget found for event_id: $eventId');
       return null;
     }
+  }
+
+  Future<List<CategoryModel>> fetchCategories() async {
+    QuerySnapshot snapshot =
+        await firestoreInstance.collection('categoriesEvent').get();
+    print("Fetched Categories:");
+    snapshot.docs.forEach((doc) {
+      print(doc.data());
+    });
+    return snapshot.docs.map((doc) {
+      return CategoryModel(
+        category_id: doc['category_id'],
+        name: doc['name'],
+        event_ids: List<String>.from(doc['event_ids']),
+      );
+    }).toList();
   }
 
   void _checkInviteStatus() async {
@@ -186,6 +209,7 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final eventState = ref.watch(eventStateProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -195,8 +219,10 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
               height: MediaQuery.of(context).size.height * 0.5,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(widget.backgroundIMG) ??
-                      AssetImage('assets/event.png'),
+                  image: eventState.eventDetails?.eventImage != null &&
+                          eventState.eventDetails!.eventImage!.isNotEmpty
+                      ? NetworkImage(eventState.eventDetails!.eventImage![0])
+                      : NetworkImage(widget.backgroundIMG),
                   repeat: ImageRepeat.repeatX,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
@@ -210,14 +236,17 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Details(
-              ammount: ammount ?? 0,
+              ammount: eventState.ammount ?? 0,
               userName: widget.userName,
               uid: widget.uid,
-              titleEvent: widget.titleEvent,
-              location: widget.location,
-              startDate: widget.startDate,
+              titleEvent: eventState.eventDetails!.event_name,
+              location: eventState.eventDetails!.location ?? widget.location,
+              startDate: eventState.eventDetails!.eventDateStart != null
+                  ? eventState.eventDetails!.eventDateStart
+                  : widget.startDate,
               avartar: widget.avartar,
-              discription: widget.discription,
+              discription:
+                  eventState.eventDetails!.description ?? widget.discription,
               onTap: () {
                 if (userProfile != null) {
                   Navigator.push(
@@ -226,12 +255,16 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                       builder: (ctx) => ProfileScreen(
                         enteredemail: userProfile!.email,
                         username: userProfile!.name,
-                        avatarEdit: widget.avartar,
+                        avatarEdit: (widget.avartar != "" &&
+                                widget.avartar != null)
+                            ? widget.avartar
+                            : 'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
                         userData: userProfile!,
                       ),
                     ),
                   );
                 } else {
+                  // Handle case where profile data is not yet loaded
                   Fluttertoast.showToast(
                     msg:
                         "User profile is still loading. Please try again later.",
@@ -440,15 +473,15 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                                         ],
                                                       )),
                                                   const PopupMenuItem<String>(
-                                                      value: 'ShareFriend',
+                                                      value: 'EditEvent',
                                                       child: Row(
                                                         children: [
-                                                          Icon(Icons.share),
-                                                          Text('Share'),
+                                                          Icon(Icons.edit),
+                                                          Text('Chỉnh sửa'),
                                                         ],
                                                       )),
                                                 ],
-                                            onSelected: (String result) {
+                                            onSelected: (String result) async {
                                               if (result == 'GuestList') {
                                                 Navigator.push(
                                                   context,
@@ -459,7 +492,42 @@ class _EventdetailscreenState extends State<Eventdetailscreen> {
                                                                 widget.event_id,
                                                           )),
                                                 );
-                                              } else {}
+                                              } else {
+                                                List<CategoryModel> categories =
+                                                    await fetchCategories();
+                                                final isUpdated =
+                                                    Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          CreateEventScreens(
+                                                            list:
+                                                                categories, // Truyền danh sách category nếu cần
+                                                            uid: widget.uid,
+                                                            username:
+                                                                widget.userName,
+                                                            avatar:
+                                                                widget.avartar,
+                                                            event_id:
+                                                                widget.event_id,
+                                                            onEventUpdated: () {
+                                                              ref
+                                                                  .read(eventStateProvider
+                                                                      .notifier)
+                                                                  .refreshEvent(
+                                                                      widget
+                                                                          .event_id);
+                                                            },
+                                                          )),
+                                                );
+                                                if (isUpdated == true) {
+                                                  ref
+                                                      .read(eventStateProvider
+                                                          .notifier)
+                                                      .refreshEvent(
+                                                          widget.event_id);
+                                                }
+                                              }
                                             })
                                         : IconButton(
                                             onPressed: () async {

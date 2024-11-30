@@ -25,6 +25,8 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final counter = widget.counter_notifi < 0 ? 0 : widget.counter_notifi;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,7 +140,7 @@ class _TopBarState extends State<TopBar> {
                 size: screenWidth * 0.06,
               ),
 
-              if (widget.counter_notifi > 0)
+              if (counter > 0)
                 Positioned(
                   top: 0,
                   right: 0,
@@ -150,7 +152,7 @@ class _TopBarState extends State<TopBar> {
                     ),
                     child: Center(
                       child: Text(
-                        '${widget.counter_notifi}',
+                        '${counter}',
                         style: TextStyle(
                           fontSize: screenWidth * 0.02,
                           color: Colors.white,

@@ -554,18 +554,20 @@ class _HomescreensState extends State<Homescreens> {
                         opacity: constraints.biggest.height < 120 ? 1 : 0,
                       ),
                       background: TopSection(
-                        counter_notifi: _myEventPosts!
-                            .where((event) =>
-                                event.isPending != null &&
-                                event.isPending!.isNotEmpty)
-                            .length,
+                        counter_notifi:
+                            (_myEventPosts != null && _myEventPosts!.isNotEmpty)
+                                ? _myEventPosts!
+                                    .where((event) =>
+                                        event.isPending != null &&
+                                        event.isPending!.isNotEmpty)
+                                    .length
+                                : 0,
                         drawer: () {
                           _scaffoldKey.currentState?.openDrawer();
                         },
                         location: _userData?.country ?? '',
                         eventId: event != null ? event!.event_id : '',
                         getPicture: _getDataPicture,
-                        onFilter: () {},
                       ));
                 }),
               ),

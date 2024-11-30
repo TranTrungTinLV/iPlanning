@@ -8,6 +8,7 @@ class TopBar extends StatefulWidget {
   TopBar(
       {super.key,
       required this.drawer,
+      required this.counter_notifi,
       this.eventId,
       required this.getPicture,
       required this.location});
@@ -15,6 +16,7 @@ class TopBar extends StatefulWidget {
   final void Function() drawer;
   String location;
   String? eventId;
+  final int counter_notifi;
   @override
   State<TopBar> createState() => _TopBarState();
 }
@@ -111,6 +113,7 @@ class _TopBarState extends State<TopBar> {
           icon: Stack(
             alignment: Alignment.center,
             children: [
+              // Vòng tròn nền mờ
               Container(
                 width: screenWidth * 0.09,
                 height: screenWidth * 0.09,
@@ -118,18 +121,45 @@ class _TopBarState extends State<TopBar> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(screenWidth * 0.045),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.black26,
+                        color: Colors.black38,
                       ),
                     ),
                   ),
                 ),
               ),
-              Icon(Icons.notifications,
-                  color: Colors.white, size: screenWidth * 0.06),
+              // Icon thông báo
+              Icon(
+                Icons.notifications,
+                color: Colors.white,
+                size: screenWidth * 0.06,
+              ),
+
+              if (widget.counter_notifi > 0)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(screenWidth * 0.012),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${widget.counter_notifi}',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.02,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
           onPressed: () {

@@ -50,8 +50,8 @@ class CardCustom extends StatelessWidget {
                           filterQuality: FilterQuality.high)),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(
-                      left: 10, right: 10, top: 0, bottom: 16.0),
+                  margin: EdgeInsets.only(
+                      left: 10, right: 10, top: 0, bottom: screenHeight * 0.01),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +72,7 @@ class CardCustom extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: screenWidth * 0.06,
+                            width: screenWidth * 0.05,
                           ),
                           Row(
                             children: [
@@ -83,10 +83,9 @@ class CardCustom extends StatelessWidget {
                                   child: Align(
                                       widthFactor: 0.5,
                                       child: CircleAvatar(
-                                        // radius: 50,
                                         backgroundColor: Colors.white,
                                         child: CircleAvatar(
-                                          radius: 60,
+                                          radius: 15,
                                           backgroundImage: NetworkImage(
                                             RandomImages[i],
                                           ),
@@ -96,7 +95,7 @@ class CardCustom extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            margin: const EdgeInsets.only(left: 20),
+                            margin: EdgeInsets.only(left: screenWidth * 0.035),
                             child: count <= 0
                                 ? Container()
                                 : Text(

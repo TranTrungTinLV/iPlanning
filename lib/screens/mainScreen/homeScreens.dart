@@ -184,13 +184,7 @@ class _HomescreensState extends State<Homescreens> {
       final eventStartTime = upcomingEvent.first.eventDateStart.toDate();
       final timeUntilEvent = eventStartTime.difference(now).inMinutes;
 
-      if (timeUntilEvent > 0 && timeUntilEvent <= 10) {
-        // AlarmNotifier.showNotification(
-        //     flutterLocalNotificationsPlugin,
-        //     'Sự kiện sắp bắt đầu!',
-        //     'Còn $timeUntilEvent phút nữa sự kiện "${upcomingEvent.first.event_name}" sẽ bắt đầu lúc ${eventStartTime.hour}:${eventStartTime.minute}',
-        //     upcomingEvent.first.event_id);
-      }
+      if (timeUntilEvent > 0 && timeUntilEvent <= 10) {}
     } else {
       print("No upcoming events within the next 10 minutes.");
     }
@@ -234,17 +228,17 @@ class _HomescreensState extends State<Homescreens> {
     return events;
   }
 
-  void _checkInviteStatus() async {
-    DocumentSnapshot eventSnapshot = await firestoreInstance
-        .collection('eventPosts')
-        .doc(event!.event_id)
-        .get();
+  // void _checkInviteStatus() async {
+  //   DocumentSnapshot eventSnapshot = await firestoreInstance
+  //       .collection('eventPosts')
+  //       .doc(event!.event_id)
+  //       .get();
 
-    setState(() {
-      inviting = (eventSnapshot.data() as dynamic)['isPending']
-          .contains(authInstance.currentUser!.uid);
-    });
-  }
+  //   setState(() {
+  //     inviting = (eventSnapshot.data() as dynamic)['isPending']
+  //         .contains(authInstance.currentUser!.uid);
+  //   });
+  // }
 
   Future<List<CategoryModel>> _loadCategories() async {
     try {
@@ -560,6 +554,11 @@ class _HomescreensState extends State<Homescreens> {
                         opacity: constraints.biggest.height < 120 ? 1 : 0,
                       ),
                       background: TopSection(
+                        counter_notifi: _myEventPosts!
+                            .where((event) =>
+                                event.isPending != null &&
+                                event.isPending!.isNotEmpty)
+                            .length,
                         drawer: () {
                           _scaffoldKey.currentState?.openDrawer();
                         },

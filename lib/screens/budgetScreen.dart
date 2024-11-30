@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:iplanning/models/note.dart';
+import 'package:iplanning/models/note_models.dart';
 import 'package:iplanning/screens/InformationBudgetScreen.dart';
 import 'package:iplanning/models/Budget.dart';
-
 import 'package:iplanning/screens/budgetList.dart';
 import 'package:iplanning/services/budget.service.dart';
 import 'package:iplanning/services/note.service.dart';
@@ -20,6 +19,7 @@ class _BudgetscreenState extends State<Budgetscreen> {
   @override
   initState() {
     super.initState();
+
     _loadBudgets().then((_) {
       _loadNoteModel().then((_) {
         _total();
@@ -60,6 +60,11 @@ class _BudgetscreenState extends State<Budgetscreen> {
   Future<void> _loadNoteModel() async {
     final notes =
         await NoteMethod().loadNoteModelwithBudget(budgets!.budget_id);
+    print("Notes loaded: ${notes.length}");
+    for (var note in notes) {
+      print(
+          "Note Data: ${note.name}, Type: ${note.transactionType}, Amount: ${note.amount}");
+    }
     setState(() {
       noteModels = notes;
     });
@@ -71,7 +76,7 @@ class _BudgetscreenState extends State<Budgetscreen> {
         .where((note) => note.transactionType == TransactionType.income)
         .map((note) => note.amount)
         .fold(0.0, (acc, element) => acc + element);
-
+    print("Tồng thu $icome");
     double expense = noteModels
         .where((note) => note.transactionType == TransactionType.expense)
         .map((note) => note.amount)

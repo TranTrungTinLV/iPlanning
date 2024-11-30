@@ -180,10 +180,10 @@ class _ForgotpasswordScreenState extends State<ForgotpasswordScreen> {
                       children: [
                         ButtonAuth(
                           colour: const Color(0xffEDE5E5),
-                          backgroundColour: const Color(0xff54BA64),
+                          backgroundColour: const Color(0xff035B81),
                           textColour: Colors.white,
                           onTap: passwordReset,
-                          title: !_isPhoneVerified ? 'Check' : 'Submit',
+                          title: !_isPhoneVerified ? 'Kiểm tra' : 'Chấp nhận',
                           isCheck: false,
                         ),
                         if (_isPhoneVerified)

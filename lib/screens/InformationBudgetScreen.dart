@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:iplanning/models/note.dart';
+import 'package:iplanning/models/note_models.dart';
 import 'package:iplanning/screens/mainScreen/transactionScreen.dart';
 import 'package:iplanning/services/note.service.dart';
 import 'package:iplanning/utils/transactionType.dart';

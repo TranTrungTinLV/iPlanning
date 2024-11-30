@@ -22,8 +22,6 @@ class CardCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    // final isMe = authInstance.currentUser!.uid == uid;
-    // print(isMe);
     return Container(
       width: screenWidth * 0.7,
       margin: EdgeInsets.only(right: 10.0),
@@ -80,13 +78,15 @@ class CardCustom extends StatelessWidget {
                             children: [
                               for (int i = 0; i < RandomImages.length; i++)
                                 Container(
-                                  margin: EdgeInsets.symmetric(vertical: 0),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 0),
                                   child: Align(
                                       widthFactor: 0.5,
                                       child: CircleAvatar(
+                                        // radius: 50,
                                         backgroundColor: Colors.white,
                                         child: CircleAvatar(
-                                          radius: screenWidth * 0.06,
+                                          radius: 60,
                                           backgroundImage: NetworkImage(
                                             RandomImages[i],
                                           ),

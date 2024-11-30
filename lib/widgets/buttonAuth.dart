@@ -56,7 +56,7 @@ class ButtonAuth extends StatelessWidget {
                       style: TextStyle(
                         color: textColour,
                         fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
                       ),
                     ),
                   )
@@ -65,7 +65,7 @@ class ButtonAuth extends StatelessWidget {
                     style: TextStyle(
                       color: textColour,
                       fontWeight: FontWeight.w500,
-                      fontSize: 16.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                     ),
                   ),
             if (icon != null) const SizedBox(width: 20), // Space for symmetry

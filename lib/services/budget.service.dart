@@ -68,21 +68,32 @@ class BudgetMethod {
 
   Future<void> findTaskOnBudget(String budget_id, String event_ids) async {
     try {
-      QuerySnapshot tasks = await todoList
+      // Fetch all notes for the event with budget_id = null
+      QuerySnapshot notes = await noteBudget
           .where('event_ids', isEqualTo: event_ids)
-          .where('note_id') // Chỉ tìm những task chưa có budget
+          .where('budget_id', isNull: true)
           .get();
-      for (final task in tasks.docs) {
-        String todoId = task.id;
 
-        DocumentSnapshot noteSnapshot = await noteBudget.doc(todoId).get();
-        if (noteSnapshot.exists) {
-          await noteBudget.doc(todoId).update({'budget_id': budget_id});
-        }
-        await noteBudget.doc(todoId).update({'budget_id': budget_id});
-        await todoList.doc(todoId).update({'note_id': budget_id});
-        print("Successfully assigned budget to tasks for event $event_ids.");
+      List<String> noteIds = [];
+
+      for (var note in notes.docs) {
+        // Cập nhật budget_id trong từng tài liệu notes
+        await noteBudget.doc(note.id).update({'budget_id': budget_id});
+        noteIds.add(note.id); // Thêm note_id vào danh sách
+        print("Note ${note.id} đã được liên kết với Budget ${budget_id}.");
       }
-    } catch (e) {}
+
+      // Cập nhật lại danh sách note_id trong tài liệu budgets
+      if (noteIds.isNotEmpty) {
+        await budgetEvents.doc(budget_id).update({
+          'note_id': FieldValue.arrayUnion(noteIds),
+        });
+        print("Cập nhật danh sách note_id vào budget ${budget_id}: $noteIds");
+      }
+
+      print("Hoàn thành liên kết task và notes vào budget.");
+    } catch (e) {
+      print('Lỗi khi cập nhật budget cho task/notes: $e');
+    }
   }
 }

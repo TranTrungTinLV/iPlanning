@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iplanning/consts/firebase_const.dart';
-import 'package:iplanning/models/note.dart';
+
+import 'package:iplanning/models/note_models.dart';
 import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/services/task.service.dart';
 import 'package:iplanning/utils/todoStatus.dart';
@@ -18,6 +19,7 @@ class NoteMethod {
     required String content,
     required double amount,
     required String event_ids,
+    String? assignedUserId,
     required TransactionType transactionType,
   }) async {
     String res = 'Some Error';
@@ -27,6 +29,8 @@ class NoteMethod {
       if (transactionType == TransactionType.expense) {
         todoId = const Uuid().v4().split('-')[0];
         TodoModel todoModel = TodoModel(
+            createAt: Timestamp.now(),
+            assignedUserId: assignedUserId ?? authInstance.currentUser!.uid,
             amount: amount,
             completed: TodoStatus.notStarted,
             details: content,
@@ -38,6 +42,7 @@ class NoteMethod {
         await TodoListMethod().updateNoteTodowithBudgetIds(todoId, budget_id);
       }
       NoteModel noteModel = NoteModel(
+          event_ids: event_ids,
           name: name,
           amount: amount,
           budget_id: budget_id,
@@ -59,14 +64,19 @@ class NoteMethod {
     try {
       QuerySnapshot snapshot =
           await noteBudget.where('budget_id', isEqualTo: budgetId).get();
+      print('Query executed for budgetId: $budgetId');
       print('Documents found: ${snapshot.docs.length}');
+
+      snapshot.docs.forEach((doc) {
+        print("Document Data: ${doc.data()}");
+      });
+
       List<NoteModel> noteModel = snapshot.docs.map((doc) {
         return NoteModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
       return noteModel;
-    } catch (e, stacktrace) {
-      print('Failed to get all: $e');
-      print('Stacktrace: $stacktrace');
+    } catch (e) {
+      print('Error loading notes: $e');
       return [];
     }
   }

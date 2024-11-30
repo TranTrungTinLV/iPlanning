@@ -34,20 +34,18 @@ class EventState {
 class EventStateNotifier extends StateNotifier<EventState> {
   EventStateNotifier() : super(EventState());
 
-  Future<void> fetchEventById(String eventId) async {
-    try {
-      DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
-          .collection('eventPosts')
-          .doc(eventId)
-          .get();
-
-      if (eventSnapshot.exists) {
+  Future<void> fetchEventById(String eventId) {
+    state = state.copyWith(isLoadingInvite: true);
+    return FirebaseFirestore.instance
+        .collection('eventPosts')
+        .doc(eventId)
+        .get()
+        .then((eventSnapshot) {
+      if (eventSnapshot.exists && eventSnapshot.data() != null) {
         final eventData = eventSnapshot.data() as Map<String, dynamic>;
 
-        // Tạo model từ Firestore
         EventsPostModel eventModel = EventsPostModel.fromJson(eventData);
 
-        // Cập nhật state
         state = state.copyWith(
           eventDetails: eventModel,
           isInvited: eventData['isAccepted']
@@ -60,15 +58,19 @@ class EventStateNotifier extends StateNotifier<EventState> {
                   ? false
                   : null,
           ammount: double.tryParse(eventData['budget'] ?? '0'),
+          isLoadingInvite: false,
         );
+      } else {
+        state = state.copyWith(isLoadingInvite: false);
       }
-    } catch (e) {
+    }).catchError((e) {
       print("Error fetching event: $e");
-    }
+      state = state.copyWith(isLoadingInvite: false);
+    });
   }
 
-  Future<void> refreshEvent(String eventId) async {
-    await fetchEventById(eventId);
+  Future<void> refreshEvent(String eventId) {
+    return fetchEventById(eventId);
   }
 }
 

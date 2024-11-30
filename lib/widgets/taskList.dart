@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/services/task.service.dart';
 import 'package:iplanning/utils/todoStatus.dart';
@@ -17,6 +19,9 @@ class _TaskListState extends State<TaskList> {
   TextEditingController taskName = TextEditingController();
   TextEditingController enterNote = TextEditingController();
   TextEditingController amount = TextEditingController();
+  List<Map<String, dynamic>> acceptedUsers = [];
+  String? selectedUserId;
+
   bool isLoading = true;
   final _formKey = GlobalKey<FormState>();
 
@@ -38,6 +43,8 @@ class _TaskListState extends State<TaskList> {
           // return;
         }
         String res = await TodoListMethod().createTaskWithTodo(
+          createAt: Timestamp.now(),
+          assignedUserId: selectedUserId ?? authInstance.currentUser!.uid,
           budget_id: widget.budget_id,
           content: enterNote.text,
           amount: amountValue ?? 0.0,
@@ -50,6 +57,53 @@ class _TaskListState extends State<TaskList> {
         print(e);
       }
     }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAcceptedUsers(
+      List<String> userIds) async {
+    try {
+      List<Map<String, dynamic>> users = [];
+      for (String userId in userIds) {
+        DocumentSnapshot userSnapshot =
+            await firestoreInstance.collection('users').doc(userId).get();
+        if (userSnapshot.exists) {
+          users.add(
+              {'id': userId, ...userSnapshot.data() as Map<String, dynamic>});
+        }
+      }
+      return users;
+    } catch (e) {
+      print('Lỗi khi lấy danh sách người dùng: $e');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAcceptedUsers(String eventId) async {
+    try {
+      DocumentSnapshot eventSnapshot =
+          await firestoreInstance.collection('eventPosts').doc(eventId).get();
+      if (eventSnapshot.exists) {
+        List<dynamic> isAccepted = eventSnapshot['isAccepted'] ?? [];
+        if (isAccepted.isNotEmpty) {
+          return await fetchAcceptedUsers(isAccepted.cast<String>());
+        }
+      }
+    } catch (e) {
+      print('Lỗi khi lấy danh sách người tham gia: $e');
+    }
+    return [];
+  }
+
+  void fetchUsers() async {
+    acceptedUsers = await getAcceptedUsers(widget.event_id);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUsers();
   }
 
   @override
@@ -92,6 +146,9 @@ class _TaskListState extends State<TaskList> {
                   height: 26,
                 ),
                 Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: TextFieldCustom(
@@ -102,7 +159,40 @@ class _TaskListState extends State<TaskList> {
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    Expanded(child: Container())
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: DropdownButton<String>(
+                        underline: SizedBox(),
+                        padding: EdgeInsets.only(right: 10, left: 10),
+                        value: selectedUserId,
+                        items: acceptedUsers.map((user) {
+                          return DropdownMenuItem<String>(
+                            value: user['uid']
+                                as String, // Explicitly cast to String
+                            child: Text(
+                              user['name'] ?? 'Không có tên',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedUserId = value;
+                          });
+                        },
+                        hint: Text('Chọn người thực hiện'),
+                      ),
+                    )
                   ],
                 ),
                 SizedBox(

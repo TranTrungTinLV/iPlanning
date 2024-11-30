@@ -33,6 +33,7 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
     required this.avartar,
     required this.discription,
     required this.backgroundIMG,
+    required this.RandomImages,
     required this.event_id,
   }) : super(key: key);
   final String uid;
@@ -44,7 +45,7 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
   final String discription;
   final String backgroundIMG;
   final String event_id;
-
+  final List RandomImages;
   bool isLoadingInvite = true;
 
   @override
@@ -58,18 +59,28 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
   UserModel? userProfile;
   final _authService = AuthenticationService();
   double? ammount;
+  List<Map<String, dynamic>> _todoList = [];
+  bool _isLoadingTodo = true;
   String? _selectedCategoryName;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initStainitSte
     super.initState();
     _checkInviteStatus();
     _checkWishList();
     _loadUserData();
+    _loadTodoList();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.event_id.isNotEmpty) {
+        await ref
+            .read(eventStateProvider.notifier)
+            .fetchEventById(widget.event_id);
+      }
+    });
+
     getBudgetFromEventPOST(widget.event_id);
-    ref.read(eventStateProvider.notifier).refreshEvent(widget.event_id);
   }
 
   Future<double?> getBudgetFromEventPOST(String eventId) async {
@@ -107,6 +118,34 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
         event_ids: List<String>.from(doc['event_ids']),
       );
     }).toList();
+  }
+
+  // !Todo List fetch
+  Future<List<Map<String, dynamic>>> fetchTodoList(String eventId) async {
+    List<Map<String, dynamic>> todos = [];
+    try {
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('todos')
+          .where('event_ids', isEqualTo: eventId)
+          .get();
+      todos = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print("Error fetching todos: $e");
+    }
+
+    return todos;
+  }
+
+  Future<void> _loadTodoList() async {
+    List<Map<String, dynamic>> todos = await fetchTodoList(widget.event_id);
+    if (mounted) {
+      setState(() {
+        _todoList = todos;
+        _isLoadingTodo = false;
+      });
+    }
   }
 
   void _checkInviteStatus() async {
@@ -210,6 +249,8 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
   @override
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventStateProvider);
+    final event = eventState.eventDetails;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -219,10 +260,11 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
               height: MediaQuery.of(context).size.height * 0.5,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: eventState.eventDetails?.eventImage != null &&
-                          eventState.eventDetails!.eventImage!.isNotEmpty
-                      ? NetworkImage(eventState.eventDetails!.eventImage![0])
-                      : NetworkImage(widget.backgroundIMG),
+                  image: NetworkImage(widget.backgroundIMG.isNotEmpty
+                      ? widget.backgroundIMG
+                      : (event?.eventImage?.isNotEmpty == true
+                          ? event!.eventImage![0]
+                          : 'https://example.com/default-image.png')),
                   repeat: ImageRepeat.repeatX,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
@@ -232,21 +274,24 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
               ),
             ),
           ),
-          // !Detail
           Align(
             alignment: Alignment.bottomCenter,
             child: Details(
+              count: eventState.eventDetails!.invitersCount,
+              isShow: eventState.eventDetails!.isPost,
+              RandomImages: widget.RandomImages,
+              todoList: _todoList,
+              isLoading: eventState.isLoadingInvite,
               ammount: eventState.ammount ?? 0,
               userName: widget.userName,
               uid: widget.uid,
-              titleEvent: eventState.eventDetails!.event_name,
-              location: eventState.eventDetails!.location ?? widget.location,
-              startDate: eventState.eventDetails!.eventDateStart != null
-                  ? eventState.eventDetails!.eventDateStart
+              titleEvent: event?.event_name ?? widget.titleEvent,
+              location: event?.location ?? widget.location,
+              startDate: event?.eventDateStart != null
+                  ? event!.eventDateStart
                   : widget.startDate,
               avartar: widget.avartar,
-              discription:
-                  eventState.eventDetails!.description ?? widget.discription,
+              discription: event?.description ?? widget.discription,
               onTap: () {
                 if (userProfile != null) {
                   Navigator.push(
@@ -287,19 +332,6 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
                   );
                   final currentUserId =
                       authInstance.currentUser!.uid == widget.uid;
-                  // currentUserId
-                  //     ? AlarmNotifier.showNotification(
-                  //         flutterLocalNotificationsPlugin,
-                  //         'Thông báo',
-                  //         '${widget.userName} tham gia sự kiện',
-                  //         widget.event_id,
-                  //       )
-                  //     : AlarmNotifier.showNotification(
-                  //         flutterLocalNotificationsPlugin,
-                  //         'Thông báo',
-                  //         'Vui lòng đợi chủ xị',
-                  //         widget.event_id,
-                  //       );
                   setState(() {
                     isInvited = false;
                   });

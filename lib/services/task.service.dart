@@ -13,33 +13,42 @@ class TodoListMethod {
   createTaskWithTodo(
       {required double amount,
       required String name,
+      required Timestamp createAt,
       required String? budget_id,
       required String content,
+      required String assignedUserId,
       required String event_ids}) async {
     String res = 'Some Error';
     String? noteId;
     String todoId = const Uuid().v4().split('-')[0];
     if (amount > 0 && budget_id == null) {
-      print("Cảnh báo: Budget không tồn tại cho amount > 0.");
+      print(
+          "Task sẽ được tạo mà không liên kết Budget. Budget sẽ cập nhật sau.");
     }
-    if (amount > 0 && budget_id != null) {
+    if (amount > 0) {
       noteId = const Uuid().v4().split('-')[0];
 
       NoteModel noteModel = NoteModel(
         note_id: noteId,
         todo_id: todoId,
         name: name,
+        createAt: createAt,
+        event_ids: event_ids,
         budget_id: budget_id,
         content: content,
         amount: amount,
         transactionType: TransactionType.expense,
       );
       await noteBudget.doc(todoId).set(noteModel.toJson());
-      NoteMethod().updateNoteModelwithBudgetIds(noteId, budget_id);
+      if (budget_id != null) {
+        NoteMethod().updateNoteModelwithBudgetIds(noteId, budget_id);
+      }
       await updateBudgetEventIds(todoId, event_ids);
     }
     try {
       TodoModel todoModel = TodoModel(
+          createAt: createAt,
+          assignedUserId: assignedUserId ?? authInstance.currentUser!.uid,
           amount: amount,
           completed: TodoStatus.notStarted,
           details: content,

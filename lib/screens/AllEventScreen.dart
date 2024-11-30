@@ -9,7 +9,10 @@ class AllEventScreen extends StatefulWidget {
   AllEventScreen({
     super.key,
     required this.paidAmount,
+    required this.RandomImages,
   });
+  List RandomImages;
+
   double? paidAmount;
   UserModel? userProfile;
   @override
@@ -108,6 +111,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
                                               backgroundIMG:
                                                   event.eventImage![0],
                                               event_id: event.event_id,
+                                              RandomImages: widget.RandomImages,
                                             )));
                               },
                               child: Card(

@@ -50,7 +50,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Transaction"),
+        title: Text("Giao dịch"),
+        centerTitle: true,
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -61,28 +62,26 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 children: [
                   TextFieldCustom(
                     controller: name,
-                    title: 'Name',
+                    title: 'Tên giao dịch',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
                     controller: amount,
-                    title: 'Amount',
+                    title: 'Giá tiền',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   TextFieldCustom(
                     controller: content,
-                    title: 'Enter content',
+                    title: 'Thêm nội dung',
                     bottom: 26,
                     radius: 10.0,
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: GestureDetector(
-                      onTap: () {
-                        print('start date');
-                      },
+                      onTap: () {},
                       child: Container(
                         width: 150,
                         // padding: EdgeInsets.symmetric(horizontal: 10),
@@ -122,7 +121,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       children: [
                         Expanded(
                           child: RadioListTile(
-                              title: Text("Icome"),
+                              title: Text("Thu"),
                               value: TransactionType.income,
                               groupValue: _transactionType,
                               onChanged: (TransactionType? value) {
@@ -133,7 +132,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         ),
                         Expanded(
                           child: RadioListTile(
-                              title: Text("Expense"),
+                              title: Text("Chi"),
                               value: TransactionType.expense,
                               groupValue: _transactionType,
                               onChanged: (TransactionType? value) {
@@ -159,11 +158,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   height: 60,
                   child: Center(
                       child: Text(
-                    'Add To Payments',
+                    'Thêm Thanh Toán',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   )),
                   decoration: BoxDecoration(
-                      color: Color(0xffF0534F),
+                      color: Color(0xff035B81),
                       borderRadius: BorderRadius.circular(10.0)),
                 ),
               ),

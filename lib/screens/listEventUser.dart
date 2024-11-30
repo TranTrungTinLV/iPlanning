@@ -14,7 +14,8 @@ import 'package:popover/popover.dart';
 import '../consts/firebase_const.dart';
 
 class ListEvent extends StatefulWidget {
-  ListEvent({super.key});
+  ListEvent({super.key, required this.RandomImages});
+  List RandomImages;
 
   @override
   State<ListEvent> createState() => _ListEventState();
@@ -44,12 +45,12 @@ class _ListEventState extends State<ListEvent>
             StreamBuilder<QuerySnapshot>(
                 stream: firestoreInstance
                     .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   int eventCount = 0;
                   if (snapshot.hasData) {
-                    eventCount = snapshot.data!.docs.length;
+                    eventCount = snapshot.data?.docs.length ?? 0;
                   }
                   return Tab(
                     child: Container(
@@ -71,17 +72,18 @@ class _ListEventState extends State<ListEvent>
             StreamBuilder<QuerySnapshot>(
                 stream: firestoreInstance
                     .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  final accepted = snapshot.data!.docs
-                      .where((eventDoc) {
-                        final List<dynamic>? isAccepted =
-                            eventDoc['isAccepted'];
-                        return isAccepted != null && isAccepted.isNotEmpty;
-                      })
-                      .toList()
-                      .length;
+                  final accepted = snapshot.data?.docs
+                          .where((eventDoc) {
+                            final List<dynamic>? isAccepted =
+                                eventDoc['isAccepted'];
+                            return isAccepted != null && isAccepted.isNotEmpty;
+                          })
+                          .toList()
+                          .length ??
+                      0;
                   return Tab(
                     child: Container(
                         height: screenHeight * 0.1,
@@ -101,17 +103,18 @@ class _ListEventState extends State<ListEvent>
             StreamBuilder<QuerySnapshot>(
                 stream: firestoreInstance
                     .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  final rejected = snapshot.data!.docs
-                      .where((eventDoc) {
-                        final List<dynamic>? isRejected =
-                            eventDoc['isRejected'];
-                        return isRejected != null && isRejected.isNotEmpty;
-                      })
-                      .toList()
-                      .length;
+                  final rejected = snapshot.data?.docs
+                          .where((eventDoc) {
+                            final List<dynamic>? isRejected =
+                                eventDoc['isRejected'];
+                            return isRejected != null && isRejected.isNotEmpty;
+                          })
+                          .toList()
+                          .length ??
+                      0;
                   return Tab(
                     child: Container(
                         height: screenHeight * 0.1,
@@ -129,16 +132,18 @@ class _ListEventState extends State<ListEvent>
             StreamBuilder<QuerySnapshot>(
                 stream: firestoreInstance
                     .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  final pending = snapshot.data!.docs
-                      .where((eventDoc) {
-                        final List<dynamic>? isPending = eventDoc['isPending'];
-                        return isPending != null && isPending.isNotEmpty;
-                      })
-                      .toList()
-                      .length;
+                  final pending = snapshot.data?.docs
+                          .where((eventDoc) {
+                            final List<dynamic>? isPending =
+                                eventDoc['isPending'];
+                            return isPending != null && isPending.isNotEmpty;
+                          })
+                          .toList()
+                          .length ??
+                      0;
                   return Tab(
                     child: Container(
                         height: screenHeight * 0.1,
@@ -169,7 +174,7 @@ class _ListEventState extends State<ListEvent>
           StreamBuilder<QuerySnapshot>(
               stream: firestoreInstance
                   .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -200,15 +205,17 @@ class _ListEventState extends State<ListEvent>
                               context,
                               MaterialPageRoute(
                                   builder: (ctx) => Eventdetailscreen(
-                                      uid: event.uid,
-                                      titleEvent: event.event_name,
-                                      userName: event.username,
-                                      location: event.location! ?? '',
-                                      startDate: event.eventDateStart,
-                                      avartar: event.profilePic,
-                                      discription: event.description!,
-                                      backgroundIMG: event.eventImage![0],
-                                      event_id: event.event_id)));
+                                        RandomImages: widget.RandomImages,
+                                        uid: event.uid,
+                                        titleEvent: event.event_name,
+                                        userName: event.username,
+                                        location: event.location ?? '',
+                                        startDate: event.eventDateStart,
+                                        avartar: event.profilePic,
+                                        discription: event.description ?? '',
+                                        backgroundIMG: event.eventImage![0],
+                                        event_id: event.event_id,
+                                      )));
                         },
                         child: Card(
                           child: Row(
@@ -325,7 +332,7 @@ class _ListEventState extends State<ListEvent>
           StreamBuilder<QuerySnapshot>(
               stream: firestoreInstance
                   .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -465,7 +472,7 @@ class _ListEventState extends State<ListEvent>
           StreamBuilder<QuerySnapshot>(
               stream: firestoreInstance
                   .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -605,7 +612,7 @@ class _ListEventState extends State<ListEvent>
           StreamBuilder<QuerySnapshot>(
               stream: firestoreInstance
                   .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser!.uid)
+                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

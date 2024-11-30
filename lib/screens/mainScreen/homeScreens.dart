@@ -22,7 +22,6 @@ import 'package:iplanning/widgets/cardCustom.dart';
 import 'package:iplanning/widgets/categories.dart';
 import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/widgets/topSection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Homescreens extends StatefulWidget {
   const Homescreens({super.key});
@@ -32,13 +31,14 @@ class Homescreens extends StatefulWidget {
 }
 
 class _HomescreensState extends State<Homescreens> {
-  List RandomImages = [];
+  Map<String, List<String>> eventImages = {};
   late AlarmNotifier _alarmNotifier;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? _userData;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   List<EventsPostModel>? _eventPosts;
+  List<EventsPostModel>? _myEventPosts;
   EventsPostModel? event;
   List<CategoryModel>? _categoriesModel;
   String? _selectedCategoryId;
@@ -64,10 +64,10 @@ class _HomescreensState extends State<Homescreens> {
       }
     });
     _loadPostEvent().then(((value) async {
-      _getDataPicture();
+      // _getDataPicture();
       _checkForUpcomingEvents();
     }));
-    _getDataPicture();
+
     _startEventCountdown();
     _initializeData();
   }
@@ -105,10 +105,16 @@ class _HomescreensState extends State<Homescreens> {
 
 // !Load Events
   Future<void> _loadPostEvent() async {
+    if (_userData == null) {
+      print("User data is not available yet");
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
-    firestoreInstance
+
+    FirebaseFirestore.instance
         .collection('eventPosts')
         .orderBy('createAt', descending: true)
         .snapshots()
@@ -117,41 +123,32 @@ class _HomescreensState extends State<Homescreens> {
         return EventsPostModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
 
-      final latestEventId = events.isNotEmpty ? events.first.event_id : null;
-      print("latestEventId $latestEventId");
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? lastNotifiedEventId = prefs.getString('lastNotifiedEventId');
-      print("lastNotifiedEventId $lastNotifiedEventId");
-      if (latestEventId != null && latestEventId != lastNotifiedEventId) {
-        final currentUserId = authInstance.currentUser!.uid == events.first.uid;
-        // if (currentUserId) {
-        //   AlarmNotifier.showNotification(
-        //     flutterLocalNotificationsPlugin,
-        //     '${events.first.event_name} đã được đăng!',
-        //     '${events.first.event_name} đã được đăng!',
-        //     events.first.event_id,
-        //   );
-        // } else {
-        //   AlarmNotifier.showNotification(
-        //     flutterLocalNotificationsPlugin,
-        //     'Bài viết mới',
-        //     'Sự kiện "${events.first.event_name}" đã được đăng!',
-        //     events.first.event_id,
-        //   );
-        // }
-        await prefs.setString('lastNotifiedEventId', latestEventId);
+      List<EventsPostModel> myEvents = events.where((event) {
+        return event.uid == _userData!.uid;
+      }).toList();
+
+      if (mounted) {
+        setState(() {
+          _eventPosts = events;
+          _myEventPosts = myEvents;
+
+          print("Loaded events: ${_eventPosts?.length ?? 0}");
+          print("Loaded my events: ${_myEventPosts?.length ?? 0}");
+
+          if (_eventPosts != null && _eventPosts!.isNotEmpty) {
+            event = _eventPosts!.first;
+            _getDataPicture();
+          }
+          _isLoading = false;
+        });
       }
-      setState(() {
-        _eventPosts = events;
-        print("Loaded events: ${_eventPosts!.length}");
-        if (_eventPosts != null && _eventPosts!.isNotEmpty) {
-          event = _eventPosts!.first;
-          _getDataPicture();
-        }
-      });
-    });
-    setState(() {
-      _isLoading = false;
+    }, onError: (error) {
+      print("Error loading events: $error");
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     });
   }
 
@@ -278,37 +275,70 @@ class _HomescreensState extends State<Homescreens> {
       _isLoading = true;
     });
 
-    DocumentSnapshot eventSnapshot = await firestoreInstance
-        .collection('eventPosts')
-        .doc(event != null ? event!.event_id : '')
-        .get();
-    if (eventSnapshot.exists && eventSnapshot.data() != null) {
-      List<dynamic> acceptedUser =
-          (eventSnapshot.data() as dynamic)['isAccepted'] ?? [];
+    try {
+      for (var event in _eventPosts ?? []) {
+        List<String> avatars = []; // Danh sách avatar cho bài viết này
 
-      List<String> avatars = [];
+        DocumentSnapshot<Map<String, dynamic>> eventSnapshot =
+            await FirebaseFirestore.instance
+                .collection('eventPosts')
+                .doc(event.event_id)
+                .get();
 
-      for (String userIds in acceptedUser) {
-        DocumentSnapshot userSnapshot =
-            await firestoreInstance.collection('users').doc(userIds).get();
+        if (!eventSnapshot.exists) {
+          print("Event document does not exist for ID: ${event.event_id}");
+          eventImages[event.event_id] = []; // Không có ảnh
+          continue;
+        }
 
-        if (userSnapshot.exists && userSnapshot.data() != null) {
-          String? avatarUrl = (userSnapshot.data() as dynamic)['newAvatars'] ??
-              (userSnapshot.data() as dynamic)['avatars'];
-          if (avatarUrl != null) {
-            avatars.add(avatarUrl);
+        // Lấy danh sách `isAccepted`
+        List<String>? acceptedUsers =
+            (eventSnapshot.data()?['isAccepted'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList();
+
+        if (acceptedUsers == null || acceptedUsers.isEmpty) {
+          print("No users in 'isAccepted' for Event ID: ${event.event_id}");
+          eventImages[event.event_id] =
+              []; // Không có người dùng được chấp nhận
+          continue;
+        }
+
+        // Lấy danh sách ảnh đại diện
+        for (String userId in acceptedUsers) {
+          try {
+            DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userId)
+                    .get();
+
+            if (userSnapshot.exists) {
+              String? avatarUrl = userSnapshot.data()?['avatars'] ??
+                  userSnapshot.data()?['newAvatars'];
+              if (avatarUrl != null && avatarUrl.isNotEmpty) {
+                avatars.add(avatarUrl); // Thêm avatar vào danh sách bài viết
+              }
+            }
+          } catch (e) {
+            print("Error fetching user data for User ID: $userId");
           }
         }
+
+        // Lưu danh sách ảnh vào map
+        eventImages[event.event_id] = avatars;
       }
 
       setState(() {
-        RandomImages = avatars;
-        inviters = acceptedUser.length;
         _isLoading = false;
       });
 
-      print("RandomImages: $RandomImages");
-      print("Number of inviters: $inviters");
+      print("Updated events with avatars.");
+    } catch (e) {
+      print("Error in _getDataPicture: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -412,7 +442,6 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => CreateEventScreens(
-                                
                                     uid: _userData!.uid,
                                     avatar: _userData!.displayAvatar,
                                     username: _userData!.name,
@@ -430,8 +459,13 @@ class _HomescreensState extends State<Homescreens> {
                     icon: Icons.event_sharp,
                     title: 'Kế hoạch của tôi',
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (ctx) => ListEvent()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) => ListEvent(
+                                    RandomImages:
+                                        eventImages[event!.event_id] ?? [],
+                                  )));
                     },
                     scaffoldKey: _scaffoldKey,
                   ),
@@ -574,6 +608,111 @@ class _HomescreensState extends State<Homescreens> {
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Kế hoạch của bản thân',
+                                  style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ListEvent(
+                                          RandomImages:
+                                              eventImages[event!.event_id] ??
+                                                  [],
+                                        ), // Hiển thị tất cả kế hoạch của bản thân
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Xem tất cả',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.035,
+                                        color: Colors.blue),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: _myEventPosts == null ||
+                                      _myEventPosts!.isEmpty
+                                  ? Container(
+                                      width: screenWidth,
+                                      child: Center(
+                                        child: Text(
+                                          'Không có kế hoạch nào.',
+                                          style: TextStyle(
+                                              color: Colors.grey, fontSize: 16),
+                                        ),
+                                      ),
+                                    )
+                                  : SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                          children: _myEventPosts!.map((event) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    Eventdetailscreen(
+                                                  RandomImages: eventImages[
+                                                          event.event_id] ??
+                                                      [],
+                                                  uid: event.uid,
+                                                  titleEvent: event.event_name,
+                                                  userName: event.username,
+                                                  location: event.location ??
+                                                      'Không có địa điểm',
+                                                  startDate:
+                                                      event.eventDateStart,
+                                                  avartar: event.profilePic ??
+                                                      'https://example.com/default-avatar.png',
+                                                  discription:
+                                                      event.description ??
+                                                          'Không có mô tả',
+                                                  backgroundIMG: event
+                                                              .eventImage
+                                                              ?.isNotEmpty ==
+                                                          true
+                                                      ? event.eventImage![0]
+                                                      : 'https://example.com/default-image.png',
+                                                  event_id: event.event_id,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: CardCustom(
+                                            event: event,
+                                            RandomImages:
+                                                eventImages[event.event_id] ??
+                                                    [],
+                                            uid: _userData != null
+                                                ? _userData!.uid
+                                                : '',
+                                            count: event.invitersCount,
+                                          ),
+                                        );
+                                      }).toList()))),
+
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.02,
+                              horizontal: screenWidth * 0.05,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
@@ -592,6 +731,9 @@ class _HomescreensState extends State<Homescreens> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (ctx) => AllEventScreen(
+                                                  RandomImages: eventImages[
+                                                          event!.event_id] ??
+                                                      [],
                                                   paidAmount: _paidAmount,
                                                 )));
                                   },
@@ -603,7 +745,8 @@ class _HomescreensState extends State<Homescreens> {
                                           fontSize: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.035),
+                                              0.035,
+                                          color: Colors.blue),
                                     ),
                                   ),
                                 ),
@@ -645,6 +788,9 @@ class _HomescreensState extends State<Homescreens> {
                                                   MaterialPageRoute(
                                                     builder: (ctx) =>
                                                         Eventdetailscreen(
+                                                      RandomImages: eventImages[
+                                                              event.event_id] ??
+                                                          [],
                                                       uid: event.uid,
                                                       titleEvent:
                                                           event.event_name,
@@ -675,7 +821,9 @@ class _HomescreensState extends State<Homescreens> {
                                             },
                                             child: CardCustom(
                                               event: event,
-                                              RandomImages: RandomImages,
+                                              RandomImages:
+                                                  eventImages[event.event_id] ??
+                                                      [],
                                               uid: _userData != null
                                                   ? _userData!.uid
                                                   : '',

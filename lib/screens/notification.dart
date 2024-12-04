@@ -9,8 +9,9 @@ import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/main.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/services/cloud.service.dart';
-import 'package:iplanning/services/noti.service.dart';
+
 
 class NotificationScreen extends ConsumerStatefulWidget {
   NotificationScreen({super.key, required this.getPicture});
@@ -93,7 +94,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                 final isPending = doc['isPending'] as List<dynamic>? ?? [];
                 return isPending.isNotEmpty;
               }).toList();
-              // Combine hosting and invited notifications
+
               final combinedNotifications = [
                 ...pendingHostingDocs,
                 ...invitedDocs
@@ -156,108 +157,87 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                               margin: EdgeInsets.symmetric(
                                   horizontal: screenWidth * 0.03,
                                   vertical: screenHeight * 0.015),
-                              child: Card(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: screenHeight * 0.015,
-                                      horizontal: screenWidth * 0.03),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.blue,
-                                            backgroundImage: NetworkImage(userModel
-                                                    .displayAvatar ??
-                                                'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
-                                          ),
-                                          SizedBox(
-                                            width: 14,
-                                          ),
-                                          Container(
-                                            width: screenWidth * 0.5,
-                                            margin: EdgeInsets.only(
-                                                top: 5, bottom: 10.0),
-                                            child: RichText(
-                                              text: TextSpan(
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        screenWidth * 0.04,
-                                                    color: Color(0xff060518)),
-                                                children: [
-                                                  TextSpan(
-                                                    text: "${userModel.name} ",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
-                                                  TextSpan(
-                                                    text:
-                                                        "muốn tham gia ${eventPost.event_name}",
-                                                  ),
-                                                ],
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) => ProfileScreen(
+                                              enteredemail: userModel.email,
+                                              username: userModel.name,
+                                              avatarEdit:
+                                                  userModel.displayAvatar,
+                                              userData: userModel)));
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 15),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: screenHeight * 0.015,
+                                        horizontal: screenWidth * 0.03),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor: Colors.blue,
+                                              backgroundImage: NetworkImage(
+                                                  userModel.displayAvatar ??
+                                                      'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
+                                            ),
+                                            SizedBox(
+                                              width: 14,
+                                            ),
+                                            Container(
+                                              width: screenWidth * 0.5,
+                                              margin: EdgeInsets.only(
+                                                  top: 5, bottom: 10.0),
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          screenWidth * 0.04,
+                                                      color: Color(0xff060518)),
+                                                  children: [
+                                                    TextSpan(
+                                                      text:
+                                                          "${userModel.name} ",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    TextSpan(
+                                                      text:
+                                                          "muốn tham gia ${eventPost.event_name}",
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              FirebaseFirestore.instance
-                                                  .collection("eventPosts")
-                                                  .doc(doc.id)
-                                                  .update({
-                                                'isPending':
-                                                    FieldValue.arrayRemove(
-                                                        [uid])
-                                              });
-                                            },
-                                            child: Container(
-                                              width: screenWidth * 0.25,
-                                              height: screenHeight * 0.06,
-                                              child:
-                                                  Center(child: Text('Reject')),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.1),
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 2.0,
-                                                    )
-                                                  ],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: screenWidth * 0.03,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              FirebaseFirestore.instance
-                                                  .collection("eventPosts")
-                                                  .doc(doc.id)
-                                                  .update({
-                                                'isPending':
-                                                    FieldValue.arrayRemove(
-                                                        [uid]),
-                                                'isAccepted':
-                                                    FieldValue.arrayUnion([uid])
-                                              });
-                                            },
-                                            child: Container(
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                FirebaseFirestore.instance
+                                                    .collection("eventPosts")
+                                                    .doc(doc.id)
+                                                    .update({
+                                                  'isPending':
+                                                      FieldValue.arrayRemove(
+                                                          [uid])
+                                                });
+                                              },
+                                              child: Container(
                                                 width: screenWidth * 0.25,
                                                 height: screenHeight * 0.06,
+                                                child: Center(
+                                                    child: Text('Reject')),
                                                 decoration: BoxDecoration(
-                                                    color: Color(0xff5669FF),
+                                                    color: Colors.white,
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Colors.black
@@ -269,16 +249,52 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10)),
-                                                child: Center(
-                                                    child: Text(
-                                                  "Accept",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ))),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth * 0.03,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                FirebaseFirestore.instance
+                                                    .collection("eventPosts")
+                                                    .doc(doc.id)
+                                                    .update({
+                                                  'isPending':
+                                                      FieldValue.arrayRemove(
+                                                          [uid]),
+                                                  'isAccepted':
+                                                      FieldValue.arrayUnion(
+                                                          [uid])
+                                                });
+                                              },
+                                              child: Container(
+                                                  width: screenWidth * 0.25,
+                                                  height: screenHeight * 0.06,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xff5669FF),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(0.1),
+                                                          blurRadius: 10.0,
+                                                          spreadRadius: 2.0,
+                                                        )
+                                                      ],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: Center(
+                                                      child: Text(
+                                                    "Accept",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ))),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

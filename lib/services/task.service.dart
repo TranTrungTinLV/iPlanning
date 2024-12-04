@@ -39,7 +39,7 @@ class TodoListMethod {
         amount: amount,
         transactionType: TransactionType.expense,
       );
-      await noteBudget.doc(todoId).set(noteModel.toJson());
+      await noteBudget.doc(noteId).set(noteModel.toJson());
       if (budget_id != null) {
         NoteMethod().updateNoteModelwithBudgetIds(noteId, budget_id);
       }

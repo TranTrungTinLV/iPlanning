@@ -96,6 +96,8 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
 
       _total();
       if (filteredNotes.isEmpty) {
+        print("No filtered notes available!");
+
         Fluttertoast.showToast(
           msg: "Không có ghi chú nào phù hợp với bộ lọc!",
           toastLength: Toast.LENGTH_SHORT,
@@ -104,6 +106,7 @@ class _InformationBudgetScreenState extends State<InformationBudgetScreen>
           textColor: Colors.white,
           fontSize: MediaQuery.of(context).size.width * 0.03,
         );
+        return;
       }
     });
   }

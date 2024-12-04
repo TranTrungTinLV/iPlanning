@@ -64,10 +64,8 @@ class _HomescreensState extends State<Homescreens> {
       }
     });
     _loadPostEvent().then(((value) async {
-      // _getDataPicture();
       _checkForUpcomingEvents();
     }));
-
     _startEventCountdown();
     _initializeData();
   }
@@ -228,18 +226,6 @@ class _HomescreensState extends State<Homescreens> {
     return events;
   }
 
-  // void _checkInviteStatus() async {
-  //   DocumentSnapshot eventSnapshot = await firestoreInstance
-  //       .collection('eventPosts')
-  //       .doc(event!.event_id)
-  //       .get();
-
-  //   setState(() {
-  //     inviting = (eventSnapshot.data() as dynamic)['isPending']
-  //         .contains(authInstance.currentUser!.uid);
-  //   });
-  // }
-
   Future<List<CategoryModel>> _loadCategories() async {
     try {
       QuerySnapshot querySnapshot =
@@ -271,7 +257,7 @@ class _HomescreensState extends State<Homescreens> {
 
     try {
       for (var event in _eventPosts ?? []) {
-        List<String> avatars = []; // Danh sách avatar cho bài viết này
+        List<String> avatars = [];
 
         DocumentSnapshot<Map<String, dynamic>> eventSnapshot =
             await FirebaseFirestore.instance
@@ -281,11 +267,10 @@ class _HomescreensState extends State<Homescreens> {
 
         if (!eventSnapshot.exists) {
           print("Event document does not exist for ID: ${event.event_id}");
-          eventImages[event.event_id] = []; // Không có ảnh
+          eventImages[event.event_id] = [];
           continue;
         }
 
-        // Lấy danh sách `isAccepted`
         List<String>? acceptedUsers =
             (eventSnapshot.data()?['isAccepted'] as List<dynamic>?)
                 ?.map((e) => e.toString())
@@ -293,12 +278,10 @@ class _HomescreensState extends State<Homescreens> {
 
         if (acceptedUsers == null || acceptedUsers.isEmpty) {
           print("No users in 'isAccepted' for Event ID: ${event.event_id}");
-          eventImages[event.event_id] =
-              []; // Không có người dùng được chấp nhận
+          eventImages[event.event_id] = [];
           continue;
         }
 
-        // Lấy danh sách ảnh đại diện
         for (String userId in acceptedUsers) {
           try {
             DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -668,6 +651,7 @@ class _HomescreensState extends State<Homescreens> {
                                               MaterialPageRoute(
                                                 builder: (ctx) =>
                                                     Eventdetailscreen(
+                                                  endDate: event.eventDateEnd,
                                                   RandomImages: eventImages[
                                                           event.event_id] ??
                                                       [],
@@ -797,6 +781,8 @@ class _HomescreensState extends State<Homescreens> {
                                                           event.event_name,
                                                       userName: event.username,
                                                       location: event.location!,
+                                                      endDate:
+                                                          event.eventDateEnd,
                                                       startDate:
                                                           event.eventDateStart,
                                                       avartar: event

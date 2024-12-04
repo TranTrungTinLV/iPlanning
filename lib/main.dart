@@ -18,7 +18,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final alarmNotifierProvider = ChangeNotifierProvider<AlarmNotifier>((ref) {
   final notifier = AlarmNotifier(flutterLocalNotificationsPlugin);
 
-  // Khởi tạo thông báo và lắng nghe ngay từ khi ứng dụng chạy
   notifier.initialization((payload) {
     navigatorKey.currentState?.push(MaterialPageRoute(
       builder: (_) => NotificationScreen(
@@ -51,11 +50,6 @@ void main() async {
       print("Notification clicked with payload: ${details.payload}");
     },
   );
-
-  // await flutterLocalNotificationsPlugin
-  //     .resolvePlatformSpecificImplementation<
-  //         AndroidFlutterLocalNotificationsPlugin>()
-  //     ?.requestNotificationsPermission();
 
   await CategoriesMethod().uploadDefaultCategories();
 

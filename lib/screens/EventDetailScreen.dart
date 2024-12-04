@@ -19,7 +19,6 @@ import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/services/cloud.service.dart';
-import 'package:iplanning/services/noti.service.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends ConsumerStatefulWidget {
@@ -30,6 +29,7 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
     required this.userName,
     required this.location,
     required this.startDate,
+    required this.endDate,
     required this.avartar,
     required this.discription,
     required this.backgroundIMG,
@@ -41,6 +41,8 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
   final String userName;
   final String location;
   final Timestamp startDate;
+  final Timestamp endDate;
+
   final String avartar;
   final String discription;
   final String backgroundIMG;
@@ -61,6 +63,7 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
   double? ammount;
   List<Map<String, dynamic>> _todoList = [];
   bool _isLoadingTodo = true;
+  bool isLoading = true;
   String? _selectedCategoryName;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -76,7 +79,12 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
       if (widget.event_id.isNotEmpty) {
         await ref
             .read(eventStateProvider.notifier)
-            .fetchEventById(widget.event_id);
+            .fetchEventById(widget.event_id)
+            .then((_) {
+          setState(() {
+            isLoading = false; // Dữ liệu đã tải xong
+          });
+        });
       }
     });
 
@@ -277,12 +285,15 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Details(
-              count: eventState.eventDetails!.invitersCount,
-              isShow: eventState.eventDetails!.isPost,
+              count: eventState.eventDetails?.invitersCount ?? 0,
+              isShow: eventState.eventDetails?.isPost ?? false,
               RandomImages: widget.RandomImages,
               todoList: _todoList,
-              isLoading: eventState.isLoadingInvite,
+              isLoading: isLoading || event == null,
               ammount: eventState.ammount ?? 0,
+              endDate: event?.eventDateEnd != null
+                  ? event!.eventDateEnd
+                  : widget.endDate,
               userName: widget.userName,
               uid: widget.uid,
               titleEvent: event?.event_name ?? widget.titleEvent,

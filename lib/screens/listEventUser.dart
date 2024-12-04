@@ -174,6 +174,7 @@ class _ListEventState extends State<ListEvent>
           StreamBuilder<QuerySnapshot>(
               stream: firestoreInstance
                   .collection('eventPosts')
+                  .orderBy('createAt')
                   .where('uid', isEqualTo: authInstance.currentUser?.uid)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -205,6 +206,7 @@ class _ListEventState extends State<ListEvent>
                               context,
                               MaterialPageRoute(
                                   builder: (ctx) => Eventdetailscreen(
+                                        endDate: event.eventDateEnd,
                                         RandomImages: widget.RandomImages,
                                         uid: event.uid,
                                         titleEvent: event.event_name,

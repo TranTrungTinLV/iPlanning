@@ -101,6 +101,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (ctx) => Eventdetailscreen(
+                                              endDate: event.eventDateEnd,
                                               uid: event.uid,
                                               titleEvent: event.event_name,
                                               userName: event.username,

@@ -16,6 +16,7 @@ class Details extends StatefulWidget {
       required this.userName,
       required this.location,
       required this.startDate,
+      required this.endDate,
       required this.avartar,
       required this.count,
       required this.discription,
@@ -31,6 +32,8 @@ class Details extends StatefulWidget {
   final String location;
   final String avartar;
   final Timestamp startDate;
+  final Timestamp endDate;
+
   final String discription;
   final void Function() onTap;
   final bool isShow;
@@ -45,6 +48,25 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   bool isExpended = true;
   final AuthenticationService _authService = AuthenticationService();
+  String getEventStatus({bool showTime = false}) {
+    final now = DateTime.now();
+    final start = widget.startDate.toDate();
+    final end = widget.endDate.toDate();
+
+    if (now.isAfter(end)) {
+      return "Kết thúc";
+    } else if (now.isBefore(start)) {
+      final remainingMinutes = start.difference(now).inMinutes;
+      if (remainingMinutes > 0 && remainingMinutes <= 10) {
+        return "Còn lại $remainingMinutes phút nữa diễn ra";
+      }
+      return "${DateFormat('HH:mm').format(start)}";
+    } else if (now.isAfter(start) && now.isBefore(end)) {
+      return "Đang diễn ra ";
+    }
+    return "Không xác định";
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMe = authInstance.currentUser!.uid == widget.uid;
@@ -69,7 +91,7 @@ class _DetailsState extends State<Details> {
         right: screenHeight * 0.06,
         left: screenWidth * 0.06,
         top: screenHeight * 0.03,
-        bottom: screenHeight * 0.09,
+        // bottom: screenHeight * 0.09,
       ),
 
       child: SingleChildScrollView(
@@ -218,8 +240,7 @@ class _DetailsState extends State<Details> {
                                                       .size
                                                       .width *
                                                   0.03),
-                                          "${DateFormat('HH:mm').format(widget.startDate.toDate()) ?? 'Start Time'}" ??
-                                              'Start Time'),
+                                          getEventStatus(showTime: false)),
                                     ),
                                   ],
                                 ),
@@ -415,8 +436,9 @@ class _DetailsState extends State<Details> {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 20),
                                     width: screenWidth,
-                                    margin: EdgeInsets.only(top: 10.0),
-                                    height: screenHeight * 0.25,
+                                    margin: EdgeInsets.only(
+                                        top: screenHeight * 0.01),
+                                    height: screenHeight * 0.15,
                                     child: ListView.builder(
                                         padding:
                                             EdgeInsets.symmetric(vertical: 0.0),

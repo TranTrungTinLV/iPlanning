@@ -15,7 +15,8 @@ import 'package:iplanning/screens/listEventUser.dart';
 import 'package:iplanning/screens/mainScreen/profileScreen.dart';
 import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.service.dart';
-import 'package:iplanning/services/noti.service.dart';
+import 'package:iplanning/providers/managers/alarm.managers.notifier.dart';
+import 'package:iplanning/services/notification.services.dart';
 import 'package:iplanning/widgets/InvitewithFriends.dart';
 import 'package:iplanning/widgets/buildDrawTile.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
@@ -54,7 +55,8 @@ class _HomescreensState extends State<Homescreens> {
 
   @override
   void initState() {
-    _alarmNotifier = AlarmNotifier(FlutterLocalNotificationsPlugin());
+    _alarmNotifier =
+        AlarmNotifier(NotificationService(FlutterLocalNotificationsPlugin()));
     _reqPermissionNotification();
     // TODO: implement initState
     super.initState();
@@ -294,7 +296,7 @@ class _HomescreensState extends State<Homescreens> {
               String? avatarUrl = userSnapshot.data()?['avatars'] ??
                   userSnapshot.data()?['newAvatars'];
               if (avatarUrl != null && avatarUrl.isNotEmpty) {
-                avatars.add(avatarUrl); // Thêm avatar vào danh sách bài viết
+                avatars.add(avatarUrl);
               }
             }
           } catch (e) {
@@ -607,10 +609,11 @@ class _HomescreensState extends State<Homescreens> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (ctx) => ListEvent(
-                                          RandomImages:
-                                              eventImages[event!.event_id] ??
-                                                  [],
-                                        ), // Hiển thị tất cả kế hoạch của bản thân
+                                          RandomImages: eventImages[
+                                                  _myEventPosts!
+                                                      .first.event_id] ??
+                                              [],
+                                        ),
                                       ),
                                     );
                                   },
@@ -717,7 +720,8 @@ class _HomescreensState extends State<Homescreens> {
                                         MaterialPageRoute(
                                             builder: (ctx) => AllEventScreen(
                                                   RandomImages: eventImages[
-                                                          event!.event_id] ??
+                                                          _eventPosts!.first
+                                                              .event_id] ??
                                                       [],
                                                   paidAmount: _paidAmount,
                                                 )));

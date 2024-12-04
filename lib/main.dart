@@ -8,23 +8,24 @@ import 'package:iplanning/firebase_options.dart';
 import 'package:iplanning/screens/notification.dart';
 import 'package:iplanning/screens/splashScreen.dart';
 import 'package:iplanning/services/categories.service.dart';
-import 'package:iplanning/services/noti.service.dart';
+import 'package:iplanning/providers/managers/alarm.managers.notifier.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:iplanning/services/notification.services.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// Provider for AlarmNotifier
 final alarmNotifierProvider = ChangeNotifierProvider<AlarmNotifier>((ref) {
-  final notifier = AlarmNotifier(flutterLocalNotificationsPlugin);
-
-  notifier.initialization((payload) {
+  final notificationService = NotificationService(flutterLocalNotificationsPlugin);
+  final notifier = AlarmNotifier(notificationService);
+  notifier.initializeNotifications((payload) {
     navigatorKey.currentState?.push(MaterialPageRoute(
       builder: (_) => NotificationScreen(
         getPicture: () {},
       ),
     ));
-    return notifier;
   });
 
   return notifier;

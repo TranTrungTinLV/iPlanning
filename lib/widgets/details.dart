@@ -187,35 +187,40 @@ class _DetailsState extends State<Details> {
                                       SizedBox(
                                         width: screenWidth * 0.02,
                                       ),
-                                      Row(
-                                        children: [
-                                          for (int i = 0;
-                                              i < widget.RandomImages.length;
-                                              i++)
-                                            Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: Align(
-                                                  widthFactor: 0.3,
-                                                  child: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    child: CircleAvatar(
-                                                      radius:
-                                                          screenWidth * 0.05,
-                                                      backgroundImage:
-                                                          NetworkImage(
-                                                        widget.RandomImages[i],
-                                                      ),
-                                                    ),
-                                                  )),
-                                            ),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          widget.count <= 0
-                                              ? Container()
-                                              : Text(
+                                      widget.count <= 0
+                                          ? Container()
+                                          : Row(
+                                              children: [
+                                                for (int i = 0;
+                                                    i <
+                                                        widget.RandomImages
+                                                            .length;
+                                                    i++)
+                                                  Container(
+                                                    margin:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 10),
+                                                    child: Align(
+                                                        widthFactor: 0.3,
+                                                        child: CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          child: CircleAvatar(
+                                                            radius:
+                                                                screenWidth *
+                                                                    0.05,
+                                                            backgroundImage:
+                                                                NetworkImage(
+                                                              widget.RandomImages[
+                                                                  i],
+                                                            ),
+                                                          ),
+                                                        )),
+                                                  ),
+                                                SizedBox(
+                                                  width: 15.0,
+                                                ),
+                                                Text(
                                                   "${widget.count} tham gia",
                                                   style: TextStyle(
                                                       fontSize:
@@ -224,8 +229,8 @@ class _DetailsState extends State<Details> {
                                                                   .width *
                                                               0.03),
                                                 ),
-                                        ],
-                                      ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),

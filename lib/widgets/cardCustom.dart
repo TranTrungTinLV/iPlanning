@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/events_model.dart';
 import 'package:iplanning/services/cloud.service.dart';
+import 'package:iplanning/utils/validator/capitalize.dart';
 
 class CardCustom extends StatelessWidget {
   const CardCustom({
@@ -59,7 +60,7 @@ class CardCustom extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(left: 10),
                         child: Text(
-                          event.event_name,
+                          capitalize(event.event_name),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: screenWidth * 0.048,

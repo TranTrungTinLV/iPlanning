@@ -11,6 +11,7 @@ import 'package:iplanning/services/categories.service.dart';
 import 'package:iplanning/providers/managers/alarm.managers.notifier.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:iplanning/services/notification.services.dart';
+import 'package:dcdg/dcdg.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -18,7 +19,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 // Provider for AlarmNotifier
 final alarmNotifierProvider = ChangeNotifierProvider<AlarmNotifier>((ref) {
-  final notificationService = NotificationService(flutterLocalNotificationsPlugin);
+  final notificationService =
+      NotificationService(flutterLocalNotificationsPlugin);
   final notifier = AlarmNotifier(notificationService);
   notifier.initializeNotifications((payload) {
     navigatorKey.currentState?.push(MaterialPageRoute(

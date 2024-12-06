@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iplanning/utils/validator/capitalize.dart';
 
 class CategoriesUI extends StatelessWidget {
   CategoriesUI(
@@ -35,17 +36,14 @@ class CategoriesUI extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Icon(
-              //   icons,
-              //   color: iconColour,
-              //   size: 25,
-              // ),
               const SizedBox(
                 width: 5,
               ),
               Text(
-                titleCate,
-                style: TextStyle(color: textColour, fontSize: 15),
+                capitalize(titleCate),
+                style: TextStyle(
+                    color: textColour,
+                    fontSize: MediaQuery.of(context).size.width * 0.03),
               )
             ],
           ),

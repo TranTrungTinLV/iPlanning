@@ -67,6 +67,10 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
   @override
   void initState() {
     super.initState();
+    if (widget.list.isNotEmpty) {
+      _selectedCategories = widget.list.first;
+    }
+
     if (widget.eventData == null && widget.event_id != null) {
       _loadEventData(widget.event_id!);
     } else {
@@ -74,7 +78,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
     }
   }
 
-// Hàm tải dữ liệu sự kiện từ Firestore
   void _loadEventData(String eventId) async {
     setState(() {
       isLoading = true;
@@ -197,20 +200,18 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
   }
 
   bool validateDates() {
-    // Kiểm tra nếu cả hai ngày đều được chọn
     if (_startDate != null && _endDate != null) {
-      // Kiểm tra ngày trước
       if (_endDate!.toDate().year < _startDate!.toDate().year ||
           (_endDate!.toDate().year == _startDate!.toDate().year &&
               _endDate!.toDate().month < _startDate!.toDate().month) ||
           (_endDate!.toDate().year == _startDate!.toDate().year &&
               _endDate!.toDate().month == _startDate!.toDate().month &&
               _endDate!.toDate().day < _startDate!.toDate().day)) {
-        return false; // Ngày kết thúc nhỏ hơn ngày bắt đầu
+        return false;
       }
     }
 
-    return true; // Ngày hợp lệ hoặc một trong hai ngày bị null
+    return true;
   }
 
   void _presentTimerPicker({required bool isTime}) async {
@@ -453,7 +454,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xff3D56F0)),
-                        // onPressed: details.onStepCancel,
                         onPressed: () {
                           uploadEvent();
                         },
@@ -491,13 +491,7 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                  child:
-                                      // fileImage != null && fileImage!.isNotEmpty
-                                      // ?
-                                      MutipleImage(images: fileImage!)
-                                  // : Text('No images loaded'),
-                                  ),
+                              Center(child: MutipleImage(images: fileImage!)),
                               if (!_isImage)
                                 Text(
                                   'Vui lòng thêm ảnh',
@@ -570,10 +564,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                                         ),
                                       ),
                                       Container(
-                                          // width: MediaQuery.of(context)
-                                          //         .size
-                                          //         .width *
-                                          //     0.25,
                                           child: Text(
                                         "Ngày kết thúc",
                                         textAlign: TextAlign.start,
@@ -642,7 +632,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                                       Expanded(
                                           child: GestureDetector(
                                         onTap: () {
-                                          print('end date');
                                           _presentDatePicker(
                                               isStartDate: false);
                                         },
@@ -687,7 +676,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                               SizedBox(
                                 height: 3,
                               ),
-
                               if (!_isDateValid)
                                 Container(
                                   width: MediaQuery.of(context).size.width,
@@ -897,13 +885,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                               TextFieldCustom(
                                 keyboardType: TextInputType.streetAddress,
                                 controller: location,
-                                // onChanged: (value) => validateForm(),
-                                // validator: (value) {
-                                //   if (value == null || value.trim().isEmpty) {
-                                //     return 'Vui lòng nhập địa chỉ';
-                                //   }
-                                //   return null;
-                                // },
                                 onSaved: (value) {
                                   location.text = value ?? '';
                                 },
@@ -949,9 +930,7 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
               ),
               isActive: _index >= 1,
               content: Container(
-                // child: Text('detail'),
                 child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (fileImage != null && fileImage!.isNotEmpty)
@@ -979,6 +958,12 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                             fontSize: 24, fontWeight: FontWeight.w600),
                       ),
                     ),
+                    Text(
+                      _selectedCategories != null
+                          ? _selectedCategories!.name
+                          : 'Không có danh mục được chọn',
+                      style: TextStyle(fontSize: 18.0),
+                    ),
                     // ! Day&Time
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -987,6 +972,16 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                           child: Text(
                             isChecked ? 'Public' : 'Private',
                             style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Text(
+                            eventName.text,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w600),
                           ),
                         ),
                         SizedBox(

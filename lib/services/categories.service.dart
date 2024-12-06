@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:uuid/uuid.dart';
@@ -10,18 +11,25 @@ class CategoriesMethod {
   // ! default categories
   Future<void> uploadDefaultCategories() async {
     try {
-      List<String> defaultCategoryNames = ["Music", "Travel", "Food"];
-      for (String name in defaultCategoryNames) {
+      // Định nghĩa màu sắc cho các danh mục mặc định
+      Map<String, Color> defaultCategories = {
+        "Music": Colors.blue,
+        "Travel": Colors.green,
+        "Food": Colors.orange,
+      };
+
+      for (String name in defaultCategories.keys) {
         QuerySnapshot querySnapshot =
             await categoriesEvent.where('name', isEqualTo: name).limit(1).get();
 
         if (querySnapshot.docs.isEmpty) {
-          // If the category does not exist, create it
           String category_id = const Uuid().v4().split('-')[0];
           CategoryModel categoryModel = CategoryModel(
+            createAt: Timestamp.now(),
             category_id: category_id,
             name: name,
-            event_ids: [], // Empty list initially
+            event_ids: [],
+            color: defaultCategories[name]!.value,
           );
 
           await categoriesEvent.doc(category_id).set(categoryModel.toJson());
@@ -30,6 +38,38 @@ class CategoriesMethod {
     } catch (e) {
       print('Error uploading default categories: $e');
     }
+  }
+
+  Future<String> createCategory({
+    required String name,
+    required Color color,
+    List<String>? eventIds,
+  }) async {
+    String res = 'Some Error';
+    try {
+      QuerySnapshot querySnapshot =
+          await categoriesEvent.where('name', isEqualTo: name).limit(1).get();
+      if (querySnapshot.docs.isNotEmpty) {
+        // Nếu danh mục đã tồn tại, trả về thông báo lỗi
+        res = 'Category already exists';
+      } else {
+        // Nếu danh mục chưa tồn tại, tạo danh mục mới
+        String categoryId = const Uuid().v4().split('-')[0];
+        CategoryModel newCategory = CategoryModel(
+          category_id: categoryId,
+          name: name,
+          color: color.value,
+          event_ids: eventIds ?? [],
+          createAt: Timestamp.now(),
+        );
+
+        await categoriesEvent.doc(categoryId).set(newCategory.toJson());
+        res = 'successfully';
+      }
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
   }
 
   Future<void> updateCategoryEventIds(String categoryId, String eventId) async {

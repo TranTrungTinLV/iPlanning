@@ -6,6 +6,7 @@ import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/utils/todoStatus.dart';
+import 'package:iplanning/utils/validator/capitalize.dart';
 
 class Details extends StatefulWidget {
   Details(
@@ -116,7 +117,7 @@ class _DetailsState extends State<Details> {
                           Container(
                             width: screenWidth * 0.5,
                             child: Text(
-                              widget.titleEvent ?? '',
+                              capitalize(widget.titleEvent) ?? '',
                               style: TextStyle(
                                   fontSize:
                                       MediaQuery.of(context).size.width * 0.05,
@@ -158,7 +159,7 @@ class _DetailsState extends State<Details> {
                                       )
                                     : Row(),
                                 Container(
-                                  margin: EdgeInsets.symmetric(vertical: 16),
+                                  // margin: EdgeInsets.symmetric(vertical: 16),
                                   child: Row(
                                     children: [
                                       Icon(Icons.date_range),
@@ -221,7 +222,7 @@ class _DetailsState extends State<Details> {
                                                   width: 15.0,
                                                 ),
                                                 Text(
-                                                  "${widget.count} tham gia",
+                                                  " ${widget.count} tham gia",
                                                   style: TextStyle(
                                                       fontSize:
                                                           MediaQuery.of(context)

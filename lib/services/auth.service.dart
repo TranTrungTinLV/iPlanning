@@ -215,8 +215,7 @@ class AuthenticationService {
 
   Future<void> sendOtpWithVoiceCall(String phoneNumber, String otp) async {
     String apiUrl = "${dotenv.env['API_STRINGGEE']}";
-    String jwtToken =
-        '${dotenv.env['STRINGEE_TOKEN']}'; // Thay bằng JWT của bạn
+    String jwtToken = '${dotenv.env['STRINGEE_TOKEN']}';
 
     final Map<String, dynamic> payload = {
       "from": {

@@ -21,9 +21,11 @@ class _DropdowncategoriesState extends State<Dropdowncategories> {
   @override
   void initState() {
     super.initState();
-    dropValue = widget.list.contains(widget.selectedCategory)
-        ? widget.selectedCategory
-        : (widget.list.isNotEmpty ? widget.list.first : null);
+    // dropValue = widget.list.contains(widget.selectedCategory)
+    //     ? widget.selectedCategory
+    //     : (widget.list.isNotEmpty ? widget.list.first : null);
+    dropValue = widget.selectedCategory ??
+        (widget.list.isNotEmpty ? widget.list.first : null);
   }
 
   @override

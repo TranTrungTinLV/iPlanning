@@ -756,10 +756,17 @@ class _HomescreensState extends State<Homescreens> {
                                               MediaQuery.of(context).size.width,
                                           child: Center(
                                             child: Text(
-                                              'No Events Available',
+                                              _selectedCategoryId != null
+                                                  ? 'Không có kế hoạch  trong danh mục ${_categoriesModel?.firstWhere((category) => category.category_id == _selectedCategoryId).name}.'
+                                                  : 'Không có kế hoạch nào.',
                                               style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: 20.0),
+                                                  fontSize:
+                                                      _selectedCategoryId !=
+                                                              null
+                                                          ? screenWidth * 0.04
+                                                          : screenWidth *
+                                                              0.045),
                                             ),
                                           ),
                                         ),

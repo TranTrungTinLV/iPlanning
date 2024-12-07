@@ -204,7 +204,7 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
         .get();
     if (userSnapshot.exists && userSnapshot.data() != null) {
       setState(() {
-        isLoadingWishList = (userSnapshot.data() as dynamic)['wishlist']
+        isLoadingWishList = (userSnapshot.data() as dynamic)['wishList']
                 ?.contains(widget.event_id) ??
             false;
       });

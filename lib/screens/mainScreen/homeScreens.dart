@@ -230,8 +230,10 @@ class _HomescreensState extends State<Homescreens> {
 
   Future<List<CategoryModel>> _loadCategories() async {
     try {
-      QuerySnapshot querySnapshot =
-          await firestoreInstance.collection('categoriesEvent').get();
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('categoriesEvent')
+          .orderBy('createAt', descending: true)
+          .get();
 
       List<CategoryModel> categoryModel = querySnapshot.docs.map((doc) {
         return CategoryModel.fromJson(doc.data() as Map<String, dynamic>);
@@ -457,6 +459,8 @@ class _HomescreensState extends State<Homescreens> {
                           context,
                           MaterialPageRoute(
                               builder: (ctx) => WishListScreen(
+                                    RandomImages:
+                                        eventImages[event!.event_id] ?? [],
                                     event_id:
                                         event != null ? event!.event_id : null,
                                   )));
@@ -609,10 +613,13 @@ class _HomescreensState extends State<Homescreens> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (ctx) => ListEvent(
-                                          RandomImages: eventImages[
-                                                  _myEventPosts!
-                                                      .first.event_id] ??
-                                              [],
+                                          RandomImages:
+                                              (_myEventPosts != null &&
+                                                      _myEventPosts!.isNotEmpty)
+                                                  ? eventImages[_myEventPosts!
+                                                          .first.event_id] ??
+                                                      []
+                                                  : [],
                                         ),
                                       ),
                                     );

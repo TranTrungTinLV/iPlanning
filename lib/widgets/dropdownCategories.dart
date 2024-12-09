@@ -21,11 +21,37 @@ class _DropdowncategoriesState extends State<Dropdowncategories> {
   @override
   void initState() {
     super.initState();
-    // dropValue = widget.list.contains(widget.selectedCategory)
-    //     ? widget.selectedCategory
-    //     : (widget.list.isNotEmpty ? widget.list.first : null);
-    dropValue = widget.selectedCategory ??
-        (widget.list.isNotEmpty ? widget.list.first : null);
+
+    dropValue = widget.selectedCategory != null
+        ? widget.list.firstWhere(
+            (category) =>
+                category.category_id == widget.selectedCategory!.category_id,
+            orElse: () => widget.list.isNotEmpty
+                ? widget.list.first
+                : CategoryModel(
+                    category_id: '', name: 'Không rõ', event_ids: []),
+          )
+        : (widget.list.isNotEmpty ? widget.list.first : null);
+  }
+
+  @override
+  void didUpdateWidget(covariant Dropdowncategories oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedCategory != oldWidget.selectedCategory) {
+      setState(() {
+        dropValue = widget.selectedCategory != null
+            ? widget.list.firstWhere(
+                (category) =>
+                    category.category_id ==
+                    widget.selectedCategory!.category_id,
+                orElse: () => widget.list.isNotEmpty
+                    ? widget.list.first
+                    : CategoryModel(
+                        category_id: '', name: 'Không rõ', event_ids: []),
+              )
+            : (widget.list.isNotEmpty ? widget.list.first : null);
+      });
+    }
   }
 
   @override
@@ -62,7 +88,7 @@ class _DropdowncategoriesState extends State<Dropdowncategories> {
                 .map<DropdownMenuItem<CategoryModel>>((CategoryModel value) {
                 return DropdownMenuItem(
                   value: value,
-                  child: Text(value.name.toString()),
+                  child: Text(value.name),
                 );
               }).toList()
             : [

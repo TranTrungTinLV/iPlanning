@@ -267,67 +267,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                       FieldValue.arrayUnion(
                                                           [uid])
                                                 });
-                                                final eventDoc =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection(
-                                                            "eventPosts")
-                                                        .doc(doc.id)
-                                                        .get();
-                                                if (eventDoc.exists) {
-                                                  final eventData = eventDoc
-                                                          .data()
-                                                      as Map<String, dynamic>;
-                                                  final isAcceptedList = List<
-                                                          String>.from(
-                                                      eventData['isAccepted'] ??
-                                                          []);
-
-                                                  if (isAcceptedList
-                                                      .contains(uid)) {
-                                                    // Lấy thông tin người tham gia
-                                                    final userDoc =
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection('users')
-                                                            .doc(uid)
-                                                            .get();
-                                                    if (userDoc.exists) {
-                                                      final userData =
-                                                          userDoc.data() as Map<
-                                                              String, dynamic>;
-                                                      final userName =
-                                                          userData['name'];
-
-                                                      // Gửi thông báo tới người tham gia được chấp nhận
-                                                      NotificationService(
-                                                              flutterLocalNotificationsPlugin)
-                                                          .showNotification(
-                                                        "Tham gia sự kiện",
-                                                        "Bạn đã được chấp nhận tham gia sự kiện '${eventPost.event_name}' bởi ${eventPost.username}.",
-                                                        eventPost.event_id,
-                                                      );
-
-                                                      // Gửi thông báo tới Firestore (nếu cần lưu trữ)
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                              'notifications')
-                                                          .add({
-                                                        'title':
-                                                            "Tham gia sự kiện",
-                                                        'body':
-                                                            "Bạn đã được chấp nhận tham gia sự kiện '${eventPost.event_name}' bởi ${eventPost.username}.",
-                                                        'user_id':
-                                                            uid, // ID của người nhận thông báo
-                                                        'event_id':
-                                                            eventPost.event_id,
-                                                        'timestamp': FieldValue
-                                                            .serverTimestamp(),
-                                                      });
-                                                    }
-                                                  }
-                                                }
                                               },
                                               child: Container(
                                                   width: screenWidth * 0.25,
@@ -367,49 +306,51 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   } else {
                     final List<dynamic> isAcceptedList =
                         eventData['isAccepted'] ?? [];
-
-                    if (isAcceptedList.contains(authUid)) {
-                      print("authUid: $authUid");
-                      print("isAcceptedList: $isAcceptedList");
-                      return Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.03,
-                            vertical: screenHeight * 0.015),
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.015,
-                                horizontal: screenWidth * 0.03),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: Colors.green,
-                                      backgroundImage: NetworkImage(eventPost
-                                              .profilePic ??
-                                          'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
-                                    ),
-                                    SizedBox(
-                                      width: 14,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "Bạn đã được chấp nhận tham gia sự kiện '${eventPost.event_name}'.",
-                                        style: TextStyle(
-                                            fontSize: screenWidth * 0.04,
-                                            color: Color(0xff060518)),
+                    if (!isHosting) {
+                      if (isAcceptedList
+                          .contains(authInstance.currentUser!.uid)) {
+                        print("authUid: $authUid");
+                        print("isAcceptedList: $isAcceptedList");
+                        return Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.03,
+                              vertical: screenHeight * 0.015),
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.015,
+                                  horizontal: screenWidth * 0.03),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: Colors.green,
+                                        backgroundImage: NetworkImage(eventPost
+                                                .profilePic ??
+                                            'https://thumbs.dreamstime.com/b/profile-anonymous-face-icon-gray-silhouette-person-male-default-avatar-photo-placeholder-white-background-vector-illustration-106473768.jpg'),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      SizedBox(
+                                        width: 14,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          "Bạn đã được chấp nhận tham gia sự kiện '${eventPost.event_name}'.",
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.04,
+                                              color: Color(0xff060518)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     } else {
                       return Container(
                         margin: EdgeInsets.symmetric(

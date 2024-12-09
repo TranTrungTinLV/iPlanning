@@ -146,6 +146,7 @@ class _WishListScreenState extends State<WishListScreen> {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (ctx) {
                             return Eventdetailscreen(
+                                loadData: () {},
                                 uid: eventDoc['uid'],
                                 titleEvent: eventDoc['event_name'],
                                 userName: eventDoc['username'],

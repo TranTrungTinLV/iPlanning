@@ -206,6 +206,7 @@ class _ListEventState extends State<ListEvent>
                               context,
                               MaterialPageRoute(
                                   builder: (ctx) => Eventdetailscreen(
+                                        loadData: () {},
                                         endDate: event.eventDateEnd,
                                         RandomImages: widget.RandomImages,
                                         uid: event.uid,

@@ -25,6 +25,7 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
   Eventdetailscreen({
     Key? key,
     required this.uid,
+    required this.loadData,
     required this.titleEvent,
     required this.userName,
     required this.location,
@@ -42,12 +43,13 @@ class Eventdetailscreen extends ConsumerStatefulWidget {
   final String location;
   final Timestamp startDate;
   final Timestamp endDate;
-
+  final Function loadData;
   final String avartar;
   final String discription;
   final String backgroundIMG;
   final String event_id;
   final List RandomImages;
+
   bool isLoadingInvite = true;
 
   @override
@@ -538,14 +540,12 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
                                               } else {
                                                 List<CategoryModel> categories =
                                                     await fetchCategories();
-                                                final isUpdated =
-                                                    Navigator.push(
+                                                Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (ctx) =>
                                                           CreateEventScreens(
-                                                            list:
-                                                                categories, // Truyền danh sách category nếu cần
+                                                            list: categories,
                                                             uid: widget.uid,
                                                             username:
                                                                 widget.userName,
@@ -553,23 +553,41 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
                                                                 widget.avartar,
                                                             event_id:
                                                                 widget.event_id,
-                                                            onEventUpdated: () {
+                                                            onEventUpdated:
+                                                                () async {
                                                               ref
                                                                   .read(eventStateProvider
                                                                       .notifier)
                                                                   .refreshEvent(
                                                                       widget
                                                                           .event_id);
+                                                              // TODO
                                                             },
                                                           )),
-                                                );
-                                                if (isUpdated == true) {
-                                                  ref
-                                                      .read(eventStateProvider
-                                                          .notifier)
-                                                      .refreshEvent(
-                                                          widget.event_id);
-                                                }
+                                                ).then((value) {
+                                                  if (value == true) {
+                                                    print("Hoàn thành");
+                                                    print(
+                                                        "Gọi hàm loadData từ Eventdetailscreen");
+                                                    widget.loadData();
+                                                    ref
+                                                        .read(eventStateProvider
+                                                            .notifier)
+                                                        .refreshEvent(
+                                                            widget.event_id);
+                                                  }
+                                                });
+                                                // print('isUpdate: $isUpdated');
+                                                // if (isUpdated == true) {
+                                                //   print(
+                                                //       "Gọi hàm loadData từ Eventdetailscreen");
+                                                //   widget.loadData();
+                                                //   ref
+                                                //       .read(eventStateProvider
+                                                //           .notifier)
+                                                //       .refreshEvent(
+                                                //           widget.event_id);
+                                                // }
                                               }
                                             })
                                         : IconButton(

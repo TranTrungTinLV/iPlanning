@@ -80,10 +80,9 @@ class ClouMethods {
     required List<Uint8List> eventImages,
     required String description,
   }) async {
-    String res = 'Some error occurred';
+    String res = 'Some Error';
 
     try {
-      // Upload lại hình ảnh nếu có thay đổi
       List<String> updatedImages = await uploadImageToStorage(
         eventImages,
         'eventPosts/$eventId',

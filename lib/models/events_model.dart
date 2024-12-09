@@ -64,9 +64,13 @@ class EventsPostModel {
       profilePic: json['profilePic'] as String,
       username: json['username'] as String,
       event_name: json['event_name'] as String,
-      categoryModel: json['category'] != null
-          ? CategoryModel.fromJson(
-              json['category_id']) // Kiểm tra nếu category tồn tại
+      categoryModel: json['category_id'] != null
+          ? CategoryModel(
+              category_id: json['category_id'],
+              name:
+                  'Unknown', // You can replace this with a proper mapping or logic
+              event_ids: [],
+            )
           : null,
       todoList:
           json['todoList'] != null ? List<String>.from(json['todoList']) : [],

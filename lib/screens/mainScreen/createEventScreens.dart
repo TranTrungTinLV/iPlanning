@@ -91,9 +91,9 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
     });
   }
 
-// Hàm thiết lập dữ liệu sự kiện vào UI
   void _setEventData(EventsPostModel? event) {
     if (event != null) {
+      print('Dữ liệu sự kiện: ${event.toJson()}');
       setState(() {
         eventName.text = event.event_name;
         description.text = event.description ?? '';
@@ -114,7 +114,7 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
           },
         );
 
-        print('Selected Category: ${_selectedCategories?.name}');
+        print('tên danh mục ${_selectedCategories?.name}');
 
         isChecked = event.isPost;
         _loadImagesFromUrls(event.eventImage ?? []);
@@ -191,7 +191,7 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
           _endDate!.toDate().day == _startDate!.toDate().day) {
         if (_endDate!.toDate().hour < _startDate!.toDate().hour ||
             (_endDate!.toDate().hour == _startDate!.toDate().hour)) {
-          return false; // Giờ hoặc phút kết thúc nhỏ hơn giờ hoặc phút bắt đầu
+          return false;
         }
       }
     }
@@ -246,14 +246,13 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
     }
   }
 
+// ! upload&update Planning
   uploadEvent() async {
     setState(() {
       isLoading = true;
     });
     try {
       String res;
-
-      // Nếu có `event_id`, thực hiện cập nhật bài viết
       if (widget.event_id != null && widget.event_id!.isNotEmpty) {
         res = await ClouMethods().updatePost(
           eventId: widget.event_id!,
@@ -271,7 +270,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
           isPost: isChecked,
         );
       } else {
-        // Nếu không có `event_id`, tạo bài viết mới
         res = await ClouMethods().uploadPost(
           username: widget.username,
           profilePic: widget.avatar,
@@ -293,7 +291,6 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
             msg: widget.event_id != null
                 ? "Sự kiện đã được cập nhật thành công!"
                 : "Sự kiện đã được tạo thành công!");
-        // ref.read(eventStateProvider.notifier).refreshEvent(widget.event_id!);
         if (widget.onEventUpdated != null) {
           widget.onEventUpdated!();
         }
@@ -328,7 +325,11 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
               }
             },
           ),
-          title: const Text('Kế Hoạch Mới'),
+          title: Text(
+            widget.event_id != null && widget.event_id!.isNotEmpty
+                ? 'Chỉnh Sửa Kế Hoạch'
+                : 'Kế Hoạch Mới',
+          ),
         ),
         body: Stepper(
           currentStep: _index,
@@ -432,8 +433,10 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                             backgroundColor:
                                 isFormValid ? Color(0xffF0534F) : Colors.grey),
                         onPressed: details.onStepContinue,
-                        child: const Text(
-                          'Next Event Details',
+                        child: Text(
+                          widget.event_id != null && widget.event_id!.isNotEmpty
+                              ? 'Xem Bản Chỉnh Sửa '
+                              : 'Xem Bản Tạo',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
@@ -473,7 +476,9 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
               state: _index > 0 ? StepState.complete : StepState.indexed,
               isActive: _index >= 0,
               title: Text(
-                'Tạo kế hoạch',
+                widget.event_id != null && widget.event_id!.isNotEmpty
+                    ? 'Sửa kế hoạch'
+                    : 'Tạo kế hoạch',
                 style: TextStyle(fontSize: screenWidth * 0.035),
               ),
               content: Container(
@@ -524,7 +529,7 @@ class _CreateEventScreensState extends ConsumerState<CreateEventScreens> {
                                   ? CircularProgressIndicator()
                                   : Dropdowncategories(
                                       list: widget.list,
-                                      selectedCategory: _selectedCategories,
+                                      selectedCategory: _selectedCategories!,
                                       onCategoryChanged:
                                           (CategoryModel selected) {
                                         setState(() {

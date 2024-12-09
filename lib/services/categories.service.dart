@@ -74,12 +74,23 @@ class CategoriesMethod {
 
   Future<void> updateCategoryEventIds(String categoryId, String eventId) async {
     try {
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('categoriesEvent')
+          .where('event_ids', arrayContains: eventId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({
+          'event_ids': FieldValue.arrayRemove([eventId]),
+        });
+        print("Removed event $eventId from old category ${doc.id}");
+      }
       DocumentReference categoryRef =
           firestoreInstance.collection('categoriesEvent').doc(categoryId);
-      print(categoryId);
       await categoryRef.update({
-        'event_ids': FieldValue.arrayUnion([eventId])
+        'event_ids': FieldValue.arrayUnion([eventId]),
       });
+      print("Added event $eventId to new category $categoryId");
     } catch (e) {
       print('Error updating event_ids: $e');
     }
@@ -92,7 +103,6 @@ class CategoriesMethod {
   }) async {
     String res = 'Some Error';
     try {
-      // Check if the category already exists
       QuerySnapshot querySnapshot =
           await categoriesEvent.where('name', isEqualTo: name).limit(1).get();
 

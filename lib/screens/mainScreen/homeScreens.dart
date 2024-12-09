@@ -526,215 +526,123 @@ class _HomescreensState extends State<Homescreens> {
                 ? MediaQuery.of(context).size.height * 0.35
                 : MediaQuery.of(context).size.height * 0.27,
           ),
-          CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                pinned: true,
-                expandedHeight: MediaQuery.of(context).size.height < 700
-                    ? MediaQuery.of(context).size.height * 0.24
-                    : MediaQuery.of(context).size.height * 0.19,
-                elevation: 0,
-                backgroundColor: Color(0xff4A43EC),
-                flexibleSpace: LayoutBuilder(builder: (context, constraints) {
-                  return FlexibleSpaceBar(
-                      title: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 200),
-                        opacity: constraints.biggest.height < 120 ? 1 : 0,
-                      ),
-                      background: TopSection(
-                        counter_notifi:
-                            (_myEventPosts != null && _myEventPosts!.isNotEmpty)
-                                ? _myEventPosts!
-                                    .where((event) =>
-                                        event.isPending != null &&
-                                        event.isPending!.isNotEmpty)
-                                    .length
-                                : 0,
-                        drawer: () {
-                          _scaffoldKey.currentState?.openDrawer();
-                        },
-                        location: _userData?.country ?? '',
-                        eventId: event != null ? event!.event_id : '',
-                        getPicture: _getDataPicture,
-                      ));
-                }),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: screenHeight < 700
-                          ? screenHeight * 0.13
-                          : screenHeight * 0.09,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40)),
-                      // !CategoriesSection
-                      child: CategoriesSection(
-                        categories: _categoriesModel ?? [],
-                        onCategorySelected: (categoryId) {
-                          _filterEventsByCategory(categoryId);
-                          _loadEventsForCategory(categoryId).then((events) {
-                            setState(() {
-                              _eventPosts = events;
+          RefreshIndicator(
+            color: Colors.white,
+            backgroundColor: Colors.blue,
+            strokeWidth: 2.0,
+            onRefresh: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              try {
+                await _loadData();
+              } catch (error) {
+                print("Error refreshing data: $error");
+              } finally {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            },
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  pinned: true,
+                  expandedHeight: MediaQuery.of(context).size.height < 700
+                      ? MediaQuery.of(context).size.height * 0.24
+                      : MediaQuery.of(context).size.height * 0.19,
+                  elevation: 0,
+                  backgroundColor: Color(0xff4A43EC),
+                  flexibleSpace: LayoutBuilder(builder: (context, constraints) {
+                    return FlexibleSpaceBar(
+                        title: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 200),
+                          opacity: constraints.biggest.height < 120 ? 1 : 0,
+                        ),
+                        background: TopSection(
+                          counter_notifi: (_myEventPosts != null &&
+                                  _myEventPosts!.isNotEmpty)
+                              ? _myEventPosts!
+                                  .where((event) =>
+                                      event.isPending != null &&
+                                      event.isPending!.isNotEmpty)
+                                  .length
+                              : 0,
+                          drawer: () {
+                            _scaffoldKey.currentState?.openDrawer();
+                          },
+                          location: _userData?.country ?? '',
+                          eventId: event != null ? event!.event_id : '',
+                          getPicture: _getDataPicture,
+                        ));
+                  }),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: screenHeight < 700
+                            ? screenHeight * 0.13
+                            : screenHeight * 0.09,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40)),
+                        // !CategoriesSection
+                        child: CategoriesSection(
+                          categories: _categoriesModel ?? [],
+                          onCategorySelected: (categoryId) {
+                            _filterEventsByCategory(categoryId);
+                            _loadEventsForCategory(categoryId).then((events) {
+                              setState(() {
+                                _eventPosts = events;
+                              });
                             });
-                          });
-                        },
-                        onAllEvents: () {
-                          resetEvents();
-                        },
+                          },
+                          onAllEvents: () {
+                            resetEvents();
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: screenHeight * 0.02,
-                              horizontal: screenWidth * 0.05,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Kế hoạch của bản thân',
-                                  style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.04,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ListEvent(
-                                          RandomImages:
-                                              (_myEventPosts != null &&
-                                                      _myEventPosts!.isNotEmpty)
-                                                  ? eventImages[_myEventPosts!
-                                                          .first.event_id] ??
-                                                      []
-                                                  : [],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Xem tất cả',
+                      Container(
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.02,
+                                horizontal: screenWidth * 0.05,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Kế hoạch của bản thân',
                                     style: TextStyle(
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                                0.035,
-                                        color: Colors.blue),
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.04,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: _myEventPosts == null ||
-                                      _myEventPosts!.isEmpty
-                                  ? Container(
-                                      width: screenWidth,
-                                      child: Center(
-                                        child: Text(
-                                          'Không có kế hoạch nào.',
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 16),
-                                        ),
-                                      ),
-                                    )
-                                  : SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                          children: _myEventPosts!.map((event) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (ctx) =>
-                                                    Eventdetailscreen(
-                                                  endDate: event.eventDateEnd,
-                                                  RandomImages: eventImages[
-                                                          event.event_id] ??
-                                                      [],
-                                                  uid: event.uid,
-                                                  titleEvent: event.event_name,
-                                                  userName: event.username,
-                                                  location: event.location ??
-                                                      'Không có địa điểm',
-                                                  startDate:
-                                                      event.eventDateStart,
-                                                  avartar: event.profilePic ??
-                                                      'https://example.com/default-avatar.png',
-                                                  discription:
-                                                      event.description ??
-                                                          'Không có mô tả',
-                                                  backgroundIMG: event
-                                                              .eventImage
-                                                              ?.isNotEmpty ==
-                                                          true
-                                                      ? event.eventImage![0]
-                                                      : 'https://example.com/default-image.png',
-                                                  event_id: event.event_id,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: CardCustom(
-                                            event: event,
-                                            RandomImages:
-                                                eventImages[event.event_id] ??
-                                                    [],
-                                            uid: _userData != null
-                                                ? _userData!.uid
-                                                : '',
-                                            count: event.invitersCount,
-                                          ),
-                                        );
-                                      }).toList()))),
-
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: screenHeight * 0.02,
-                              horizontal: screenWidth * 0.05,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(bottom: 10.0),
-                                  child: Text(
-                                    'Khám phá kế hoạch',
-                                    style: TextStyle(
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                                0.04),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (ctx) => AllEventScreen(
-                                                  RandomImages: eventImages[
-                                                          _eventPosts!.first
-                                                              .event_id] ??
-                                                      [],
-                                                  paidAmount: _paidAmount,
-                                                )));
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 10.0),
+                                          builder: (ctx) => ListEvent(
+                                            RandomImages: (_myEventPosts !=
+                                                        null &&
+                                                    _myEventPosts!.isNotEmpty)
+                                                ? eventImages[_myEventPosts!
+                                                        .first.event_id] ??
+                                                    []
+                                                : [],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       'Xem tất cả',
                                       style: TextStyle(
@@ -745,84 +653,68 @@ class _HomescreensState extends State<Homescreens> {
                                           color: Colors.blue),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: _isLoadingEvents
-                                ? Container()
-                                : (filteredEvents.isEmpty ||
-                                        _eventPosts == null ||
-                                        _eventPosts!.isEmpty ||
-                                        event?.event_id == null)
-                                    ? Center(
-                                        child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Center(
-                                            child: Text(
-                                              _selectedCategoryId != null
-                                                  ? 'Không có kế hoạch  trong danh mục ${_categoriesModel?.firstWhere((category) => category.category_id == _selectedCategoryId).name}.'
-                                                  : 'Không có kế hoạch nào.',
-                                              style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize:
-                                                      _selectedCategoryId !=
-                                                              null
-                                                          ? screenWidth * 0.04
-                                                          : screenWidth *
-                                                              0.045),
-                                            ),
+                            SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: _myEventPosts == null ||
+                                        _myEventPosts!.isEmpty
+                                    ? Container(
+                                        width: screenWidth,
+                                        child: Center(
+                                          child: Text(
+                                            'Không có kế hoạch nào.',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 16),
                                           ),
                                         ),
                                       )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: _eventPosts!.map((event) {
+                                    : SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                            children:
+                                                _myEventPosts!.map((event) {
                                           return GestureDetector(
                                             onTap: () {
-                                              if (event != null &&
-                                                  event?.uid != null) {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (ctx) =>
-                                                        Eventdetailscreen(
-                                                      RandomImages: eventImages[
-                                                              event.event_id] ??
-                                                          [],
-                                                      uid: event.uid,
-                                                      titleEvent:
-                                                          event.event_name,
-                                                      userName: event.username,
-                                                      location: event.location!,
-                                                      endDate:
-                                                          event.eventDateEnd,
-                                                      startDate:
-                                                          event.eventDateStart,
-                                                      avartar: event
-                                                              .profilePic ??
-                                                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
-                                                      discription: event
-                                                              .description ??
-                                                          'không có nội dung ở đây',
-                                                      backgroundIMG:
-                                                          event.eventImage![0],
-                                                      event_id: event.event_id,
-                                                    ),
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (ctx) =>
+                                                      Eventdetailscreen(
+                                                    loadData: () {
+                                                      print("đã load lại nà");
+                                                      _loadCategories();
+                                                      _loadPostEvent();
+                                                    },
+                                                    endDate: event.eventDateEnd,
+                                                    RandomImages: eventImages[
+                                                            event.event_id] ??
+                                                        [],
+                                                    uid: event.uid,
+                                                    titleEvent:
+                                                        event.event_name,
+                                                    userName: event.username,
+                                                    location: event.location ??
+                                                        'Không có địa điểm',
+                                                    startDate:
+                                                        event.eventDateStart,
+                                                    avartar: event.profilePic ??
+                                                        'https://example.com/default-avatar.png',
+                                                    discription:
+                                                        event.description ??
+                                                            'Không có mô tả',
+                                                    backgroundIMG: event
+                                                                .eventImage
+                                                                ?.isNotEmpty ==
+                                                            true
+                                                        ? event.eventImage![0]
+                                                        : 'https://example.com/default-image.png',
+                                                    event_id: event.event_id,
                                                   ),
-                                                ).then((value) {
-                                                  if (value == true) {
-                                                    _loadPostEvent();
-                                                  }
-                                                });
-                                              } else {
-                                                print(
-                                                    "Event or event UID is null");
-                                              }
+                                                ),
+                                              );
                                             },
                                             child: CardCustom(
                                               event: event,
@@ -835,21 +727,173 @@ class _HomescreensState extends State<Homescreens> {
                                               count: event.invitersCount,
                                             ),
                                           );
-                                        }).toList(),
+                                        }).toList()))),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.02,
+                                horizontal: screenWidth * 0.05,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 10.0),
+                                    child: Text(
+                                      'Khám phá kế hoạch',
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.04),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (ctx) => AllEventScreen(
+                                                    RandomImages: eventImages[
+                                                            _eventPosts!.first
+                                                                .event_id] ??
+                                                        [],
+                                                    paidAmount: _paidAmount,
+                                                  )));
+                                    },
+                                    child: Container(
+                                      margin:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: Text(
+                                        'Xem tất cả',
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.035,
+                                            color: Colors.blue),
                                       ),
-                          ),
-                          Invitewithfriends(),
-                          // SizedBox(
-                          //   width: MediaQuery.of(context).size.width,
-                          //   height: 100,
-                          // ),
-                        ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: _isLoadingEvents
+                                  ? Container()
+                                  : (filteredEvents.isEmpty ||
+                                          _eventPosts == null ||
+                                          _eventPosts!.isEmpty ||
+                                          event?.event_id == null)
+                                      ? Center(
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Center(
+                                              child: Text(
+                                                _selectedCategoryId != null
+                                                    ? 'Không có kế hoạch  trong danh mục ${_categoriesModel?.firstWhere((category) => category.category_id == _selectedCategoryId).name}.'
+                                                    : 'Không có kế hoạch nào.',
+                                                style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize:
+                                                        _selectedCategoryId !=
+                                                                null
+                                                            ? screenWidth * 0.04
+                                                            : screenWidth *
+                                                                0.045),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: _eventPosts!.map((event) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                if (event != null &&
+                                                    event?.uid != null) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          Eventdetailscreen(
+                                                        loadData: () {
+                                                          print(
+                                                              "đã load lại nà");
+                                                          _loadCategories();
+                                                          _loadPostEvent();
+                                                        },
+                                                        RandomImages:
+                                                            eventImages[event
+                                                                    .event_id] ??
+                                                                [],
+                                                        uid: event.uid,
+                                                        titleEvent:
+                                                            event.event_name,
+                                                        userName:
+                                                            event.username,
+                                                        location:
+                                                            event.location!,
+                                                        endDate:
+                                                            event.eventDateEnd,
+                                                        startDate: event
+                                                            .eventDateStart,
+                                                        avartar: event
+                                                                .profilePic ??
+                                                            'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg',
+                                                        discription: event
+                                                                .description ??
+                                                            'không có nội dung ở đây',
+                                                        backgroundIMG: event
+                                                            .eventImage![0],
+                                                        event_id:
+                                                            event.event_id,
+                                                      ),
+                                                    ),
+                                                  ).then((value) {
+                                                    if (value == true) {
+                                                      _loadPostEvent();
+                                                      _loadCategories();
+                                                    }
+                                                  });
+                                                } else {
+                                                  print(
+                                                      "Event or event UID is null");
+                                                }
+                                              },
+                                              child: CardCustom(
+                                                event: event,
+                                                RandomImages: eventImages[
+                                                        event.event_id] ??
+                                                    [],
+                                                uid: _userData != null
+                                                    ? _userData!.uid
+                                                    : '',
+                                                count: event.invitersCount,
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                            ),
+                            Invitewithfriends(),
+                            // SizedBox(
+                            //   width: MediaQuery.of(context).size.width,
+                            //   height: 100,
+                            // ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

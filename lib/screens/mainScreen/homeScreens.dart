@@ -353,18 +353,19 @@ class _HomescreensState extends State<Homescreens> {
                         child: ListTile(
                           onTap: () {
                             _scaffoldKey.currentState?.closeDrawer();
-
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (ctx) => ProfileScreen(
-                                          enteredemail: _userData!.email,
-                                          username: _userData!.name,
-                                          avatarEdit: _userData!.displayAvatar,
-                                          country: _userData!.country,
-                                          phoneNumber: _userData!.phone,
-                                          userData: _userData!,
-                                        )));
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => ProfileScreen(
+                                  enteredemail: _userData!.email,
+                                  username: _userData!.name,
+                                  avatarEdit: _userData!.displayAvatar,
+                                  country: _userData!.country,
+                                  phoneNumber: _userData!.phone,
+                                  userData: _userData!,
+                                ),
+                              ),
+                            );
                           },
                           title: Row(
                             children: [
@@ -590,6 +591,7 @@ class _HomescreensState extends State<Homescreens> {
                             borderRadius: BorderRadius.circular(40)),
                         // !CategoriesSection
                         child: CategoriesSection(
+                          onLoadData: _loadData,
                           categories: _categoriesModel ?? [],
                           onCategorySelected: (categoryId) {
                             _filterEventsByCategory(categoryId);

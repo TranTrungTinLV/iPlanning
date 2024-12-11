@@ -16,33 +16,35 @@ class CategoriesUI extends StatelessWidget {
   final Color iconColour;
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.width;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 11),
-      height: 42,
-      width: 100,
+      height: screenHeight * 0.11,
+      width: screenWidth * 0.3,
       decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
-              blurRadius: 10.0,
+              blurRadius: screenWidth * 0.03,
               spreadRadius: 2.0,
             )
           ],
           color: colour,
-          borderRadius: const BorderRadius.all(Radius.circular(15))),
+          borderRadius: BorderRadius.all(Radius.circular(screenWidth * 0.04))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             children: [
-              const SizedBox(
-                width: 5,
-              ),
+              SizedBox(width: screenWidth * 0.01),
               Text(
                 capitalize(titleCate),
                 style: TextStyle(
                     color: textColour,
+                    fontWeight: FontWeight.w400,
                     fontSize: MediaQuery.of(context).size.width * 0.03),
               )
             ],

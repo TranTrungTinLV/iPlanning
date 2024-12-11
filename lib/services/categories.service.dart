@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/models/categoryClass.dart';
 import 'package:uuid/uuid.dart';
@@ -7,17 +8,14 @@ import 'package:uuid/uuid.dart';
 class CategoriesMethod {
   CollectionReference categoriesEvent =
       firestoreInstance.collection('categoriesEvent');
-
+  final Map<String, Color> defaultCategories = {
+    "Music": Colors.blue,
+    "Travel": Colors.green,
+    "Food": Colors.orange,
+  };
   // ! default categories
   Future<void> uploadDefaultCategories() async {
     try {
-      // Định nghĩa màu sắc cho các danh mục mặc định
-      Map<String, Color> defaultCategories = {
-        "Music": Colors.blue,
-        "Travel": Colors.green,
-        "Food": Colors.orange,
-      };
-
       for (String name in defaultCategories.keys) {
         QuerySnapshot querySnapshot =
             await categoriesEvent.where('name', isEqualTo: name).limit(1).get();
@@ -140,5 +138,55 @@ class CategoriesMethod {
     return res;
   }
 
-  getAllCategories() async {}
+  // ! delete Categories
+  Future<bool> deleteCategorires(String categoryId) async {
+    try {
+      DocumentSnapshot categoryDoc =
+          await categoriesEvent.doc(categoryId).get();
+      if (categoryDoc.exists) {
+        Map<String, dynamic>? data =
+            categoryDoc.data() as Map<String, dynamic>?;
+        List<dynamic>? eventIds = data?['event_ids'];
+        String? categoryName = data?['name'];
+
+        // Check if the category is a default category
+        if (defaultCategories.containsKey(categoryName)) {
+          Fluttertoast.showToast(
+              msg: "Không thể xóa danh mục mặc định.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.grey.shade600,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return false; // Cannot delete default categories
+        }
+
+        // Check if the category has no events
+        if (eventIds == null || eventIds.isEmpty) {
+          await categoriesEvent.doc(categoryId).delete();
+          Fluttertoast.showToast(
+              msg: "Danh mục đã xóa thành công.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.grey.shade600,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return true; // Successfully deleted
+        } else {
+          Fluttertoast.showToast(
+              msg: "Không thể xóa danh mục. Vẫn còn kế hoạch trong đây.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.grey.shade600,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return false; // Cannot delete if events exist
+        }
+      }
+      return false; // Category not found
+    } catch (e) {
+      print('Lỗi khi xóa danh mục: $e');
+      return false; // Error occurred
+    }
+  }
 }

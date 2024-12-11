@@ -74,10 +74,8 @@ class _GuestListState extends State<GuestList> {
 
   @override
   Widget build(BuildContext context) {
-    // Lọc tìm kiếm
     List<UserModel> filteredUsers = userList.where((user) {
-      return user.name.toLowerCase().contains(searchInput
-          .toLowerCase()); // So sánh không phân biệt chữ hoa/chữ thường
+      return user.name.toLowerCase().contains(searchInput.toLowerCase());
     }).toList();
     return Scaffold(
       appBar: AppBar(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iplanning/models/categoryClass.dart';
@@ -13,18 +14,20 @@ class CategoriesSection extends StatefulWidget {
       {super.key,
       required this.categories,
       required this.onCategorySelected,
+      required this.onLoadData,
       required this.onAllEvents});
   List<CategoryModel> categories;
   final Function(String) onCategorySelected;
   final Function() onAllEvents;
-
+  final Function() onLoadData;
   @override
   State<CategoriesSection> createState() => _CategoriesSectionState();
 }
 
 class _CategoriesSectionState extends State<CategoriesSection> {
   TextEditingController categoryNameController = TextEditingController();
-
+  bool isClose = false;
+  CategoriesMethod _categoryService = CategoriesMethod();
   void _saveCategory(String name, Color color) async {
     String result = await CategoriesMethod().createCategory(
       name: name,
@@ -35,17 +38,7 @@ class _CategoriesSectionState extends State<CategoriesSection> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Danh mục đã được tạo thành công!')),
       );
-
-      CategoryModel newCategory = CategoryModel(
-        createAt: Timestamp.now(),
-        category_id: const Uuid().v4().split('-')[0],
-        name: name,
-        color: color.value,
-        event_ids: [],
-      );
-      setState(() {
-        widget.categories.add(newCategory);
-      });
+      widget.onLoadData();
       categoryNameController.clear();
       currentColor = null;
     } else {
@@ -128,7 +121,7 @@ class _CategoriesSectionState extends State<CategoriesSection> {
                                           toastLength: Toast.LENGTH_SHORT,
                                           gravity: ToastGravity.BOTTOM,
                                         );
-                                        return; // Không đóng BottomSheet
+                                        return;
                                       }
                                       if (categoryNameController
                                               .text.isNotEmpty &&
@@ -180,7 +173,12 @@ class _CategoriesSectionState extends State<CategoriesSection> {
               ),
             ),
             GestureDetector(
-              onTap: widget.onAllEvents,
+              onTap: () {
+                widget.onAllEvents();
+                setState(() {
+                  isClose = false;
+                });
+              },
               child: CategoriesUI(
                 titleCate: 'All',
                 colour: Colors.red,
@@ -192,13 +190,51 @@ class _CategoriesSectionState extends State<CategoriesSection> {
                       return GestureDetector(
                         onTap: () {
                           widget.onCategorySelected(category.category_id);
+                          setState(() {
+                            isClose = false;
+                          });
                         },
-                        child: CategoriesUI(
-                          titleCate: category.name,
-                          colour: category.color != null
-                              ? Color(category.color!)
-                              : Colors.grey,
-                        ),
+                        onLongPress: () {
+                          setState(() {
+                            isClose = !isClose;
+                          });
+                        },
+                        child: Stack(children: [
+                          CategoriesUI(
+                            titleCate: category.name,
+                            colour: category.color != null
+                                ? Color(category.color!)
+                                : Colors.grey,
+                          ),
+                          if (isClose)
+                            Positioned(
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  bool isDeleted = await _categoryService
+                                      .deleteCategorires(category.category_id);
+                                  if (isDeleted) {
+                                    widget.onLoadData();
+                                  }
+                                },
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.08,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 15,
+                                  ),
+                                )
+                                    .animate(
+                                        onPlay: (controller) =>
+                                            controller.repeat(reverse: true))
+                                    .shake(duration: 1000.ms, hz: 5),
+                              ),
+                            )
+                        ]),
                       );
                     }).toList(),
                   )

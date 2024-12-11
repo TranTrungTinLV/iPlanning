@@ -213,7 +213,9 @@ class _GuestlistitemsState extends State<Guestlistitems> {
                                     widget.users.uid != currentUserId
                                 ? 'Approve'
                                 : 'Invite',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.035),
                   ),
                 ),
               ),

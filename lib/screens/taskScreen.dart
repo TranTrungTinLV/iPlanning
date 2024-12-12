@@ -581,7 +581,7 @@ class _TaskScreenState extends State<TaskScreen> {
                           children: [
                             Center(
                               child: Text(
-                                "Add List",
+                                "Thêm nhiệm vụ",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,

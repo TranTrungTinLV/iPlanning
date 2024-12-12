@@ -14,6 +14,7 @@ class AlarmNotifier extends ChangeNotifier {
       if (user != null) {
         print("User logged in: ${user.uid}");
         _checkVerify();
+        _listenToTaskAssignments();
       } else {
         print("User is not logged in");
       }
@@ -133,23 +134,88 @@ class AlarmNotifier extends ChangeNotifier {
         final String eventId = eventDoc['event_id'] ?? "";
         final String hostUid = eventDoc['uid'];
 
-        firestoreInstance
-            .collection('users')
-            .doc(hostUid)
-            .get()
-            .then((hostDoc) {
-          if (hostDoc.exists) {
-            final hostName = hostDoc.data()?['name'] ?? "Người tổ chức";
+        // Kiểm tra xem người dùng có thực sự nằm trong 'isAccepted' không
+        final List<dynamic>? isAccepted = eventDoc['isAccepted'];
+        if (isAccepted != null && isAccepted.contains(user.uid)) {
+          firestoreInstance
+              .collection('users')
+              .doc(hostUid)
+              .get()
+              .then((hostDoc) {
+            if (hostDoc.exists) {
+              final hostName = hostDoc.data()?['name'] ?? "Người tổ chức";
 
-            _notificationService.showNotification(
-              "Tham gia sự kiện thành công",
-              "Yêu cầu tham gia sự kiện của bạn đã được chấp nhận bởi $hostName.",
-              eventId,
-            );
-          }
-        });
+              _notificationService.showNotification(
+                "Tham gia sự kiện thành công",
+                "Yêu cầu tham gia sự kiện của bạn đã được chấp nhận bởi $hostName.",
+                eventId,
+              );
+            }
+          });
+        }
       }
     });
+  }
+
+  // void _listenForAcceptedRequests() {
+  //   final user = authInstance.currentUser;
+  //   if (user == null) {
+  //     print("User is not logged in");
+  //     return;
+  //   }
+
+  //   firestoreInstance
+  //       .collection("eventPosts")
+  //       .where('isAccepted', arrayContains: user.uid)
+  //       .snapshots()
+  //       .listen((snapshot) {
+  //     for (var eventDoc in snapshot.docs) {
+  //       final String eventName =
+  //           eventDoc['event_name'] ?? "Sự kiện không xác định";
+  //       final String eventId = eventDoc['event_id'] ?? "";
+  //       final String hostUid = eventDoc['uid'];
+
+  //       firestoreInstance
+  //           .collection('users')
+  //           .doc(hostUid)
+  //           .get()
+  //           .then((hostDoc) {
+  //         if (hostDoc.exists) {
+  //           final hostName = hostDoc.data()?['name'] ?? "Người tổ chức";
+
+  //           _notificationService.showNotification(
+  //             "Tham gia sự kiện thành công",
+  //             "Yêu cầu tham gia sự kiện của bạn đã được chấp nhận bởi $hostName.",
+  //             eventId,
+  //           );
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  void _listenToTaskAssignments() {
+    final currentUserId = authInstance.currentUser?.uid;
+    if (currentUserId == null) return;
+    firestoreInstance
+        .collection('todos')
+        .where('assignedUserId', isEqualTo: currentUserId)
+        .snapshots()
+        .listen((snapshot) {
+      for (var doc in snapshot.docs) {
+        final taskData = doc.data() as Map<String, dynamic>;
+        final taskTitle = taskData['title'] ?? 'Nhiệm vụ không xác định';
+        final eventId = taskData['event_ids'];
+
+        // Hiển thị thông báo
+        _notificationService.showNotification(
+          "Bạn có nhiệm vụ mới",
+          "Nhiệm vụ: $taskTitle đã được phân công cho bạn.",
+          eventId,
+        );
+      }
+    });
+    ;
   }
 
   Future<void> requestNotificationsPermission() async {

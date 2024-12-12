@@ -169,7 +169,7 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
         .get();
 
     if (eventSnapshot.exists && eventSnapshot.data() != null) {
-      var eventData = eventSnapshot.data() as Map<String, dynamic>;
+      final eventData = eventSnapshot.data() as Map<String, dynamic>;
       String currentUserId = authInstance.currentUser!.uid;
 
       setState(() {
@@ -289,6 +289,9 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
             child: Details(
               count: eventState.eventDetails?.invitersCount ?? 0,
               isShow: eventState.eventDetails?.isPost ?? false,
+              isshowWhenAccepted: eventState.eventDetails?.isAccepted
+                      ?.contains(authInstance.currentUser?.uid) ??
+                  false,
               RandomImages: widget.RandomImages,
               todoList: _todoList,
               isLoading: isLoading || event == null,
@@ -322,7 +325,6 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
                     ),
                   );
                 } else {
-                  // Handle case where profile data is not yet loaded
                   Fluttertoast.showToast(
                     msg:
                         "User profile is still loading. Please try again later.",

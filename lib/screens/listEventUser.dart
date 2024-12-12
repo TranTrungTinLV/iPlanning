@@ -70,16 +70,17 @@ class _ListEventState extends State<ListEvent>
                   );
                 }),
             StreamBuilder<QuerySnapshot>(
-                stream: firestoreInstance
-                    .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
-                    .snapshots(),
+                stream: firestoreInstance.collection('eventPosts').snapshots(),
                 builder: (context, snapshot) {
-                  final accepted = snapshot.data?.docs
+                  final docs = snapshot.data?.docs ?? [];
+                  final accepted = docs
                           .where((eventDoc) {
                             final List<dynamic>? isAccepted =
                                 eventDoc['isAccepted'];
-                            return isAccepted != null && isAccepted.isNotEmpty;
+                            final String uid =
+                                authInstance.currentUser?.uid ?? '';
+                            return isAccepted != null &&
+                                isAccepted.contains(uid);
                           })
                           .toList()
                           .length ??
@@ -101,16 +102,16 @@ class _ListEventState extends State<ListEvent>
                   );
                 }),
             StreamBuilder<QuerySnapshot>(
-                stream: firestoreInstance
-                    .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
-                    .snapshots(),
+                stream: firestoreInstance.collection('eventPosts').snapshots(),
                 builder: (context, snapshot) {
                   final rejected = snapshot.data?.docs
                           .where((eventDoc) {
                             final List<dynamic>? isRejected =
                                 eventDoc['isRejected'];
-                            return isRejected != null && isRejected.isNotEmpty;
+                            final String uid =
+                                authInstance.currentUser?.uid ?? '';
+                            return isRejected != null &&
+                                isRejected.contains(uid);
                           })
                           .toList()
                           .length ??
@@ -132,18 +133,22 @@ class _ListEventState extends State<ListEvent>
             StreamBuilder<QuerySnapshot>(
                 stream: firestoreInstance
                     .collection('eventPosts')
-                    .where('uid', isEqualTo: authInstance.currentUser?.uid)
+                    // .where('uid', isEqualTo: authInstance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  final pending = snapshot.data?.docs
+                  final docs = snapshot.data?.docs ?? [];
+                  final pending = docs
                           .where((eventDoc) {
                             final List<dynamic>? isPending =
                                 eventDoc['isPending'];
-                            return isPending != null && isPending.isNotEmpty;
+                            final String uid =
+                                authInstance.currentUser?.uid ?? '';
+                            return isPending != null && isPending.contains(uid);
                           })
                           .toList()
                           .length ??
                       0;
+
                   return Tab(
                     child: Container(
                         height: screenHeight * 0.1,
@@ -333,10 +338,7 @@ class _ListEventState extends State<ListEvent>
                 );
               }),
           StreamBuilder<QuerySnapshot>(
-              stream: firestoreInstance
-                  .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
-                  .snapshots(),
+              stream: firestoreInstance.collection('eventPosts').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -349,7 +351,8 @@ class _ListEventState extends State<ListEvent>
                 final eventDocsIsAccepted =
                     snapshot.data!.docs.where((eventDoc) {
                   final List<dynamic>? isAccepted = eventDoc['isAccepted'];
-                  return isAccepted != null && isAccepted.isNotEmpty;
+                  final String uid = authInstance.currentUser?.uid ?? '';
+                  return isAccepted != null && isAccepted.contains(uid);
                 }).toList();
 
                 if (eventDocsIsAccepted.isEmpty) {
@@ -473,10 +476,7 @@ class _ListEventState extends State<ListEvent>
                 );
               }),
           StreamBuilder<QuerySnapshot>(
-              stream: firestoreInstance
-                  .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
-                  .snapshots(),
+              stream: firestoreInstance.collection('eventPosts').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -486,10 +486,11 @@ class _ListEventState extends State<ListEvent>
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(child: Text('No Events "No" Available'));
                 }
-                final eventDocsIsRejected =
-                    snapshot.data!.docs.where((eventDoc) {
+                final docs = snapshot.data?.docs ?? [];
+                final eventDocsIsRejected = docs.where((eventDoc) {
                   final List<dynamic>? isRejected = eventDoc['isRejected'];
-                  return isRejected != null && isRejected.isNotEmpty;
+                  final String uid = authInstance.currentUser?.uid ?? '';
+                  return isRejected != null && isRejected.contains(uid);
                 }).toList();
 
                 if (eventDocsIsRejected.isEmpty) {
@@ -613,10 +614,7 @@ class _ListEventState extends State<ListEvent>
                 );
               }),
           StreamBuilder<QuerySnapshot>(
-              stream: firestoreInstance
-                  .collection('eventPosts')
-                  .where('uid', isEqualTo: authInstance.currentUser?.uid)
-                  .snapshots(),
+              stream: firestoreInstance.collection('eventPosts').snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -627,10 +625,11 @@ class _ListEventState extends State<ListEvent>
                   return const Center(
                       child: Text('No Events "Not Yet" Available'));
                 }
-                final eventDocsIsPending =
-                    snapshot.data!.docs.where((eventDoc) {
+                final docs = snapshot.data?.docs ?? [];
+                final eventDocsIsPending = docs.where((eventDoc) {
                   final List<dynamic>? isPending = eventDoc['isPending'];
-                  return isPending != null && isPending.isNotEmpty;
+                  final String uid = authInstance.currentUser?.uid ?? '';
+                  return isPending != null && isPending.contains(uid);
                 }).toList();
                 if (eventDocsIsPending.isEmpty) {
                   return const Center(

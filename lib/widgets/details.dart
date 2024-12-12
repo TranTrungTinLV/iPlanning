@@ -25,6 +25,7 @@ class Details extends StatefulWidget {
       required this.todoList,
       this.isLoading = false,
       this.isShow = false,
+      this.isshowWhenAccepted = false,
       required this.onTap});
   final String uid;
   final double ammount;
@@ -38,6 +39,7 @@ class Details extends StatefulWidget {
   final String discription;
   final void Function() onTap;
   final bool isShow;
+  final bool isshowWhenAccepted;
   final int count;
   final List RandomImages;
   final bool isLoading;
@@ -407,7 +409,7 @@ class _DetailsState extends State<Details> {
                       ],
                     ),
                   ),
-                  (isMe || widget.isShow)
+                  (isMe || widget.isShow || widget.isshowWhenAccepted)
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

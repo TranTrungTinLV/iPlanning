@@ -222,6 +222,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                     .update({
                                                   'isPending':
                                                       FieldValue.arrayRemove(
+                                                          [uid]),
+                                                  'isRejected':
+                                                      FieldValue.arrayUnion(
                                                           [uid])
                                                 });
                                               },

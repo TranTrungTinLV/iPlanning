@@ -174,7 +174,6 @@ class AuthenticationService {
   Future<UserModel?> getUserProfile(String uid) async {
     try {
       if (user == null) {
-        // Handle trường hợp user chưa đăng nhập
         return null;
       }
       final DocumentSnapshot userDoc =

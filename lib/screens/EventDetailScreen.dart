@@ -22,6 +22,7 @@ import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/widgets/details.dart';
 
 class Eventdetailscreen extends ConsumerStatefulWidget {
+  static String id = 'event-details-screen';
   Eventdetailscreen({
     Key? key,
     required this.uid,
@@ -84,7 +85,7 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
             .fetchEventById(widget.event_id)
             .then((_) {
           setState(() {
-            isLoading = false; // Dữ liệu đã tải xong
+            isLoading = false;
           });
         });
       }

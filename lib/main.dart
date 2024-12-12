@@ -17,17 +17,18 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// Provider for AlarmNotifier
 final alarmNotifierProvider = ChangeNotifierProvider<AlarmNotifier>((ref) {
   final notificationService =
       NotificationService(flutterLocalNotificationsPlugin);
   final notifier = AlarmNotifier(notificationService);
   notifier.initializeNotifications((payload) {
-    navigatorKey.currentState?.push(MaterialPageRoute(
-      builder: (_) => NotificationScreen(
-        getPicture: () {},
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => NotificationScreen(
+          getPicture: () {},
+        ),
       ),
-    ));
+    );
   });
 
   return notifier;
@@ -75,6 +76,7 @@ class iPlanApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
+          
           home: SplashScreen(),
         );
       },

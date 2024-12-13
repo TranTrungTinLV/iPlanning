@@ -307,7 +307,7 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
               startDate: event?.eventDateStart != null
                   ? event!.eventDateStart
                   : widget.startDate,
-              avartar: widget.avartar,
+              avartar: event?.profilePic ?? widget.avartar,
               discription: event?.description ?? widget.discription,
               onTap: () {
                 if (userProfile != null) {

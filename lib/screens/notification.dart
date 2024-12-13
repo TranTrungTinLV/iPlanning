@@ -611,59 +611,65 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (ctx) {
-                                                return Eventdetailscreen(
-                                                    uid: authInstance
-                                                        .currentUser!.uid,
-                                                    loadData: () {},
-                                                    titleEvent: '',
-                                                    userName: '',
-                                                    location: '',
-                                                    startDate: Timestamp.now(),
-                                                    endDate: Timestamp.now(),
-                                                    avartar: '',
-                                                    discription: '',
-                                                    backgroundIMG: '',
-                                                    RandomImages: [],
-                                                    event_id:
-                                                        taskData['event_ids']);
-                                              }));
-                                            },
-                                            child: Card(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 25),
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        screenHeight * 0.015,
-                                                    horizontal:
-                                                        screenWidth * 0.03),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  top: 10,
-                                                                  bottom: 10.0),
-                                                          child: Text(
-                                                            'Bạn cần thực hiện nhiệm vụ $taskTitle',
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                    screenWidth *
-                                                                        0.04,
-                                                                color: Color(
-                                                                    0xff060518)),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
+                                          Container(
+                                            child: InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (ctx) {
+                                                  return Eventdetailscreen(
+                                                      uid: authUid,
+                                                      loadData: () {},
+                                                      titleEvent: '',
+                                                      userName: '',
+                                                      location: '',
+                                                      startDate:
+                                                          Timestamp.now(),
+                                                      endDate: Timestamp.now(),
+                                                      avartar: '',
+                                                      discription: '',
+                                                      backgroundIMG: '',
+                                                      RandomImages: [],
+                                                      event_id: taskData[
+                                                          'event_ids']);
+                                                }));
+                                              },
+                                              child: Card(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 5,
+                                                    horizontal: 25),
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical:
+                                                          screenHeight * 0.015,
+                                                      horizontal:
+                                                          screenWidth * 0.03),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 10,
+                                                                    bottom:
+                                                                        10.0),
+                                                            child: Text(
+                                                              'Bạn cần thực hiện nhiệm vụ $taskTitle',
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      screenWidth *
+                                                                          0.04,
+                                                                  color: Color(
+                                                                      0xff060518)),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),

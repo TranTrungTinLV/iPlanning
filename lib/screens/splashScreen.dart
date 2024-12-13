@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -86,10 +87,31 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
         body: Bannerwiget(
       child: Center(
-        child: GradientText(
-          'iPlanning',
-          colors: const [Color(0xff5669FF), Color(0xff00F8FF)],
-          style: const TextStyle(fontSize: 48.0, fontFamily: 'Italiana'),
+        child: ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Color(0xff5669FF), Color(0xff00F8FF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ).createShader(bounds),
+          child: AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                'iPlanning',
+                textStyle: const TextStyle(
+                  fontSize: 48.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Italiana',
+                  color: Colors
+                      .white, // Màu mặc định phải là màu trắng để gradient hoạt động
+                ),
+                speed: const Duration(milliseconds: 100),
+              ),
+            ],
+            totalRepeatCount: 4,
+            pause: const Duration(milliseconds: 1000),
+            displayFullTextOnTap: true,
+            stopPauseOnTap: true,
+          ),
         ),
       ),
     ));

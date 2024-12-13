@@ -66,6 +66,7 @@ dependencies:
   dcdg: ^4.1.0
   pumli: ^0.1.5
   flutter_colorpicker: ^1.1.0
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,7 @@ import 'package:iplanning/consts/firebase_const.dart';
 import 'package:iplanning/screens/mainScreen/LoginScreen.dart';
 import 'package:iplanning/screens/otpScreen.dart';
 import 'package:iplanning/services/auth.service.dart';
+import 'package:iplanning/utils/validator/phoneCheck.dart';
 import 'package:iplanning/widgets/TextCustomFeild.dart';
 
 class PhoneScreen extends StatefulWidget {
@@ -25,17 +26,22 @@ class _PhoneScreenState extends State<PhoneScreen> {
     _phoneController = TextEditingController(text: widget.phoneNumber ?? '');
   }
 
-  void _startPhoneVerification() {
+  void _startPhoneVerification() async {
     String phoneNumber = _phoneController.text.trim();
 
     if (phoneNumber.isNotEmpty) {
-      // Kiểm tra nếu số điện thoại bắt đầu với số 0, bỏ số 0 và thay thế bằng 84 (mã quốc gia Việt Nam)
       if (phoneNumber.startsWith('0')) {
-        phoneNumber = '84' + phoneNumber.substring(1); // Bỏ số 0 và thêm mã 84
+        phoneNumber = '84' + phoneNumber.substring(1);
       }
-
-      // Gửi OTP qua cuộc gọi với số điện thoại đã được chuẩn hóa
-      _sendOtpToBackend(phoneNumber);
+      bool phoneExists = await isPhoneNumberUnique(phoneNumber);
+      if (phoneExists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Số điện thoại này đã tồn tại trong hệ thống.')),
+        );
+      } else {
+        _sendOtpToBackend(phoneNumber);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Vui lòng nhập số điện thoại hợp lệ.')),
@@ -46,16 +52,14 @@ class _PhoneScreenState extends State<PhoneScreen> {
   void _sendOtpToBackend(String phoneNumber) {
     generatedOtp = generateOtp();
     print('Generated OTP: $generatedOtp');
-
     AuthenticationService().sendOtpWithVoiceCall(phoneNumber, generatedOtp!);
 
-    // Chuyển sang OtpScreen để nhập OTP
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (ctx) => OtpScreen(
           phoneNumber: phoneNumber,
-          sentOtp: generatedOtp!, // Truyền OTP đã tạo sang OtpScreen
+          sentOtp: generatedOtp!,
         ),
       ),
     );

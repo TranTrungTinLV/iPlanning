@@ -50,7 +50,6 @@ class _GuestlistitemsState extends State<Guestlistitems> {
       }
     } else if (inviteStatus == 'isPending' &&
         widget.users.uid != currentUserId) {
-      // Người dùng tự gửi yêu cầu, chủ sự kiện có thể phê duyệt
       bool shouldApprove = await showApproveConfirmationDialog(context);
       if (shouldApprove) {
         await ClouMethods().invitedEvents(
@@ -58,8 +57,7 @@ class _GuestlistitemsState extends State<Guestlistitems> {
           widget.eventId,
           'isAccepted',
         );
-        widget.onStatusChanged(
-            widget.users.uid, 'isAccepted'); // Cập nhật trạng thái trực tiếp
+        widget.onStatusChanged(widget.users.uid, 'isAccepted');
       }
     } else if (inviteStatus == 'isAccepted') {
       bool shouldExit = await showRejectConfirmationDialog(context);

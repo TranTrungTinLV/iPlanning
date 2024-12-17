@@ -151,6 +151,9 @@ class ClouMethods {
   }
 
   invitedEvents(String uid, String eventId, String isStatus) async {
+    print(uid);
+    print(eventId);
+    print(isStatus);
     try {
       await firestoreInstance.runTransaction((transaction) async {
         DocumentSnapshot eventSnapshot =
@@ -183,10 +186,10 @@ class ClouMethods {
           } else if (isStatus == 'isRequestInvite') {
             if (!inviting.contains(uid) &&
                 !requestList.contains(uid) &&
-                !acceptList.contains(uid) &&
-                !rejectList.contains(uid)) {
+                !acceptList.contains(uid)) {
               transaction.update(postEvents.doc(eventId), {
                 'isRequestInvite': FieldValue.arrayUnion([uid]),
+                'isRejected': FieldValue.arrayRemove([uid]),
               });
               print("Added to isRequestInvite: $uid");
             } else if (requestList.contains(uid)) {
@@ -202,6 +205,11 @@ class ClouMethods {
                 'isAccepted': FieldValue.arrayUnion([uid]),
               });
               print("Moved from isPending to isAccepted: $uid");
+            } else if (requestList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isRequestInvite': FieldValue.arrayRemove([uid]),
+                'isAccepted': FieldValue.arrayUnion([uid]),
+              });
             } else if (acceptList.contains(uid)) {
               transaction.update(postEvents.doc(eventId), {
                 'isAccepted': FieldValue.arrayRemove([uid]),
@@ -213,6 +221,12 @@ class ClouMethods {
               transaction.update(postEvents.doc(eventId), {
                 'isPending': FieldValue.arrayRemove([uid]),
                 'isRejected': FieldValue.arrayUnion([uid]),
+                // 'isRequestInvite': FieldValue.arrayRemove([uid])
+              });
+              print("Moved from isPending to isRejected: $uid");
+            } else if (requestList.contains(uid)) {
+              transaction.update(postEvents.doc(eventId), {
+                'isRequestInvite': FieldValue.arrayRemove([uid])
               });
               print("Moved from isPending to isRejected: $uid");
             } else if (rejectList.contains(uid)) {

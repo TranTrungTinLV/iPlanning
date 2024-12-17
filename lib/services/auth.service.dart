@@ -11,6 +11,7 @@ import 'package:iplanning/models/user_models.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:iplanning/utils/validator/phoneCheck.dart';
 
 class AuthenticationService {
   final _firebase = authInstance;
@@ -198,7 +199,17 @@ class AuthenticationService {
 
   Future<void> updateUser(UserModel userModel, {File? newAvatars}) async {
     String uid = user!.uid;
-
+    if (userModel.phone != null &&
+        !(await isPhoneNumberUnique(userModel.phone!))) {
+      Fluttertoast.showToast(
+          msg: "Số điện thoại đã được sử dụng.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
     if (newAvatars != null) {
       final storageRef =
           storageInstance.ref().child('user-image').child('${user!.uid}.png');

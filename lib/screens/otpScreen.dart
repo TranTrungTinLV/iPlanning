@@ -83,7 +83,6 @@ class _OtpScreenState extends State<OtpScreen> {
             );
           }
         } else {
-          // Nếu OTP sai, hiển thị thông báo
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Mã OTP không hợp lệ.')),
           );

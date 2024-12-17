@@ -38,7 +38,6 @@ class _GuestListState extends State<GuestList> {
         .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
         .toList();
 
-    // Load invite status cho tất cả người dùng
     for (var user in userList) {
       final status = await _getInviteStatus(user.uid);
       setState(() {
@@ -62,11 +61,11 @@ class _GuestListState extends State<GuestList> {
       if (eventData['isAccepted']?.contains(userId) ?? false) {
         return 'isAccepted';
       } else if (eventData['isPending']?.contains(userId) ?? false) {
-        return 'isPending'; // Đã mời nhưng chưa được chấp nhận
+        return 'isPending';
       } else if (eventData['isRequestInvite']?.contains(userId) ?? false) {
         return 'isRequestInvite';
       } else {
-        return null; // Chưa được mời
+        return null;
       }
     }
     return null;

@@ -25,7 +25,6 @@ class UserModel {
       this.isVerify = false,
       this.isOnline = false});
 
-  // Factory constructor từ JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       eventPostModel: [],
@@ -43,7 +42,6 @@ class UserModel {
     );
   }
 
-  // Chuyển đổi đối tượng thành JSON
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
@@ -60,7 +58,6 @@ class UserModel {
     };
   }
 
-  // if newAvatars
   String? get displayAvatar {
     return newAvatars ?? avatars;
   }

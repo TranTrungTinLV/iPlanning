@@ -2,7 +2,6 @@ class Budget {
   String budget_id;
   String budget_name;
   String? event_id;
-
   double paidAmount;
   List<String>? note_id;
   Budget(

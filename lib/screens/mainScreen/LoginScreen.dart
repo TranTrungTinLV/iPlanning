@@ -13,6 +13,7 @@ import 'package:iplanning/screens/loading_manager.dart';
 import 'package:iplanning/screens/phoneScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iplanning/utils/authExceptionHandler.dart';
+import 'package:iplanning/utils/online_users.dart';
 import 'package:iplanning/widgets/ImagePicker.dart';
 import 'package:iplanning/widgets/bannerWiget.dart';
 import 'package:iplanning/widgets/buttonAuth.dart';
@@ -81,9 +82,7 @@ class _LoginscreenState extends State<Loginscreen> {
           "Người dùng đã đăng nhập: ${FirebaseAuth.instance.currentUser?.uid}");
       UserModel? userModel = await _authService.getUserData();
       if (userModel != null) {
-        print(
-            'Dữ liệu người dùng: ${userModel.toJson()}'); // Kiểm tra toàn bộ dữ liệu người dùng
-
+        print('Dữ liệu người dùng: ${userModel.toJson()}');
         if (userModel.isVerify == false) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -94,6 +93,7 @@ class _LoginscreenState extends State<Loginscreen> {
             (route) => false,
           );
         } else {
+          await updateUserOnlineStatus(true);
           _navigateToHome();
         }
       }

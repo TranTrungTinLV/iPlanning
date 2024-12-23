@@ -102,8 +102,6 @@ class AuthenticationService {
 
       if (query.docs.isNotEmpty) {
         String uid = query.docs.first.id;
-        // User user = await _firebase.currentUser!;
-        // await user.updatePassword(newPassword);
 
         String name = query.docs.first["name"];
         print("Tên người dùng ${name}");

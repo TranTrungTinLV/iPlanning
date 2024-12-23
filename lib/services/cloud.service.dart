@@ -221,7 +221,6 @@ class ClouMethods {
               transaction.update(postEvents.doc(eventId), {
                 'isPending': FieldValue.arrayRemove([uid]),
                 'isRejected': FieldValue.arrayUnion([uid]),
-                // 'isRequestInvite': FieldValue.arrayRemove([uid])
               });
               print("Moved from isPending to isRejected: $uid");
             } else if (requestList.contains(uid)) {

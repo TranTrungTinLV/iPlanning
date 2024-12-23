@@ -475,24 +475,12 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                               MainAxisSize.min,
                                                           children: [
                                                             GestureDetector(
-                                                              onTap: () {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        "eventPosts")
-                                                                    .doc(doc.id)
-                                                                    .update({
-                                                                  'isPending':
-                                                                      FieldValue
-                                                                          .arrayRemove([
-                                                                    uid
-                                                                  ]),
-                                                                  'isRejected':
-                                                                      FieldValue
-                                                                          .arrayUnion([
-                                                                    uid
-                                                                  ])
-                                                                });
+                                                              onTap: () async {
+                                                                await ClouMethods()
+                                                                    .invitedEvents(
+                                                                        uid,
+                                                                        doc.id,
+                                                                        'isRejected');
                                                               },
                                                               child: Container(
                                                                   width:
@@ -525,23 +513,11 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                                                             ),
                                                             GestureDetector(
                                                               onTap: () async {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        "eventPosts")
-                                                                    .doc(doc.id)
-                                                                    .update({
-                                                                  'isPending':
-                                                                      FieldValue
-                                                                          .arrayRemove([
-                                                                    uid
-                                                                  ]),
-                                                                  'isAccepted':
-                                                                      FieldValue
-                                                                          .arrayUnion([
-                                                                    uid
-                                                                  ])
-                                                                });
+                                                                await ClouMethods()
+                                                                    .invitedEvents(
+                                                                        uid,
+                                                                        doc.id,
+                                                                        'isAccepted');
                                                               },
                                                               child: Container(
                                                                   width:

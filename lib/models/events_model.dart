@@ -67,8 +67,7 @@ class EventsPostModel {
       categoryModel: json['category_id'] != null
           ? CategoryModel(
               category_id: json['category_id'],
-              name:
-                  'Unknown', // You can replace this with a proper mapping or logic
+              name: 'Unknown',
               event_ids: [],
             )
           : null,

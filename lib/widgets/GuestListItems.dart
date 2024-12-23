@@ -38,7 +38,6 @@ class _GuestlistitemsState extends State<Guestlistitems> {
       widget.onStatusChanged(widget.users.uid, 'isRequestInvite');
     } else if (inviteStatus == 'isRequestInvite' &&
         widget.users.uid != currentUserId) {
-      // Chủ sự kiện hủy mời khi trạng thái là isRequestInvite
       bool shouldReject = await showRejectConfirmationDialog(context);
       if (shouldReject) {
         await ClouMethods().invitedEvents(
@@ -162,10 +161,24 @@ class _GuestlistitemsState extends State<Guestlistitems> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 22.0,
-                  backgroundImage: NetworkImage(widget.users.newAvatars ??
-                      'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 22.0,
+                      backgroundImage: NetworkImage(widget.users.newAvatars ??
+                          'https://i.pinimg.com/236x/46/01/67/46016776db919656210c75223957ee39.jpg'),
+                    ),
+                    if (widget.users.isOnline)
+                      Positioned(
+                          bottom: 0.0,
+                          right: 0,
+                          child: Container(
+                            width: 10,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.green),
+                          ))
+                  ],
                 ),
                 SizedBox(
                   width: 13,

@@ -580,17 +580,6 @@ class _EventdetailscreenState extends ConsumerState<Eventdetailscreen> {
                                                             widget.event_id);
                                                   }
                                                 });
-                                                // print('isUpdate: $isUpdated');
-                                                // if (isUpdated == true) {
-                                                //   print(
-                                                //       "Gọi hàm loadData từ Eventdetailscreen");
-                                                //   widget.loadData();
-                                                //   ref
-                                                //       .read(eventStateProvider
-                                                //           .notifier)
-                                                //       .refreshEvent(
-                                                //           widget.event_id);
-                                                // }
                                               }
                                             })
                                         : IconButton(

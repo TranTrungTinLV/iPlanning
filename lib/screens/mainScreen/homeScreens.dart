@@ -17,6 +17,7 @@ import 'package:iplanning/screens/wishlist.dart';
 import 'package:iplanning/services/cloud.service.dart';
 import 'package:iplanning/providers/managers/alarm.managers.notifier.dart';
 import 'package:iplanning/services/notification.services.dart';
+import 'package:iplanning/utils/online_users.dart';
 import 'package:iplanning/widgets/InvitewithFriends.dart';
 import 'package:iplanning/widgets/buildDrawTile.dart';
 import 'package:iplanning/widgets/cardCustom.dart';
@@ -505,7 +506,8 @@ class _HomescreensState extends State<Homescreens> {
                     context: context,
                     icon: Icons.logout,
                     title: 'Logout',
-                    onTap: () {
+                    onTap: () async {
+                      await updateUserOnlineStatus(false);
                       authInstance.signOut();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => Loginscreen()),

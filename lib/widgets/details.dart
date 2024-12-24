@@ -4,6 +4,7 @@ import 'package:iplanning/consts/firebase_const.dart';
 import 'package:intl/intl.dart';
 import 'package:iplanning/models/todo_models.dart';
 import 'package:iplanning/models/user_models.dart';
+import 'package:iplanning/screens/call_Screen.dart';
 import 'package:iplanning/services/auth.service.dart';
 import 'package:iplanning/utils/todoStatus.dart';
 import 'package:iplanning/utils/validator/capitalize.dart';
@@ -331,9 +332,22 @@ class _DetailsState extends State<Details> {
                           ],
                         ),
                       ),
-                      isMe
-                          ? Icon(Icons.more_horiz)
-                          : Icon(Icons.messenger_outline_outlined)
+                      GestureDetector(
+                          onTap: () {
+                            isMe
+                                ? print('Hello')
+                                : Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (ctx) => CallScreen(
+                                          callID: '',
+                                          userID: widget.uid,
+                                          userName: widget.userName),
+                                    ),
+                                  );
+                          },
+                          child:
+                              isMe ? Icon(Icons.more_horiz) : Icon(Icons.phone))
                     ],
                   ),
                   Container(
